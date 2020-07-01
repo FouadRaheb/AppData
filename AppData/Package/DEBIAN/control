@@ -1,0 +1,13 @@
+Package: com.fouadraheb.appdata
+Name: AppData
+Version: 1.0
+Description: View & Access Applications Data from Home Screen
+Section: Tweaks
+Depends: firmware (>= 11.0), mobilesubstrate (>= 0.9.5000), preferenceloader
+Conflicts:
+Architecture: iphoneos-arm
+Author: Fouad Raheb <support@fouadraheb.com>
+Maintainer: Fouad Raheb <support@fouadraheb.com>
+Depiction: https://apt.fouadraheb.com/package/com.fouadraheb.appdata
+SileoDepiction: https://apt.fouadraheb.com/package/com.fouadraheb.appdata/sileo
+Icon: file:///Library/PreferenceLoader/Preferences/AppData@3x.png
