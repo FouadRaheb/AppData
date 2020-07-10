@@ -18,4 +18,4 @@ Compatible with iOS 11, 12 and 13
 
 ## Screenshot
 
-![Screenshot](https://raw.githubusercontent.com/FouadRaheb/AppData/master/screenshot.jpg)
+![Screenshot](https://raw.githubusercontent.com/FouadRaheb/AppData/master/Screenshot.jpg)
