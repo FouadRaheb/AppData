@@ -7,6 +7,7 @@
 
 #import "ADDataViewController.h"
 #import "ADDataPresentationManager.h"
+#import "ADAlertViewController.h"
 #import <objc/runtime.h>
 
 @interface ADDataViewController () <UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate>
@@ -17,8 +18,10 @@
 
 @property (nonatomic, strong) ADAppData *appData;
 @property (nonatomic, strong) UIImageView *iconImageView;
-@property (nonatomic, strong) UILabel *nameLabel;
+@property (nonatomic, strong) UIButton *nameLabel;
+@property (nonatomic, strong) UIButton *nameEditButton;
 @property (nonatomic, strong) UIButton *identifierLabel;
+@property (nonatomic, strong) UIButton *identifierCopyButton;
 @property (nonatomic, strong) UILabel *versionLabel;
 @property (nonatomic, strong) UITableView *tableView;
 
@@ -31,12 +34,9 @@
 @implementation ADDataViewController
 
 - (instancetype)initWithAppData:(ADAppData *)data {
-    return [self initWithAppData:data sourceRect:CGRectZero];
-}
-
-- (instancetype)initWithAppData:(ADAppData *)data sourceRect:(CGRect)rect {
     if (self = [super init]) {
         ADDataPresentationConfiguration *config = [[ADDataPresentationConfiguration alloc] init];
+        
         self.presentationManager = [[ADDataPresentationManager alloc] initWithConfiguration:config];
         
         self.transitioningDelegate = self.presentationManager;
@@ -51,8 +51,7 @@
     return self;
 }
 
-+ (void)presentControllerFromSBIconView:(SBIconView *)iconView {
-    NSLog(@"presentControllerFromSBIconView: %@ - %@",iconView,[iconView class]);
++ (void)presentControllerFromSBIconView:(SBIconView *)iconView fromContextMenu:(BOOL)contextMenu {
     if (!iconView) return;
     
     // Find Icon Image View
@@ -71,14 +70,20 @@
         }
     }
     
-    [self presentControllerFromSBIconImageView:_iconImageView];
+    [self presentControllerFromSBIconImageView:_iconImageView fromContextMenu:contextMenu];
 }
 
-+ (void)presentControllerFromSBIconImageView:(SBIconImageView *)iconImageView {
-    UIViewController *rootController = [iconImageView _viewControllerForAncestor];
-    NSLog(@"iconImageView: %@ - rootController: %@",iconImageView, rootController);
++ (void)presentControllerFromSBIconImageView:(SBIconImageView *)iconImageView fromContextMenu:(BOOL)contextMenu {
+    NSLog(@"iconImageView: %@",iconImageView);
     
+    UIViewController *rootController = [iconImageView _viewControllerForAncestor];
+    NSLog(@"rootController: %@",rootController);
+        
     SBIconView *iconView = (SBIconView *)[iconImageView superview];
+    if (![iconView isKindOfClass:NSClassFromString(@"SBIconView")]) {
+        NSLog(@"iconView: %@",iconView);
+        iconView = (SBIconView *)[iconView superview];
+    }
     
     if ([iconView respondsToSelector:@selector(icon)]
         && [iconView.icon respondsToSelector:@selector(applicationBundleID)]
@@ -87,12 +92,33 @@
         NSString *bundleID = icon.applicationBundleID;
         ADAppData *appData = [ADAppData appDataForBundleIdentifier:bundleID iconImage:iconImageView.contentsImage];
         if (appData) {
-            UISelectionFeedbackGenerator *feedbackGenerator = [[UISelectionFeedbackGenerator alloc] init];
-            [feedbackGenerator selectionChanged];
+            appData.iconView = iconView;
             
-            CGRect sourceRect = CGRectMake(iconView.frame.origin.x, iconView.frame.origin.y, iconView.frame.size.width, iconView.frame.size.width);
-            ADDataViewController *dataViewController = [[ADDataViewController alloc] initWithAppData:appData sourceRect:sourceRect];
-            [rootController presentViewController:dataViewController animated:YES completion:nil];
+            [[UISelectionFeedbackGenerator new] selectionChanged];
+            
+            ADDataViewController *dataViewController = [[ADDataViewController alloc] initWithAppData:appData];
+            // dataViewController.presentationManager.configuration.animationDuration = 3;
+            
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                dataViewController.contentView.layer.maskedCorners = kCALayerMinXMinYCorner | kCALayerMaxXMinYCorner | kCALayerMinXMaxYCorner | kCALayerMaxXMaxYCorner;
+                dataViewController.presentationManager.configuration.fadeAnimationAlpha = 0;
+                dataViewController.presentationManager.configuration.fadeAnimation = YES;
+                dataViewController.presentationManager.configuration.customFrameHandler = ^CGRect(UIView *containerView) {
+                    CGSize size = CGSizeMake(containerView.frame.size.width * 0.5, containerView.frame.size.height * 0.5);
+                    return CGRectMake(containerView.frame.size.width/2 - size.width/2,
+                                      containerView.frame.size.height/2 - size.height/2,
+                                      size.width, size.height);
+                };
+                if (contextMenu) {
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.4 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                        [ADHelper.sharedInstance.dockViewController?:rootController presentViewController:dataViewController animated:YES completion:nil];
+                    });
+                } else {
+                    [ADHelper.sharedInstance.dockViewController?:rootController presentViewController:dataViewController animated:YES completion:nil];
+                }
+            } else {
+                [rootController presentViewController:dataViewController animated:YES completion:nil];
+            }
         }
     }
 }
@@ -115,8 +141,11 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskPortrait;
+}
+
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    NSLog(@"touch.view: %@",touch.view);
     if ([touch.view isKindOfClass:NSClassFromString(@"UITableViewCellContentView")]) {
         return NO;
     }
@@ -125,15 +154,29 @@
 
 - (void)configureViewWithAppData {
     self.iconImageView.image = self.appData.iconImage;
-    self.nameLabel.text = self.appData.name;
-    if (self.appData.diskUsage > 0 && self.appData.diskUsageString) {
-        self.versionLabel.text = [self.appData.version stringByAppendingFormat:@"  —  %@",self.appData.diskUsageString];
-    } else {
-        self.versionLabel.text = self.appData.version;
-    }
-    [self.identifierLabel setTitle:self.appData.bundleIdentifier forState:UIControlStateNormal];
-    
     self.appStoreButton.hidden = ![self.appData hasAppStoreApp];
+    
+    if ([self.appData isApplication]) {
+        NSString *customIconName = self.appData.customIconName;
+        [self.nameLabel setTitle:customIconName?:self.appData.name forState:UIControlStateNormal];
+        [self.identifierLabel setTitle:self.appData.bundleIdentifier forState:UIControlStateNormal];
+        if (self.appData.diskUsage > 0 && self.appData.diskUsageString) {
+            self.versionLabel.text = [self.appData.version stringByAppendingFormat:@"  —  %@",self.appData.diskUsageString];
+        } else {
+            self.versionLabel.text = self.appData.version;
+        }
+    } else {
+        [self.nameLabel setTitle:@"Not an Application" forState:UIControlStateNormal];
+        [self.nameLabel setEnabled:NO];
+        
+        [self.identifierLabel setTitle:@"No Bundle Identifier" forState:UIControlStateNormal];
+        [self.identifierLabel setEnabled:NO];
+        
+        [self.versionLabel setText:@"—"];
+        
+        self.identifierCopyButton.hidden = YES;
+        self.nameEditButton.hidden = YES;
+    }
 }
 
 - (void)initializeViews {
@@ -157,11 +200,13 @@
 }
 
 - (void)addSubviewsToContainer:(UIView *)containerView {
+    
     UIColor *secondaryLabelsColor = [UIColor colorWithRed:0.922 green:0.922 blue:0.961 alpha:0.6];
+    UIColor *buttonsSymbolColor = secondaryLabelsColor; //[UIColor colorWithRed:127/255.f green:140/255.f blue:141/255.f alpha:0.6];
     
     self.appStoreButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.appStoreButton setImage:[[ADHelper imageNamed:@"AppStoreButton"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
-    [self.appStoreButton setTintColor:secondaryLabelsColor];
+    [self.appStoreButton setTintColor:buttonsSymbolColor];
     [self.appStoreButton addTarget:self action:@selector(didTapAppStoreButton:) forControlEvents:UIControlEventTouchUpInside];
     self.appStoreButton.translatesAutoresizingMaskIntoConstraints = NO;
     [containerView addSubview:self.appStoreButton];
@@ -179,53 +224,77 @@
     [self.iconImageView.widthAnchor constraintEqualToConstant:58].active = YES;
     [self.iconImageView.heightAnchor constraintEqualToConstant:58].active = YES;
     
-    self.nameLabel = [[UILabel alloc] init];
-    self.nameLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-    self.nameLabel.font = [UIFont systemFontOfSize:17];
-    self.nameLabel.textColor = [UIColor whiteColor];
-    self.nameLabel.text = @"-";
-    [containerView addSubview:self.nameLabel];
+    self.nameLabel = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.nameLabel addTarget:self action:@selector(didTapNameButton:) forControlEvents:UIControlEventTouchUpInside];
+    self.nameLabel.titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+    self.nameLabel.titleLabel.font = [UIFont systemFontOfSize:17];
+    [self.nameLabel setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.nameLabel setTitle:@"-" forState:UIControlStateNormal];
     self.nameLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [containerView addSubview:self.nameLabel];
     [self.nameLabel.topAnchor constraintEqualToAnchor:containerView.topAnchor constant:15].active = YES;
     [self.nameLabel.leadingAnchor constraintEqualToAnchor:self.iconImageView.trailingAnchor constant:11].active = YES;
-    [self.nameLabel.trailingAnchor constraintEqualToAnchor:self.appStoreButton.leadingAnchor constant:11].active = YES;
     [self.nameLabel.heightAnchor constraintEqualToConstant:22].active = YES;
+    if (@available(iOS 13.0, *)) {
+        UIImageSymbolConfiguration *config = [UIImageSymbolConfiguration configurationWithWeight:UIImageSymbolWeightBold];
+        UIImage *image = [[UIImage systemImageNamed:@"square.and.pencil" withConfiguration:config] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        self.nameEditButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        [self.nameEditButton setImage:image forState:UIControlStateNormal];
+        [self.nameEditButton setTintColor:buttonsSymbolColor];
+        [self.nameEditButton addTarget:self action:@selector(didTapNameButton:) forControlEvents:UIControlEventTouchUpInside];
+        [self.nameEditButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [containerView addSubview:self.nameEditButton];
+        [self.nameEditButton setContentEdgeInsets:UIEdgeInsetsMake(4.75, 4.75, 4.75, 4.75)];
+        [self.nameEditButton.heightAnchor constraintEqualToConstant:22].active = YES;
+        [self.nameEditButton.widthAnchor constraintEqualToConstant:22].active = YES;
+        [self.nameEditButton.centerYAnchor constraintEqualToAnchor:self.nameLabel.centerYAnchor].active = YES;
+        [self.nameEditButton.leadingAnchor constraintEqualToAnchor:self.nameLabel.trailingAnchor constant:2].active = YES;
+        
+        [self.nameLabel.trailingAnchor constraintLessThanOrEqualToAnchor:self.appStoreButton.leadingAnchor constant:- (22 + 11)].active = YES;
+    } else {
+        [self.nameLabel.trailingAnchor constraintLessThanOrEqualToAnchor:self.appStoreButton.trailingAnchor constant:- 11].active = YES;
+    }
     
     self.identifierLabel = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.identifierLabel addTarget:self action:@selector(didTapIdentifierButton:) forControlEvents:UIControlEventTouchUpInside];
     self.identifierLabel.titleLabel.font = [UIFont systemFontOfSize:14];
     [self.identifierLabel setTitleColor:secondaryLabelsColor forState:UIControlStateNormal];
     [self.identifierLabel setTitle:@"-" forState:UIControlStateNormal];
-    [containerView addSubview:self.identifierLabel];
+    self.identifierLabel.titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     self.identifierLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [containerView addSubview:self.identifierLabel];
     [self.identifierLabel.topAnchor constraintEqualToAnchor:self.nameLabel.bottomAnchor constant:2].active = YES;
     [self.identifierLabel.leadingAnchor constraintEqualToAnchor:self.iconImageView.trailingAnchor constant:11].active = YES;
     [self.identifierLabel.heightAnchor constraintEqualToConstant:20.16].active = YES;
-    
     if (@available(iOS 13.0, *)) {
-        UIImage *image = [[UIImage systemImageNamed:@"doc.on.clipboard"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        UIButton *copyButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        [copyButton setImage:image forState:UIControlStateNormal];
-        [copyButton setTintColor:secondaryLabelsColor];
-        [copyButton addTarget:self action:@selector(didTapIdentifierButton:) forControlEvents:UIControlEventTouchUpInside];
-        [copyButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-        [containerView addSubview:copyButton];
-        [copyButton setContentEdgeInsets:UIEdgeInsetsMake(5, 5, 5, 5)];
-        [copyButton.heightAnchor constraintEqualToConstant:22].active = YES;
-        [copyButton.widthAnchor constraintEqualToConstant:22].active = YES;
-        [copyButton.centerYAnchor constraintEqualToAnchor:self.identifierLabel.centerYAnchor].active = YES;
-        [copyButton.leadingAnchor constraintEqualToAnchor:self.identifierLabel.trailingAnchor].active = YES;
+        UIImageSymbolConfiguration *config = [UIImageSymbolConfiguration configurationWithWeight:UIImageSymbolWeightBold];
+        UIImage *image = [[UIImage systemImageNamed:@"doc.on.clipboard" withConfiguration:config] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        self.identifierCopyButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        [self.identifierCopyButton setImage:image forState:UIControlStateNormal];
+        [self.identifierCopyButton setTintColor:buttonsSymbolColor];
+        [self.identifierCopyButton addTarget:self action:@selector(didTapIdentifierButton:) forControlEvents:UIControlEventTouchUpInside];
+        [self.identifierCopyButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [containerView addSubview:self.identifierCopyButton];
+        [self.identifierCopyButton setContentEdgeInsets:UIEdgeInsetsMake(5, 5, 5, 5)];
+        [self.identifierCopyButton.heightAnchor constraintEqualToConstant:22].active = YES;
+        [self.identifierCopyButton.widthAnchor constraintEqualToConstant:22].active = YES;
+        [self.identifierCopyButton.centerYAnchor constraintEqualToAnchor:self.identifierLabel.centerYAnchor].active = YES;
+        [self.identifierCopyButton.leadingAnchor constraintEqualToAnchor:self.identifierLabel.trailingAnchor constant:1].active = YES;
+        
+        [self.identifierLabel.trailingAnchor constraintLessThanOrEqualToAnchor:containerView.trailingAnchor constant:- (22 + 11)].active = YES;
+    } else {
+        [self.identifierLabel.trailingAnchor constraintLessThanOrEqualToAnchor:containerView.trailingAnchor constant:- 11].active = YES;
     }
     
     self.versionLabel = [[UILabel alloc] init];
     self.versionLabel.font = [UIFont systemFontOfSize:13];
     self.versionLabel.textColor = secondaryLabelsColor;
     self.versionLabel.text = @"-";
-    [containerView addSubview:self.versionLabel];
     self.versionLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [containerView addSubview:self.versionLabel];
     [self.versionLabel.topAnchor constraintEqualToAnchor:self.identifierLabel.bottomAnchor].active = YES;
     [self.versionLabel.leadingAnchor constraintEqualToAnchor:self.iconImageView.trailingAnchor constant:11].active = YES;
-    [self.versionLabel.trailingAnchor constraintEqualToAnchor:containerView.trailingAnchor].active = YES;
+    [self.versionLabel.trailingAnchor constraintEqualToAnchor:containerView.trailingAnchor constant:-11].active = YES;
     [self.versionLabel.heightAnchor constraintEqualToConstant:20.16].active = YES;
     
     // Create Table View
@@ -252,6 +321,11 @@
     [view.trailingAnchor constraintEqualToAnchor:superview.trailingAnchor].active = YES;
 }
 
+- (void)didTapNameButton:(UIButton *)button {
+    [[UISelectionFeedbackGenerator new] selectionChanged];
+    [self showCustomIconNameInterface];
+}
+
 - (void)didTapIdentifierButton:(UIButton *)button {
     if (!self.isCopyingIdentifier) {
         self.isCopyingIdentifier = YES;
@@ -261,8 +335,7 @@
         
         [self.identifierLabel setTitle:@"Copied to clipboard" forState:UIControlStateNormal];
         
-        UINotificationFeedbackGenerator *feedbackGenerator = [[UINotificationFeedbackGenerator alloc] init];
-        [feedbackGenerator notificationOccurred:UINotificationFeedbackTypeSuccess];
+        [[UINotificationFeedbackGenerator new] notificationOccurred:UINotificationFeedbackTypeSuccess];
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.7 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
             [self.identifierLabel setTitle:currentTitle forState:UIControlStateNormal];
@@ -351,15 +424,17 @@
             }
             cell.textLabel.text = @"Clear Caches";
             return cell;
-        } else if (indexPath.row == 1) {
+        } else {
             UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ManageCellIdentifier"];
             if (!cell) {
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"ManageCellIdentifier"];
                 [self applySharedStylesToCell:cell];
             }
-            cell.textLabel.text = @"Clear Badge";
-            NSInteger badgeCount = [self.appData appBadgeCount];
-            cell.detailTextLabel.text = badgeCount == 0 ? @"" : [NSString stringWithFormat:@"%td",badgeCount];
+            if (indexPath.row == 1) {
+                cell.textLabel.text = @"Clear Badge";
+                NSInteger badgeCount = [self.appData appBadgeCount];
+                cell.detailTextLabel.text = badgeCount == 0 ? @"" : [NSString stringWithFormat:@"%td",badgeCount];
+            }
             return cell;
         }
     }
@@ -381,7 +456,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if ([self isContainersSection:section]) {
-        return @"Containers";
+        return self.appData.isApplication ? @"Containers" : nil;
     } else if ([self isAppGroupsSection:section]) {
         return !self.appData.appGroups || self.appData.appGroups.count == 0 ? nil : @"App Groups";
     } else if ([self isManageSection:section]) {
@@ -421,14 +496,40 @@
                     cell.accessoryView = nil;
                 }];
             }];
-        } else {
+        } else if (indexPath.row == 1) {
             [self.appData setAppBadgeCount:0];
             cell.detailTextLabel.text = @"";
-//            UIViewController *controller = [[UIViewController alloc] init];
-//            controller.view = [UIColor clearColor];
-//            [self
         }
     }
+}
+
+- (void)showCustomIconNameInterface {
+    ADAlertViewController *controller = [[ADAlertViewController alloc] init];
+    NSMutableArray *buttons = [NSMutableArray new];
+    [buttons addObject:[ADAlertButton buttonWithTitle:@"Cancel" style:ADButtonStyleCancel handler:nil]];
+    [buttons addObject:[ADAlertButton buttonWithTitle:@"Reset" style:ADButtonStyleDefault handler:^(UIButton *button) {
+        [self.appData setCustomIconName:nil];
+        [self.nameLabel setTitle:self.appData.name forState:UIControlStateNormal];
+    }]];
+    [buttons addObject:[ADAlertButton buttonWithTitle:@"Change" style:ADButtonStyleDefault handler:^(UIButton *button) {
+        [self.appData setCustomIconName:controller.textfield.text];
+        [self.nameLabel setTitle:self.appData.name forState:UIControlStateNormal];
+    }]];
+    controller.buttons = buttons;
+    controller.titleText = @"Rename";
+    controller.detailText = @"Enter an app icon name";
+    [controller addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        textField.text = self.nameLabel.titleLabel.text;
+    }];
+    
+    ADAlertViewController __weak *weakController = controller;
+    [controller.presentationManager.configuration setCustomFrameHandler:^CGRect(UIView *containerView) {
+        CGSize size = CGSizeMake(300, [weakController requiredHeight]);
+        return CGRectMake(containerView.frame.size.width/2 - size.width/2,
+                          containerView.frame.size.height/2 - size.height/2,
+                          size.width, size.height);
+    }];
+    [self presentViewController:controller animated:YES completion:nil];
 }
 
 - (void)didSelectContainerOrAppGroupSectionAtIndexPath:(NSIndexPath *)indexPath {
@@ -530,10 +631,6 @@
         NSURL *ifileURL = [NSURL URLWithString:[@"ifile://file://" stringByAppendingString:url.path]];
         [[UIApplication sharedApplication] openURL:ifileURL options:@{} completionHandler:nil];
     }
-}
-
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-    return UIInterfaceOrientationMaskPortrait;
 }
 
 @end

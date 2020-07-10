@@ -2,6 +2,8 @@
 
 %group SHARED_HOOKS
 
+#pragma mark - Swipe Up on Icon
+
 %hook SBIconImageView
 
 %property (nonatomic, retain) UISwipeGestureRecognizer *adSwipeGestureRecognizer;
@@ -10,7 +12,7 @@
     %log;
     SBIconImageView *r = %orig;
     if (![r isKindOfClass:NSClassFromString(@"SBFolderIconImageView")]) {
-        [[NSNotificationCenter defaultCenter] addObserver:r selector:@selector(appDataPreferencesChanged) name:kAppDataForceTouchMenuPreferencesChangedNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:r selector:@selector(appDataPreferencesChanged) name:kAppDataSwipeUpPreferencesChangedNotification object:nil];
         
         // Create Gesture Recognizer
         self.adSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:r action:@selector(appDataDidSwipeUp:)];
@@ -39,8 +41,39 @@
 %new
 - (void)appDataDidSwipeUp:(UIGestureRecognizer *)gesture {
     if (gesture.state == UIGestureRecognizerStateEnded) {
-        [ADDataViewController presentControllerFromSBIconImageView:self];
+        [ADDataViewController presentControllerFromSBIconImageView:self fromContextMenu:NO];
     }
+}
+
+%end
+
+// Save Dock View Controller to present popup from it on iPad
+%hook SBFloatingDockViewController
+
+- (id)initWithIconManager:(id)arg1 iconViewProvider:(id)arg2 { // iOS 13
+    id r = %orig;
+    ADHelper.sharedInstance.dockViewController = r;
+    return r;
+}
+
+- (id)initWithIconController:(id)arg1 applicationController:(id)arg2 suggestionsViewController:(id)arg3  { // iOS 11/12
+    id r = %orig;
+    ADHelper.sharedInstance.dockViewController = r;
+    return r;
+}
+
+%end
+
+#pragma mark - Custom App Icon Name
+
+%hook SBApplication
+
+- (NSString *)displayName {
+    if ([self respondsToSelector:@selector(bundleIdentifier)]) {
+        NSString *customAppName = [ADHelper customAppNameForBundleIdentifier:self.bundleIdentifier];
+        return customAppName ? : %orig;
+    }
+    return %orig;
 }
 
 %end
@@ -54,11 +87,11 @@
 %hook SBIconView
 
 - (void)setApplicationShortcutItems:(NSArray *)items {
-    if ([ADHelper forceTouchMenuEnabled]) {
+    if ([ADHelper forceTouchMenuEnabled] && ![self ad_isFolderIcon]) {
         NSMutableArray *newItems = [NSMutableArray arrayWithArray:items?:@[]];
         SBSApplicationShortcutItem *shortcutItem = [ADHelper applicationShortcutItem];
         if (shortcutItem) {
-            [newItems addObject:shortcutItem];
+            [newItems insertObject:shortcutItem atIndex:0];
         }
         %orig(newItems);
     } else {
@@ -68,10 +101,19 @@
 
 + (void)activateShortcut:(SBSApplicationShortcutItem *)item withBundleIdentifier:(NSString *)bundleID forIconView:(SBIconView *)iconView {
     if ([item.type isEqualToString:kSBApplicationShortcutItemType]) {
-        [ADDataViewController presentControllerFromSBIconView:iconView];
+        [ADDataViewController presentControllerFromSBIconView:iconView fromContextMenu:YES];
     } else {
         %orig;
     }
+}
+
+%new
+- (BOOL)ad_isFolderIcon {
+    // check if it's folder icon view
+    if ([self respondsToSelector:@selector(icon)]) {
+        return [self.icon isKindOfClass:%c(SBFolderIcon)];
+    }
+    return NO;
 }
 
 %end
@@ -86,7 +128,10 @@
 - (id)applicationShortcutItems {
     if ([ADHelper forceTouchMenuEnabled]) {
         NSMutableArray *newItems = [NSMutableArray arrayWithArray:%orig?:@[]];
-        [newItems addObject:[ADHelper applicationShortcutItem]];
+        SBSApplicationShortcutItem *shortcutItem = [ADHelper applicationShortcutItem];
+        if (shortcutItem) {
+            [newItems insertObject:shortcutItem atIndex:0];
+        }
         return newItems;
     }
     return %orig;
@@ -98,10 +143,11 @@
 
 - (void)appIconForceTouchShortcutViewController:(id)arg1 activateApplicationShortcutItem:(SBSApplicationShortcutItem *)item {
     if ([item.type isEqualToString:kSBApplicationShortcutItemType]) {
-        [self dismissAnimated:YES withCompletionHandler:nil];
-        SBUIAppIconForceTouchControllerDataProvider* _dataProvider = [self valueForKey:@"_dataProvider"];
-        SBIconView *iconView = (SBIconView *)_dataProvider.gestureRecognizer.view;
-        [ADDataViewController presentControllerFromSBIconView:iconView];
+        [self dismissAnimated:YES withCompletionHandler:^{
+            SBUIAppIconForceTouchControllerDataProvider* _dataProvider = [self valueForKey:@"_dataProvider"];
+            SBIconView *iconView = (SBIconView *)_dataProvider.gestureRecognizer.view;
+            [ADDataViewController presentControllerFromSBIconView:iconView fromContextMenu:YES];
+        }];
     } else {
         %orig;
     }

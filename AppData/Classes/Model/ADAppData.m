@@ -26,14 +26,13 @@
     if (self = [super init]) {
         self.sbApplication = [self.class sbApplicationForBundleIdentifier:bundleIdentifier];
         self.appProxy = [LSApplicationProxy applicationProxyForIdentifier:bundleIdentifier];
-        [self loadWithAppProxy];
+        [self loadData];
     }
     return self;
 }
 
-- (void)loadWithAppProxy {
+- (void)loadData {
     // App Info
-    self.name = self.appProxy.localizedShortName ? : self.appProxy.itemName;
     self.version = self.appProxy.shortVersionString ? : self.appProxy.bundleVersion;
     self.bundleIdentifier = self.appProxy.bundleIdentifier;
     
@@ -54,6 +53,27 @@
     
     self.diskUsage = [self.appProxy.staticDiskUsage integerValue];
     self.diskUsageString = [NSByteCountFormatter stringFromByteCount:[self.appProxy.staticDiskUsage longLongValue] countStyle:NSByteCountFormatterCountStyleFile];
+}
+
+- (NSString *)name {
+    return [self.sbApplication respondsToSelector:@selector(displayName)] ? self.sbApplication.displayName : nil;
+}
+
+- (BOOL)isApplication {
+    return self.sbApplication != nil;
+}
+
+#pragma mark - Icon Name
+
+- (NSString *)customIconName {
+    return [ADHelper customAppNameForBundleIdentifier:self.bundleIdentifier];
+}
+
+- (void)setCustomIconName:(NSString *)name {
+    [ADHelper setCustomAppName:name forBundleIdentifier:self.bundleIdentifier];
+    if (self.iconView && [self.iconView respondsToSelector:@selector(_updateLabel)]) {
+        [self.iconView _updateLabel];
+    }
 }
 
 #pragma mark - AppStore

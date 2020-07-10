@@ -37,11 +37,17 @@
     [self.userDefaults addObserver:self forKeyPath:kSwipeUpEnabled options:NSKeyValueObservingOptionNew context:NULL];
 }
 
+#pragma mark - Resources
+
++ (UIImage *)imageNamed:(NSString *)imageName {
+    return [UIImage imageNamed:imageName inBundle:ADHelper.sharedInstance.resoucesBundle];
+}
+
 #pragma mark - Preferences
 
 - (void)observeValueForKeyPath:(NSString *) keyPath ofObject:(id) object change:(NSDictionary *) change context:(void *) context {
     if ([keyPath isEqualToString:kSwipeUpEnabled]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:kAppDataForceTouchMenuPreferencesChangedNotification object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kAppDataSwipeUpPreferencesChangedNotification object:nil];
     }
 }
 
@@ -53,10 +59,21 @@
     return [[ADHelper.sharedInstance.userDefaults objectForKey:kForceTouchMenuEnabled] boolValue];
 }
 
-#pragma mark - Resources
++ (NSString *)customAppNameForBundleIdentifier:(NSString *)identifier {
+    return [[ADHelper.sharedInstance.userDefaults dictionaryForKey:kCustomAppNames] objectForKey:identifier];
+}
 
-+ (UIImage *)imageNamed:(NSString *)imageName {
-    return [UIImage imageNamed:imageName inBundle:ADHelper.sharedInstance.resoucesBundle];
++ (void)setCustomAppName:(NSString *)name forBundleIdentifier:(NSString *)bundleIdentifier {
+    if (!bundleIdentifier) return;
+    
+    NSDictionary *dictionary = [ADHelper.sharedInstance.userDefaults dictionaryForKey:kCustomAppNames];
+    NSMutableDictionary *mutableDictionary = dictionary ? [dictionary mutableCopy] : [NSMutableDictionary new];
+    if (name) {
+        [mutableDictionary setObject:name forKey:bundleIdentifier];
+    } else {
+        [mutableDictionary removeObjectForKey:bundleIdentifier];
+    }
+    [ADHelper.sharedInstance.userDefaults setObject:mutableDictionary forKey:kCustomAppNames];
 }
 
 #pragma mark - Helpers

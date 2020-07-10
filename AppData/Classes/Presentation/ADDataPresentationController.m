@@ -21,7 +21,7 @@
         self.configuration = configuration;
         
         self.dimmingView = [[UIView alloc] initWithFrame:CGRectZero];
-        self.dimmingView.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.3f];
+        self.dimmingView.backgroundColor = configuration.dimmingViewBackgroundColor;
         self.dimmingView.alpha = 0;
         self.dimmingView.translatesAutoresizingMaskIntoConstraints = NO;
         
@@ -86,26 +86,32 @@
 
 - (CGRect)frameOfPresentedViewInContainerView {
     CGRect frame = CGRectZero;
-    
-    frame.size = [self sizeForChildContentContainer:self.presentedViewController withParentContainerSize:self.containerView.bounds.size];
-    
-    switch (self.configuration.direction) {
-        case ADDataPresentationDirectionRight:
-            frame.origin.x = self.containerView.frame.size.width * (1 - (self.configuration.screenPercentage / 100));
-            break;
-        case ADDataPresentationDirectionBottom:
-            frame.origin.y = self.containerView.frame.size.height * (1 - (self.configuration.screenPercentage / 100));
-            break;
-        default:
-            frame.origin = CGPointZero;
-            break;
-    }
 
+    if (self.configuration.customFrameHandler) {
+        frame = self.configuration.customFrameHandler(self.containerView);
+    } else {
+        frame.size = [self sizeForChildContentContainer:self.presentedViewController withParentContainerSize:self.containerView.bounds.size];
+        
+        switch (self.configuration.direction) {
+            case ADDataPresentationDirectionRight:
+                frame.origin.x = self.containerView.frame.size.width * (1 - (self.configuration.screenPercentage / 100));
+                break;
+            case ADDataPresentationDirectionBottom:
+                frame.origin.y = self.containerView.frame.size.height * (1 - (self.configuration.screenPercentage / 100));
+                break;
+            default:
+                frame.origin = CGPointZero;
+                break;
+        }
+    }
     
     return frame;
 }
 
 - (CGSize)sizeForChildContentContainer:(id<UIContentContainer>)container withParentContainerSize:(CGSize)parentSize {
+    if (self.configuration.customFrameHandler) {
+        return self.configuration.customFrameHandler(self.containerView).size;
+    }
     switch (self.configuration.direction) {
         case ADDataPresentationDirectionLeft:
         case ADDataPresentationDirectionRight:

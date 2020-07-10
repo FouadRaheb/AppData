@@ -15,9 +15,11 @@
 
 @interface ADAppData : NSObject
 
+@property (nonatomic, strong) SBIconView *iconView;
+
 @property (nonatomic, strong) UIImage *iconImage;
 
-@property (nonatomic, strong) NSString *name;
+- (NSString *)name;
 @property (nonatomic, strong) NSString *version;
 @property (nonatomic, strong) NSString *bundleIdentifier;
 
@@ -31,6 +33,13 @@
 @property (nonatomic, strong) NSString *diskUsageString;
 
 + (ADAppData *)appDataForBundleIdentifier:(NSString *)bundleIdentifier iconImage:(UIImage *)iconImage;
+
+- (BOOL)isApplication;
+
+#pragma mark - Icon Name
+
+- (NSString *)customIconName;
+- (void)setCustomIconName:(NSString *)name;
 
 #pragma mark - AppStore
 

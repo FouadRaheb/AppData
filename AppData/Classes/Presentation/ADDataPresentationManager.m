@@ -13,14 +13,14 @@
 
 - (instancetype)initWithConfiguration:(ADDataPresentationConfiguration *)configuration {
     if (self = [super init]) {
-        self.configuration = configuration;
+        self.configuration = configuration ? : [[ADDataPresentationConfiguration alloc] init];
     }
     return self;
 }
 
 - (instancetype)init {
     if (self = [super init]) {
-        
+        self.configuration = [[ADDataPresentationConfiguration alloc] init];
     }
     return self;
 }
@@ -46,8 +46,13 @@
 
 - (instancetype)init {
     if (self = [super init]) {
+        self.animationDuration = 0.25;
+        
         self.screenPercentage = 66.66;
+        
         self.direction = ADDataPresentationDirectionBottom;
+        
+        self.dimmingViewBackgroundColor = [UIColor colorWithWhite:0.f alpha:0.3f];
     }
     return self;
 }

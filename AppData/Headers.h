@@ -65,7 +65,8 @@
 @end
 
 @interface SBApplication : NSObject
-@property (nonatomic,retain) SBApplicationInfo * info;
+@property (nonatomic, retain) SBApplicationInfo * info;
+@property (nonatomic,readonly) NSString * displayName;
 -(void)purgeCaches;
 @property (nonatomic,copy) id badgeValue; // iOS 12 and newer
 @property (assign,nonatomic) id badgeNumberOrString; // iOS 11 and older
@@ -83,9 +84,15 @@
 - (NSInteger)badgeValue;
 @end
 
+@interface SBFolderIcon : SBIcon
+@end
+
 @interface SBIconView : UIView
 @property (nonatomic, retain) SBIcon *icon;
+@property (nonatomic, retain) SBFolderIcon * folderIcon;
 - (id)_iconImageView;
+- (void)_updateLabel;
+- (BOOL)ad_isFolderIcon;
 @end
 
 @interface SBSApplicationShortcutIcon : NSObject
@@ -118,6 +125,9 @@
 
 @interface SBUIAppIconForceTouchController : NSObject
 - (void)dismissAnimated:(BOOL)arg1 withCompletionHandler:(/*^block*/id)arg2;
+@end
+
+@interface SBFloatingDockViewController : UIViewController
 @end
 
 #endif /* Headers_h */

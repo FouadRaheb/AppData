@@ -14,6 +14,8 @@
 		A4277C2924ACB55F003AFD4D /* NRFileManager.h in Headers */ = {isa = PBXBuildFile; fileRef = A4277C2724ACB55F003AFD4D /* NRFileManager.h */; };
 		A4277C2A24ACB55F003AFD4D /* NRFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A4277C2824ACB55F003AFD4D /* NRFileManager.m */; };
 		A4277C6224AD01DB003AFD4D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4277C6124AD01DB003AFD4D /* QuartzCore.framework */; };
+		A4277C6724AD45F3003AFD4D /* ADAlertViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = A4277C6524AD45F3003AFD4D /* ADAlertViewController.h */; };
+		A4277C6824AD45F3003AFD4D /* ADAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4277C6624AD45F3003AFD4D /* ADAlertViewController.m */; };
 		A4BB5D8924A86EEA004A3132 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4BB5D8824A86EEA004A3132 /* UIKit.framework */; };
 		A4BB5D8B24A86EEA004A3132 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4BB5D8A24A86EEA004A3132 /* Foundation.framework */; };
 		A4BB5D8D24A86EEA004A3132 /* CydiaSubstrate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4BB5D8C24A86EEA004A3132 /* CydiaSubstrate.framework */; };
@@ -47,6 +49,8 @@
 		A4277C2724ACB55F003AFD4D /* NRFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NRFileManager.h; sourceTree = "<group>"; };
 		A4277C2824ACB55F003AFD4D /* NRFileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NRFileManager.m; sourceTree = "<group>"; };
 		A4277C6124AD01DB003AFD4D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		A4277C6524AD45F3003AFD4D /* ADAlertViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ADAlertViewController.h; sourceTree = "<group>"; };
+		A4277C6624AD45F3003AFD4D /* ADAlertViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ADAlertViewController.m; sourceTree = "<group>"; };
 		A4BB5D8524A86EEA004A3132 /* AppData.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = AppData.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4BB5D8824A86EEA004A3132 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A4BB5D8A24A86EEA004A3132 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -260,6 +264,8 @@
 			children = (
 				A4BB5DD124A9E1D1004A3132 /* ADDataViewController.h */,
 				A4BB5DD224A9E1D1004A3132 /* ADDataViewController.m */,
+				A4277C6524AD45F3003AFD4D /* ADAlertViewController.h */,
+				A4277C6624AD45F3003AFD4D /* ADAlertViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -294,6 +300,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A4BB5DB924A8C41C004A3132 /* ADAppData.h in Headers */,
+				A4277C6724AD45F3003AFD4D /* ADAlertViewController.h in Headers */,
 				A4277C2224ACB50C003AFD4D /* AppData-Prefix.pch in Headers */,
 				A4BB5DC724A9DBCD004A3132 /* ADDataPresentationAnimator.h in Headers */,
 				A4BB5DCB24A9E157004A3132 /* ADDataPresentationController.h in Headers */,
@@ -422,6 +429,7 @@
 				A4BB5D9624A86EEA004A3132 /* AppData.mm in Sources */,
 				A4BB5DD424A9E1D1004A3132 /* ADDataViewController.m in Sources */,
 				A4277C2A24ACB55F003AFD4D /* NRFileManager.m in Sources */,
+				A4277C6824AD45F3003AFD4D /* ADAlertViewController.m in Sources */,
 				A4BB5DCC24A9E157004A3132 /* ADDataPresentationController.m in Sources */,
 				A4277BCD24AA38DF003AFD4D /* ADHelper.m in Sources */,
 				A4BB5DD024A9E184004A3132 /* ADDataPresentationManager.m in Sources */,

@@ -11,9 +11,8 @@
 @interface ADDataViewController : UIViewController
 
 - (instancetype)initWithAppData:(ADAppData *)data;
-- (instancetype)initWithAppData:(ADAppData *)data sourceRect:(CGRect)rect;
 
-+ (void)presentControllerFromSBIconImageView:(SBIconImageView *)iconImageView;
-+ (void)presentControllerFromSBIconView:(SBIconView *)iconView;
++ (void)presentControllerFromSBIconView:(SBIconView *)iconView fromContextMenu:(BOOL)contextMenu;
++ (void)presentControllerFromSBIconImageView:(SBIconImageView *)iconImageView fromContextMenu:(BOOL)contextMenu;
 
 @end

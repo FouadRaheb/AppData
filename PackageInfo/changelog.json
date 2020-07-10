@@ -1,5 +1,16 @@
 [
     {
+        "version":"1.1",
+        "date":"2020-07-10 11:15:57",
+        "changes":[
+            "Added option to set custom app icon name",
+            "Better popup design and animation on iPad",
+            "Fixed popup not showing when apps icons size is modified",
+            "AppData context menu item will no longer show for folders",
+            "AppData context menu item will now be added before other items"
+        ]
+    },
+    {
         "version":"1.0",
         "date":"2020-07-01 20:34:15",
         "changes":[

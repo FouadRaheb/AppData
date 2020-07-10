@@ -59,6 +59,7 @@
             <string>Info</string>
             <key>footerText</key>
             <string>- Copy the app bundle Identifier by tapping it
+- Edit app icon name by tapping it
 - Filza is required to open folders
 - Deleting Caches will delete the app's "Caches" and "Tmp" folders.</string>
         </dict>

@@ -7,23 +7,30 @@
 
 #import <Foundation/Foundation.h>
 
-#define kAppDataForceTouchMenuPreferencesChangedNotification    @"com.fouadraheb.appdata.forcetouchmenu-changed"
+#define kAppDataSwipeUpPreferencesChangedNotification    @"com.fouadraheb.appdata.swipeup-preferences-changed"
 
 #define kSwipeUpEnabled                                         @"SwipeUpEnabled"
 #define kForceTouchMenuEnabled                                  @"ForceTouchMenuEnabled"
+#define kCustomAppNames                                         @"CustomAppNames"
 
 #define kSBApplicationShortcutItemType                          @"com.fouadraheb.appdata"
 
 @interface ADHelper : NSObject
 
-+ (instancetype)sharedInstance;
-- (void)initialize;
+@property (nonatomic) __weak SBFloatingDockViewController *dockViewController;
 
-+ (BOOL)swipeUpEnabled;
-+ (BOOL)forceTouchMenuEnabled;
++ (instancetype)sharedInstance;
+
+- (void)initialize;
 
 + (UIImage *)imageNamed:(NSString *)imageName;
 
 + (SBSApplicationShortcutItem *)applicationShortcutItem;
+
++ (BOOL)swipeUpEnabled;
++ (BOOL)forceTouchMenuEnabled;
+
++ (NSString *)customAppNameForBundleIdentifier:(NSString *)identifier;
++ (void)setCustomAppName:(NSString *)name forBundleIdentifier:(NSString *)bundleIdentifier;
 
 @end
