@@ -37,7 +37,7 @@
     self.bundleIdentifier = self.appProxy.bundleIdentifier;
     
     // Data URLs
-    self.bundleContainerURL = self.appProxy.bundleContainerURL ? : self.appProxy.bundleURL;
+    self.bundleURL = self.appProxy.bundleURL ? : self.appProxy.bundleContainerURL;
     self.dataContainerURL = self.appProxy.dataContainerURL;
     NSMutableArray *appGroups = [NSMutableArray new];
     NSArray *sortedKeys = [self.appProxy.groupContainerURLs.allKeys sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
@@ -48,11 +48,44 @@
     }
     self.appGroups = appGroups;
     
-    // Other Info
-    self.entitlements = self.appProxy.entitlements;
-    
+    // Disk Usage
     self.diskUsage = [self.appProxy.staticDiskUsage integerValue];
     self.diskUsageString = [NSByteCountFormatter stringFromByteCount:[self.appProxy.staticDiskUsage longLongValue] countStyle:NSByteCountFormatterCountStyleFile];
+        
+    // Info for more page
+    [self loadMoreInfo];
+}
+
+- (void)loadMoreInfo {
+    // Other Info
+    self.entitlements = self.appProxy.entitlements;
+    self.entitlementsIdentifiers = self.entitlements.allKeys;
+    
+    ASYNC({
+        NSURL *infoPlistURL = [self.bundleURL URLByAppendingPathComponent:@"Info.plist"];
+        NSDictionary *infoDictionary = [NSDictionary dictionaryWithContentsOfURL:infoPlistURL];
+        
+        if (infoDictionary) {
+            // URL Schemes
+            NSArray *bundleURLTypes = [infoDictionary objectForKey:@"CFBundleURLTypes"];
+            self.urlSchemes = [bundleURLTypes.firstObject objectForKey:@"CFBundleURLSchemes"];
+            
+            // Queries Schemes
+            self.queriesSchemes = [infoDictionary objectForKey:@"LSApplicationQueriesSchemes"];
+            
+            // Activity Types
+            self.activityTypes = [infoDictionary objectForKey:@"NSUserActivityTypes"];
+            
+            // Background Modes
+            self.backgroundModes = [infoDictionary objectForKey:@"UIBackgroundModes"];
+            
+            self.minimumOSVersion = [infoDictionary objectForKey:@"MinimumOSVersion"];
+            
+            self.internalVersion = [infoDictionary objectForKey:@"CFBundleVersion"];
+            
+            self.platformVersion = [infoDictionary objectForKey:@"DTPlatformVersion"];
+        }
+    });
 }
 
 - (NSString *)name {

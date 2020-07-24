@@ -23,14 +23,23 @@
 @property (nonatomic, strong) NSString *version;
 @property (nonatomic, strong) NSString *bundleIdentifier;
 
-@property (nonatomic, strong) NSURL *bundleContainerURL;
+@property (nonatomic, strong) NSURL *bundleURL;
 @property (nonatomic, strong) NSURL *dataContainerURL;
 @property (nonatomic, strong) NSArray <ADAppDataGroup *> *appGroups;
 
-@property (nonatomic, strong) NSDictionary *entitlements;
-
 @property (nonatomic, assign) NSInteger diskUsage;
 @property (nonatomic, strong) NSString *diskUsageString;
+
+// More Info
+@property (nonatomic, strong) NSDictionary *entitlements;
+@property (nonatomic, strong) NSArray <NSString *> *entitlementsIdentifiers;
+@property (nonatomic, strong) NSString *minimumOSVersion;
+@property (nonatomic, strong) NSString *internalVersion;
+@property (nonatomic, strong) NSString *platformVersion;
+@property (nonatomic, strong) NSArray <NSString *> *urlSchemes;
+@property (nonatomic, strong) NSArray <NSString *> *queriesSchemes;
+@property (nonatomic, strong) NSArray <NSString *> *activityTypes;
+@property (nonatomic, strong) NSArray <NSString *> *backgroundModes;
 
 + (ADAppData *)appDataForBundleIdentifier:(NSString *)bundleIdentifier iconImage:(UIImage *)iconImage;
 

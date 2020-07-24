@@ -18,10 +18,10 @@
 			<string>PSGroupCell</string>
 			<key>isStaticText</key>
 			<true/>
-            <key>footerText</key>
-            <string>The popup can be activated by either swiping up on the app icon or through a button the force touch menu</string>
-            <key>label</key>
-            <string>Activation</string>
+			<key>footerText</key>
+			<string>The popup can be activated by either swiping up on the app icon or through a button in the force touch menu</string>
+			<key>label</key>
+			<string>Activation</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -30,56 +30,54 @@
 			<string>com.fouadraheb.appdata</string>
 			<key>key</key>
 			<string>SwipeUpEnabled</string>
-            <key>default</key>
-            <true/>
+			<key>default</key>
+			<true/>
 			<key>label</key>
 			<string>Swipe Up</string>
 			<key>PostNotification</key>
-            <string>com.fouadraheb.appdata.preferences-changed</string>
+			<string>com.fouadraheb.appdata.preferences-changed</string>
 		</dict>
-        <dict>
-            <key>cell</key>
-            <string>PSSwitchCell</string>
-            <key>defaults</key>
-            <string>com.fouadraheb.appdata</string>
-            <key>key</key>
-            <string>ForceTouchMenuEnabled</string>
-            <key>default</key>
-            <false/>
-            <key>label</key>
-            <string>Force Touch Menu</string>
-            <key>PostNotification</key>
-            <string>com.fouadraheb.appdata.preferences-changed</string>
-        </dict>
-
-        <dict>
-            <key>cell</key>
-            <string>PSGroupCell</string>
-            <key>label</key>
-            <string>Info</string>
-            <key>footerText</key>
-            <string>- Copy the app bundle Identifier by tapping it
-- Edit app icon name by tapping it
-- Filza is required to open folders
-- Deleting Caches will delete the app's "Caches" and "Tmp" folders.</string>
-        </dict>
-        
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>defaults</key>
+			<string>com.fouadraheb.appdata</string>
+			<key>key</key>
+			<string>ForceTouchMenuEnabled</string>
+			<key>default</key>
+			<false/>
+			<key>label</key>
+			<string>Force Touch Menu</string>
+			<key>PostNotification</key>
+			<string>com.fouadraheb.appdata.preferences-changed</string>
+		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
-            <key>label</key>
-            <string>Developer</string>
-            <key>footerText</key>
-            <string>Source code on github.com/FouadRaheb/AppData</string>
+			<key>label</key>
+			<string>Info</string>
+			<key>footerText</key>
+			<string>- Copy the app bundle Identifier by tapping it
+- Edit app icon name by tapping it
+- Filza is required to open folders
+- Deleting Caches will delete the app&apos;s &quot;Caches&quot; and &quot;Tmp&quot; folders.</string>
 		</dict>
-        <dict>
-            <key>cell</key>
-            <string>PSStaticTextCell</string>
-            <key>label</key>
-            <string>Fouad Raheb</string>
-            <key>detail</key>
-            <string>Twitter</string>
-        </dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Developer</string>
+			<key>footerText</key>
+			<string>Source code on github.com/FouadRaheb/AppData</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSStaticTextCell</string>
+			<key>label</key>
+			<string>Fouad Raheb</string>
+			<key>detail</key>
+			<string>Twitter</string>
+		</dict>
 	</array>
 	<key>title</key>
 	<string>AppData</string>

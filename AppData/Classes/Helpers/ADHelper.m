@@ -78,6 +78,18 @@
 
 #pragma mark - Helpers
 
++ (void)openDirectoryAtURL:(NSURL *)url {
+    BOOL filzaInstalled = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"filza://"]];
+    BOOL ifileInstalled = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"ifile://"]];
+    if (filzaInstalled) {
+        NSURL *filzaURL = [NSURL URLWithString:[@"filza://view" stringByAppendingString:url.path]];
+        [[UIApplication sharedApplication] openURL:filzaURL options:@{} completionHandler:nil];
+    } else if (ifileInstalled) {
+        NSURL *ifileURL = [NSURL URLWithString:[@"ifile://file://" stringByAppendingString:url.path]];
+        [[UIApplication sharedApplication] openURL:ifileURL options:@{} completionHandler:nil];
+    }
+}
+
 + (SBSApplicationShortcutItem *)applicationShortcutItem {
     SBSApplicationShortcutItem *shortcutItem = [[NSClassFromString(@"SBSApplicationShortcutItem") alloc] init];
     shortcutItem.localizedTitle = @"AppData";

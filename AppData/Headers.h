@@ -114,8 +114,20 @@
 - (void)appDataPreferencesChanged;
 @end
 
+
+@interface SBFloatingDockViewController : UIViewController
+@end
+
+@interface SBFloatingDockController : NSObject
+@property (nonatomic,readonly) SBFloatingDockViewController *floatingDockViewController;
+- (BOOL)isFloatingDockPresented;
+- (void)_presentFloatingDockIfDismissedAnimated:(BOOL)arg1 completionHandler:(/*^block*/id)arg2 ;
+- (void)_dismissFloatingDockIfPresentedAnimated:(BOOL)arg1 completionHandler:(/*^block*/id)arg2 ;
+@end
+
 @interface SBIconController : NSObject
 + (instancetype)sharedInstance;
+@property (nonatomic,readonly) SBFloatingDockController * floatingDockController;
 @end
 
 @interface SBUIAppIconForceTouchControllerDataProvider : NSObject
@@ -125,9 +137,6 @@
 
 @interface SBUIAppIconForceTouchController : NSObject
 - (void)dismissAnimated:(BOOL)arg1 withCompletionHandler:(/*^block*/id)arg2;
-@end
-
-@interface SBFloatingDockViewController : UIViewController
 @end
 
 #endif /* Headers_h */

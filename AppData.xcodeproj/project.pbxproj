@@ -14,8 +14,14 @@
 		A4277C2924ACB55F003AFD4D /* NRFileManager.h in Headers */ = {isa = PBXBuildFile; fileRef = A4277C2724ACB55F003AFD4D /* NRFileManager.h */; };
 		A4277C2A24ACB55F003AFD4D /* NRFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A4277C2824ACB55F003AFD4D /* NRFileManager.m */; };
 		A4277C6224AD01DB003AFD4D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4277C6124AD01DB003AFD4D /* QuartzCore.framework */; };
-		A4277C6724AD45F3003AFD4D /* ADAlertViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = A4277C6524AD45F3003AFD4D /* ADAlertViewController.h */; };
-		A4277C6824AD45F3003AFD4D /* ADAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4277C6624AD45F3003AFD4D /* ADAlertViewController.m */; };
+		A429A01B24BEDA55005F586C /* ADMoreDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = A429A01924BEDA55005F586C /* ADMoreDataSource.h */; };
+		A429A01C24BEDA55005F586C /* ADMoreDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = A429A01A24BEDA55005F586C /* ADMoreDataSource.m */; };
+		A429A01F24BEDAD8005F586C /* ADMainDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = A429A01D24BEDAD8005F586C /* ADMainDataSource.h */; };
+		A429A02024BEDAD8005F586C /* ADMainDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = A429A01E24BEDAD8005F586C /* ADMainDataSource.m */; };
+		A493593B24C478AB00753149 /* ADExpandableSectionHeaderView.h in Headers */ = {isa = PBXBuildFile; fileRef = A493593924C478AB00753149 /* ADExpandableSectionHeaderView.h */; };
+		A493593C24C478AB00753149 /* ADExpandableSectionHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = A493593A24C478AB00753149 /* ADExpandableSectionHeaderView.m */; };
+		A4935A2324CB1E5400753149 /* ADTitleSectionHeaderView.h in Headers */ = {isa = PBXBuildFile; fileRef = A4935A2124CB1E5300753149 /* ADTitleSectionHeaderView.h */; };
+		A4935A2424CB1E5400753149 /* ADTitleSectionHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = A4935A2224CB1E5400753149 /* ADTitleSectionHeaderView.m */; };
 		A4BB5D8924A86EEA004A3132 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4BB5D8824A86EEA004A3132 /* UIKit.framework */; };
 		A4BB5D8B24A86EEA004A3132 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4BB5D8A24A86EEA004A3132 /* Foundation.framework */; };
 		A4BB5D8D24A86EEA004A3132 /* CydiaSubstrate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4BB5D8C24A86EEA004A3132 /* CydiaSubstrate.framework */; };
@@ -49,8 +55,15 @@
 		A4277C2724ACB55F003AFD4D /* NRFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NRFileManager.h; sourceTree = "<group>"; };
 		A4277C2824ACB55F003AFD4D /* NRFileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NRFileManager.m; sourceTree = "<group>"; };
 		A4277C6124AD01DB003AFD4D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		A4277C6524AD45F3003AFD4D /* ADAlertViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ADAlertViewController.h; sourceTree = "<group>"; };
-		A4277C6624AD45F3003AFD4D /* ADAlertViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ADAlertViewController.m; sourceTree = "<group>"; };
+		A429A01924BEDA55005F586C /* ADMoreDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ADMoreDataSource.h; sourceTree = "<group>"; };
+		A429A01A24BEDA55005F586C /* ADMoreDataSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ADMoreDataSource.m; sourceTree = "<group>"; };
+		A429A01D24BEDAD8005F586C /* ADMainDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ADMainDataSource.h; sourceTree = "<group>"; };
+		A429A01E24BEDAD8005F586C /* ADMainDataSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ADMainDataSource.m; sourceTree = "<group>"; };
+		A493593924C478AB00753149 /* ADExpandableSectionHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ADExpandableSectionHeaderView.h; sourceTree = "<group>"; };
+		A493593A24C478AB00753149 /* ADExpandableSectionHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ADExpandableSectionHeaderView.m; sourceTree = "<group>"; };
+		A4935A2124CB1E5300753149 /* ADTitleSectionHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADTitleSectionHeaderView.h; sourceTree = "<group>"; };
+		A4935A2224CB1E5400753149 /* ADTitleSectionHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADTitleSectionHeaderView.m; sourceTree = "<group>"; };
+		A4935A2524CB86FB00753149 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		A4BB5D8524A86EEA004A3132 /* AppData.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = AppData.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4BB5D8824A86EEA004A3132 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A4BB5D8A24A86EEA004A3132 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -167,6 +180,7 @@
 				A4277C2424ACB51B003AFD4D /* PackageInfo */,
 				A4277C2024ACB50C003AFD4D /* AppData-Prefix.pch */,
 				A4277C2124ACB50C003AFD4D /* Headers.h */,
+				A4935A2524CB86FB00753149 /* README.md */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -186,6 +200,28 @@
 				A4277C2824ACB55F003AFD4D /* NRFileManager.m */,
 			);
 			path = NRFileManager;
+			sourceTree = "<group>";
+		};
+		A429A02124BEDDF6005F586C /* DataSource */ = {
+			isa = PBXGroup;
+			children = (
+				A429A01D24BEDAD8005F586C /* ADMainDataSource.h */,
+				A429A01E24BEDAD8005F586C /* ADMainDataSource.m */,
+				A429A01924BEDA55005F586C /* ADMoreDataSource.h */,
+				A429A01A24BEDA55005F586C /* ADMoreDataSource.m */,
+			);
+			path = DataSource;
+			sourceTree = "<group>";
+		};
+		A493593824C4785400753149 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				A493593924C478AB00753149 /* ADExpandableSectionHeaderView.h */,
+				A493593A24C478AB00753149 /* ADExpandableSectionHeaderView.m */,
+				A4935A2124CB1E5300753149 /* ADTitleSectionHeaderView.h */,
+				A4935A2224CB1E5400753149 /* ADTitleSectionHeaderView.m */,
+			);
+			path = Cells;
 			sourceTree = "<group>";
 		};
 		A4BB5D7A24A86EEA004A3132 = {
@@ -262,10 +298,10 @@
 		A4BB5DC424A9DBB2004A3132 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				A493593824C4785400753149 /* Cells */,
+				A429A02124BEDDF6005F586C /* DataSource */,
 				A4BB5DD124A9E1D1004A3132 /* ADDataViewController.h */,
 				A4BB5DD224A9E1D1004A3132 /* ADDataViewController.m */,
-				A4277C6524AD45F3003AFD4D /* ADAlertViewController.h */,
-				A4277C6624AD45F3003AFD4D /* ADAlertViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -299,14 +335,17 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A429A01B24BEDA55005F586C /* ADMoreDataSource.h in Headers */,
+				A4935A2324CB1E5400753149 /* ADTitleSectionHeaderView.h in Headers */,
+				A493593B24C478AB00753149 /* ADExpandableSectionHeaderView.h in Headers */,
 				A4BB5DB924A8C41C004A3132 /* ADAppData.h in Headers */,
-				A4277C6724AD45F3003AFD4D /* ADAlertViewController.h in Headers */,
 				A4277C2224ACB50C003AFD4D /* AppData-Prefix.pch in Headers */,
 				A4BB5DC724A9DBCD004A3132 /* ADDataPresentationAnimator.h in Headers */,
 				A4BB5DCB24A9E157004A3132 /* ADDataPresentationController.h in Headers */,
 				A4BB5DD324A9E1D1004A3132 /* ADDataViewController.h in Headers */,
 				A4BB5DCF24A9E184004A3132 /* ADDataPresentationManager.h in Headers */,
 				A4277C2324ACB50C003AFD4D /* Headers.h in Headers */,
+				A429A01F24BEDAD8005F586C /* ADMainDataSource.h in Headers */,
 				A4277BCC24AA38DF003AFD4D /* ADHelper.h in Headers */,
 				A4277C2924ACB55F003AFD4D /* NRFileManager.h in Headers */,
 			);
@@ -426,10 +465,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A493593C24C478AB00753149 /* ADExpandableSectionHeaderView.m in Sources */,
 				A4BB5D9624A86EEA004A3132 /* AppData.mm in Sources */,
 				A4BB5DD424A9E1D1004A3132 /* ADDataViewController.m in Sources */,
 				A4277C2A24ACB55F003AFD4D /* NRFileManager.m in Sources */,
-				A4277C6824AD45F3003AFD4D /* ADAlertViewController.m in Sources */,
+				A429A02024BEDAD8005F586C /* ADMainDataSource.m in Sources */,
+				A4935A2424CB1E5400753149 /* ADTitleSectionHeaderView.m in Sources */,
+				A429A01C24BEDA55005F586C /* ADMoreDataSource.m in Sources */,
 				A4BB5DCC24A9E157004A3132 /* ADDataPresentationController.m in Sources */,
 				A4277BCD24AA38DF003AFD4D /* ADHelper.m in Sources */,
 				A4BB5DD024A9E184004A3132 /* ADDataPresentationManager.m in Sources */,

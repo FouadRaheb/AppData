@@ -47,23 +47,6 @@
 
 %end
 
-// Save Dock View Controller to present popup from it on iPad
-%hook SBFloatingDockViewController
-
-- (id)initWithIconManager:(id)arg1 iconViewProvider:(id)arg2 { // iOS 13
-    id r = %orig;
-    ADHelper.sharedInstance.dockViewController = r;
-    return r;
-}
-
-- (id)initWithIconController:(id)arg1 applicationController:(id)arg2 suggestionsViewController:(id)arg3  { // iOS 11/12
-    id r = %orig;
-    ADHelper.sharedInstance.dockViewController = r;
-    return r;
-}
-
-%end
-
 #pragma mark - Custom App Icon Name
 
 %hook SBApplication
@@ -143,11 +126,14 @@
 
 - (void)appIconForceTouchShortcutViewController:(id)arg1 activateApplicationShortcutItem:(SBSApplicationShortcutItem *)item {
     if ([item.type isEqualToString:kSBApplicationShortcutItemType]) {
-        [self dismissAnimated:YES withCompletionHandler:^{
-            SBUIAppIconForceTouchControllerDataProvider* _dataProvider = [self valueForKey:@"_dataProvider"];
-            SBIconView *iconView = (SBIconView *)_dataProvider.gestureRecognizer.view;
+        [self dismissAnimated:YES withCompletionHandler:nil];
+        
+        SBUIAppIconForceTouchControllerDataProvider* _dataProvider = [self valueForKey:@"_dataProvider"];
+        SBIconView *iconView = (SBIconView *)_dataProvider.gestureRecognizer.view;
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
             [ADDataViewController presentControllerFromSBIconView:iconView fromContextMenu:YES];
-        }];
+        });
     } else {
         %orig;
     }

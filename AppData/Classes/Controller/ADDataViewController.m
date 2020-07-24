@@ -7,27 +7,34 @@
 
 #import "ADDataViewController.h"
 #import "ADDataPresentationManager.h"
-#import "ADAlertViewController.h"
+#import "ADExpandableSectionHeaderView.h"
+#import "ADTitleSectionHeaderView.h"
+#import "ADMainDataSource.h"
+#import "ADMoreDataSource.h"
 #import <objc/runtime.h>
 
-@interface ADDataViewController () <UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate>
+@interface ADDataViewController () <UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) ADDataPresentationManager *presentationManager;
 
 @property (nonatomic, strong) UIVisualEffectView *contentView;
 
 @property (nonatomic, strong) ADAppData *appData;
+
 @property (nonatomic, strong) UIImageView *iconImageView;
 @property (nonatomic, strong) UIButton *nameLabel;
 @property (nonatomic, strong) UIButton *nameEditButton;
 @property (nonatomic, strong) UIButton *identifierLabel;
 @property (nonatomic, strong) UIButton *identifierCopyButton;
 @property (nonatomic, strong) UILabel *versionLabel;
-@property (nonatomic, strong) UITableView *tableView;
-
 @property (nonatomic, strong) UIButton *appStoreButton;
 
+@property (nonatomic, strong) ADMainDataSource *mainDataSource;
+@property (nonatomic, strong) ADMoreDataSource *moreDataSource;
+
 @property (nonatomic, assign) BOOL isCopyingIdentifier;
+
+@property (nonatomic, strong) UIScreenEdgePanGestureRecognizer *screenEdgeGesture;
 
 @end
 
@@ -44,6 +51,9 @@
         
         self.appData = data;
 
+        self.mainDataSource = [[ADMainDataSource alloc] initWithAppData:self.appData dataViewController:self];
+        self.moreDataSource = [[ADMoreDataSource alloc] initWithAppData:self.appData dataViewController:self];
+        
         [self initializeViews];
         
         [self configureViewWithAppData];
@@ -51,8 +61,13 @@
     return self;
 }
 
+// Used from Force Touch Menu
+
 + (void)presentControllerFromSBIconView:(SBIconView *)iconView fromContextMenu:(BOOL)contextMenu {
-    if (!iconView) return;
+    if (!iconView) {
+        [self showAlertWitle:@"AppData" message:[NSString stringWithFormat:@"Could not fetch app data.\n\nError: Empty icon view."]];
+        return;
+    }
     
     // Find Icon Image View
     SBIconImageView *_iconImageView = nil;
@@ -70,24 +85,33 @@
         }
     }
     
-    [self presentControllerFromSBIconImageView:_iconImageView fromContextMenu:contextMenu];
+    if (!_iconImageView) {
+        [self showAlertWitle:@"AppData" message:[NSString stringWithFormat:@"Could not fetch app data.\n\nError: could not find icon image view."]];
+        return;
+    }
+    [self presentControllerFromSBIconImageView:_iconImageView iconView:iconView fromContextMenu:contextMenu];
 }
 
+// Used from Swipe Up
+
 + (void)presentControllerFromSBIconImageView:(SBIconImageView *)iconImageView fromContextMenu:(BOOL)contextMenu {
+    SBIconView *iconView = (SBIconView *)[iconImageView superview];
+    if (![iconView respondsToSelector:@selector(icon)]) {
+        NSLog(@"iconView: %@",iconView);
+        iconView = (SBIconView *)[iconView superview];
+    }
+    [self presentControllerFromSBIconImageView:iconImageView iconView:iconView fromContextMenu:contextMenu];
+}
+
+// Internal
+
++ (void)presentControllerFromSBIconImageView:(SBIconImageView *)iconImageView iconView:(SBIconView *)iconView fromContextMenu:(BOOL)contextMenu {
     NSLog(@"iconImageView: %@",iconImageView);
     
     UIViewController *rootController = [iconImageView _viewControllerForAncestor];
     NSLog(@"rootController: %@",rootController);
-        
-    SBIconView *iconView = (SBIconView *)[iconImageView superview];
-    if (![iconView isKindOfClass:NSClassFromString(@"SBIconView")]) {
-        NSLog(@"iconView: %@",iconView);
-        iconView = (SBIconView *)[iconView superview];
-    }
     
-    if ([iconView respondsToSelector:@selector(icon)]
-        && [iconView.icon respondsToSelector:@selector(applicationBundleID)]
-        && [iconImageView respondsToSelector:@selector(contentsImage)]) {
+    if ([iconView respondsToSelector:@selector(icon)] && [iconView.icon respondsToSelector:@selector(applicationBundleID)] && [iconImageView respondsToSelector:@selector(contentsImage)]) {
         SBIcon *icon = iconView.icon;
         NSString *bundleID = icon.applicationBundleID;
         ADAppData *appData = [ADAppData appDataForBundleIdentifier:bundleID iconImage:iconImageView.contentsImage];
@@ -97,9 +121,7 @@
             [[UISelectionFeedbackGenerator new] selectionChanged];
             
             ADDataViewController *dataViewController = [[ADDataViewController alloc] initWithAppData:appData];
-            // dataViewController.presentationManager.configuration.animationDuration = 3;
-            
-            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            if (IS_IPAD) {
                 dataViewController.contentView.layer.maskedCorners = kCALayerMinXMinYCorner | kCALayerMaxXMinYCorner | kCALayerMinXMaxYCorner | kCALayerMaxXMaxYCorner;
                 dataViewController.presentationManager.configuration.fadeAnimationAlpha = 0;
                 dataViewController.presentationManager.configuration.fadeAnimation = YES;
@@ -111,16 +133,28 @@
                 };
                 if (contextMenu) {
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.4 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-                        [ADHelper.sharedInstance.dockViewController?:rootController presentViewController:dataViewController animated:YES completion:nil];
+                        [rootController presentViewController:dataViewController animated:YES completion:nil];
                     });
                 } else {
-                    [ADHelper.sharedInstance.dockViewController?:rootController presentViewController:dataViewController animated:YES completion:nil];
+                    [rootController presentViewController:dataViewController animated:YES completion:nil];
                 }
             } else {
                 [rootController presentViewController:dataViewController animated:YES completion:nil];
             }
         }
+    } else {
+        [self showAlertFromViewController:rootController title:@"AppData" message:[NSString stringWithFormat:@"Could not fetch app data.\n\n%@ is not a valid icon class.",[iconView class]]];
     }
+}
+
++ (void)showAlertWitle:(NSString *)title message:(NSString *)message {
+    [self showAlertFromViewController:nil title:title message:message];
+}
+
++ (void)showAlertFromViewController:(UIViewController *)viewController title:(NSString *)title message:(NSString *)message {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleCancel handler:nil]];
+    [viewController?:[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
 }
 
 - (void)viewDidLoad {
@@ -134,7 +168,18 @@
     UISwipeGestureRecognizer *swipeUpDownGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(dismiss)];
     swipeUpDownGesture.delegate = self;
     [swipeUpDownGesture setDirection:UISwipeGestureRecognizerDirectionDown | UISwipeGestureRecognizerDirectionUp];
-    [self.view addGestureRecognizer:swipeUpDownGesture]; 
+    [self.view addGestureRecognizer:swipeUpDownGesture];
+    
+    self.screenEdgeGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(screenEdgeSwiped:)];
+    if (self.view.semanticContentAttribute == UISemanticContentAttributeForceRightToLeft) {
+        self.screenEdgeGesture.edges = UIRectEdgeRight;
+    } else {
+        self.screenEdgeGesture.edges = UIRectEdgeLeft;
+    }
+}
+
+- (void)screenEdgeSwiped:(UIScreenEdgePanGestureRecognizer *)screenGesture {
+    [self switchTableViews];
 }
 
 - (void)dismiss {
@@ -298,20 +343,36 @@
     [self.versionLabel.heightAnchor constraintEqualToConstant:20.16].active = YES;
     
     // Create Table View
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
-    // self.tableView.bounces = NO;
-    self.tableView.separatorColor = [UIColor colorWithRed:0.329 green:0.329 blue:0.345 alpha:0.6];
-    self.tableView.showsVerticalScrollIndicator = NO;
-    self.tableView.backgroundColor = [UIColor clearColor];
-    self.tableView.delegate = self;
-    self.tableView.dataSource = self;
-    self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.tableView.tableFooterView = [UIView new];
+    self.tableView = [self createTableViewWithDataSource:self.mainDataSource];
     [containerView addSubview:self.tableView];
-    [self.tableView.topAnchor constraintEqualToAnchor:self.iconImageView.bottomAnchor constant:15].active = YES;
-    [self.tableView.bottomAnchor constraintEqualToAnchor:containerView.bottomAnchor].active = YES;
-    [self.tableView.leadingAnchor constraintEqualToAnchor:containerView.leadingAnchor].active = YES;
-    [self.tableView.trailingAnchor constraintEqualToAnchor:containerView.trailingAnchor].active = YES;
+    
+    self.moreTableView = [self createTableViewWithDataSource:self.moreDataSource];
+    [self.moreTableView registerClass:ADExpandableSectionHeaderView.class forHeaderFooterViewReuseIdentifier:ADExpandableSectionHeaderView.reuseIdentifier];
+    [self.moreTableView registerClass:ADTitleSectionHeaderView.class forHeaderFooterViewReuseIdentifier:ADTitleSectionHeaderView.reuseIdentifier];
+    self.moreTableView.hidden = YES;
+    [containerView addSubview:self.moreTableView];
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    [self layoutTableViews];
+}
+
+- (UITableView *)createTableViewWithDataSource:(id)dataSource {
+    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+    tableView.separatorColor = [UIColor colorWithRed:0.329 green:0.329 blue:0.345 alpha:0.6];
+    tableView.showsVerticalScrollIndicator = NO;
+    tableView.backgroundColor = [UIColor clearColor];
+    tableView.delegate = dataSource;
+    tableView.dataSource = dataSource;
+    return tableView;
+}
+
+- (void)layoutTableViews {
+    CGFloat y = self.iconImageView.frame.origin.y + self.iconImageView.frame.size.height + 15;
+    CGRect frame = CGRectMake(0, y, self.tableView.superview.frame.size.width, self.tableView.superview.frame.size.height - y);
+    self.tableView.frame = frame;
+    self.moreTableView.frame = frame;
 }
 
 - (void)pinView:(UIView *)view toAnchorsOfView:(UIView *)superview {
@@ -345,292 +406,96 @@
 }
 
 - (void)didTapAppStoreButton:(UIButton *)button {
-    [self.appData openInAppStore];
-}
-
-#pragma mark - UITableView Delegate/DataSource
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if (!self.appData) {
-        return 0;
-    }
-    return 3;
-}
-
-- (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if ([self isContainersSection:section]) {
-        NSInteger rows = 0;
-        if (self.appData.bundleContainerURL) rows++;
-        if (self.appData.dataContainerURL) rows++;
-        return rows;
-    } else if ([self isAppGroupsSection:section]) {
-        return self.appData.appGroups.count;
-    } else if ([self isManageSection:section]) {
-        return 2;
-    }
-    return 0;
-}
-
-- (BOOL)isManageSection:(NSInteger)section {
-    return section == 0;
-}
-- (BOOL)isContainersSection:(NSInteger)section {
-    return section == 1;
-}
-- (BOOL)isAppGroupsSection:(NSInteger)section {
-    return section == 2;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([self isContainersSection:indexPath.section] || [self isAppGroupsSection:indexPath.section]) {
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"InfoCellIdentifier"];
-        if (!cell) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"InfoCellIdentifier"];
-            [self applySharedStylesToCell:cell];
-            cell.detailTextLabel.font = [UIFont systemFontOfSize:13];
-            cell.detailTextLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
-            cell.detailTextLabel.textColor = [UIColor colorWithRed:0.922 green:0.922 blue:0.961 alpha:0.6];
-        }
-        if ([self isContainersSection:indexPath.section]) {
-            if (indexPath.row == 0) {
-                cell.textLabel.text = @"Bundle";
-                cell.detailTextLabel.text = self.appData.bundleContainerURL.path;
-            } else if (indexPath.row == 1) {
-                cell.textLabel.text = @"Data";
-                cell.detailTextLabel.text = self.appData.dataContainerURL.path;
-            }
-        } else if ([self isAppGroupsSection:indexPath.section]) {
-            ADAppDataGroup *group = [self.appData.appGroups objectAtIndex:indexPath.row];
-            cell.textLabel.text = group.identifier;
-            cell.detailTextLabel.text = group.url.path;
-        }
-        return cell;
-    } else if ([self isManageSection:indexPath.section]) {
-        if (indexPath.row == 0) {
-            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CachesCellIdentifier"];
-            if (!cell) {
-                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"CachesCellIdentifier"];
-                [self applySharedStylesToCell:cell];
-                UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-                [activityIndicatorView startAnimating];
-                cell.accessoryView = activityIndicatorView;
-                [self.appData getCachesDirectorySizeWithCompletion:^(NSString *formattedSize) {
-                    cell.detailTextLabel.text = formattedSize;
-                    [activityIndicatorView stopAnimating];
-                    [activityIndicatorView removeFromSuperview];
-                    cell.accessoryView = nil;
-                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                }];
-            }
-            cell.textLabel.text = @"Clear Caches";
-            return cell;
-        } else {
-            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ManageCellIdentifier"];
-            if (!cell) {
-                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"ManageCellIdentifier"];
-                [self applySharedStylesToCell:cell];
-            }
-            if (indexPath.row == 1) {
-                cell.textLabel.text = @"Clear Badge";
-                NSInteger badgeCount = [self.appData appBadgeCount];
-                cell.detailTextLabel.text = badgeCount == 0 ? @"" : [NSString stringWithFormat:@"%td",badgeCount];
-            }
-            return cell;
-        }
-    }
-    return nil;
-}
-
-- (void)applySharedStylesToCell:(UITableViewCell *)cell {
-    cell.detailTextLabel.textColor = [UIColor colorWithRed:0.557 green:0.557 blue:0.576 alpha:1.0];
-    cell.textLabel.textColor = [UIColor whiteColor];
-    cell.textLabel.font = [UIFont systemFontOfSize:15];
-    
-    cell.backgroundColor = [UIColor clearColor];
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    
-    UIView *selectedBackgroundView = [[UIView alloc] init];
-    selectedBackgroundView.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.15];
-    cell.selectedBackgroundView = selectedBackgroundView;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    if ([self isContainersSection:section]) {
-        return self.appData.isApplication ? @"Containers" : nil;
-    } else if ([self isAppGroupsSection:section]) {
-        return !self.appData.appGroups || self.appData.appGroups.count == 0 ? nil : @"App Groups";
-    } else if ([self isManageSection:section]) {
-        return @"Manage";
-    }
-    return nil;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([self isManageSection:indexPath.section]) {
-        return 45;
-    }
-    return 50;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 25;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    return 0;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    if ([self isContainersSection:indexPath.section] || [self isAppGroupsSection:indexPath.section]) {
-        [self didSelectContainerOrAppGroupSectionAtIndexPath:indexPath];
-    } else if ([self isManageSection:indexPath.section]) {
-        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        if (indexPath.row == 0) {
-            UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-            [activityIndicatorView startAnimating];
-            cell.accessoryView = activityIndicatorView;
-            [self.appData clearAppCachesWithCompletion:^() {
-                [self.appData getCachesDirectorySizeWithCompletion:^(NSString *formattedSize) {
-                    cell.detailTextLabel.text = formattedSize;
-                    cell.accessoryView = nil;
-                }];
-            }];
-        } else if (indexPath.row == 1) {
-            [self.appData setAppBadgeCount:0];
-            cell.detailTextLabel.text = @"";
-        }
+    if (IS_IPAD) {
+        [self dismissViewControllerAnimated:YES completion:^{
+            [self.appData openInAppStore];
+        }];
+    } else {
+        [self.appData openInAppStore];
     }
 }
 
 - (void)showCustomIconNameInterface {
-    ADAlertViewController *controller = [[ADAlertViewController alloc] init];
-    NSMutableArray *buttons = [NSMutableArray new];
-    [buttons addObject:[ADAlertButton buttonWithTitle:@"Cancel" style:ADButtonStyleCancel handler:nil]];
-    [buttons addObject:[ADAlertButton buttonWithTitle:@"Reset" style:ADButtonStyleDefault handler:^(UIButton *button) {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Rename" message:@"Enter an app icon name" preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        [self presentFloatingDockIfNeeded];
+    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Change" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self.appData setCustomIconName:alertController.textFields.firstObject.text];
+        [self.nameLabel setTitle:self.appData.name forState:UIControlStateNormal];
+        [self presentFloatingDockIfNeeded];
+    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Reset" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self.appData setCustomIconName:nil];
         [self.nameLabel setTitle:self.appData.name forState:UIControlStateNormal];
+        [self presentFloatingDockIfNeeded];
     }]];
-    [buttons addObject:[ADAlertButton buttonWithTitle:@"Change" style:ADButtonStyleDefault handler:^(UIButton *button) {
-        [self.appData setCustomIconName:controller.textfield.text];
-        [self.nameLabel setTitle:self.appData.name forState:UIControlStateNormal];
-    }]];
-    controller.buttons = buttons;
-    controller.titleText = @"Rename";
-    controller.detailText = @"Enter an app icon name";
-    [controller addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        textField.clearButtonMode = UITextFieldViewModeAlways;
+        textField.placeholder = @"Icon Name";
         textField.text = self.nameLabel.titleLabel.text;
     }];
     
-    ADAlertViewController __weak *weakController = controller;
-    [controller.presentationManager.configuration setCustomFrameHandler:^CGRect(UIView *containerView) {
-        CGSize size = CGSizeMake(300, [weakController requiredHeight]);
-        return CGRectMake(containerView.frame.size.width/2 - size.width/2,
-                          containerView.frame.size.height/2 - size.height/2,
-                          size.width, size.height);
-    }];
-    [self presentViewController:controller animated:YES completion:nil];
-}
-
-- (void)didSelectContainerOrAppGroupSectionAtIndexPath:(NSIndexPath *)indexPath {
-    if ([self isContainersSection:indexPath.section]) {
-        if (indexPath.row == 0) {
-            if (self.appData.bundleContainerURL) {
-                [self openURL:self.appData.bundleContainerURL];
-            }
-        } else if (indexPath.row == 1) {
-            if (self.appData.dataContainerURL) {
-                [self openURL:self.appData.dataContainerURL];
-            }
-        }
-    } else if ([self isAppGroupsSection:indexPath.section]) {
-        ADAppDataGroup *group = [self.appData.appGroups objectAtIndex:indexPath.row];
-        if (group.url) {
-            [self openURL:group.url];
-        }
-    }
-}
-
-#pragma mark - Copy Action
-
-- (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
-}
-
-- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-    return (action == @selector(copy:));
-}
-
-- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-    if (action == @selector(copy:)) {
-        if ([self isContainersSection:indexPath.section] || [self isAppGroupsSection:indexPath.section]) {
-            UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-            if (cell.detailTextLabel.text) [[UIPasteboard generalPasteboard] setString:cell.detailTextLabel.text];
-        }
-    }
-}
-
-- (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point  API_AVAILABLE(ios(13.0)) {
-    if ([self isContainersSection:indexPath.section] || [self isAppGroupsSection:indexPath.section]) {
-        UIContextMenuConfiguration *configuration = [UIContextMenuConfiguration configurationWithIdentifier:indexPath
-                                                                                            previewProvider:nil
-                                                                                             actionProvider:^UIMenu * _Nullable(NSArray<UIMenuElement *> * _Nonnull suggestedActions) {
-            NSMutableArray *actions = [NSMutableArray new];
-            [actions addObject:[UIAction actionWithTitle:@"Open in Filza" image:nil identifier:@"open-action" handler:^(__kindof UIAction * _Nonnull action) {
-                [self didSelectContainerOrAppGroupSectionAtIndexPath:indexPath];
-            }]];
-            [actions addObject:[UIAction actionWithTitle:@"Copy Path" image:nil identifier:@"copy-action" handler:^(__kindof UIAction * _Nonnull action) {
-                UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-                if (cell.detailTextLabel.text) [[UIPasteboard generalPasteboard] setString:cell.detailTextLabel.text];
-            }]];
-            if ([self isAppGroupsSection:indexPath.section]) {
-                [actions addObject:[UIAction actionWithTitle:@"Copy Identifier" image:nil identifier:@"copy-action" handler:^(__kindof UIAction * _Nonnull action) {
-                    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-                    if (cell.textLabel.text) [[UIPasteboard generalPasteboard] setString:cell.textLabel.text];
-                }]];
-            }
-            NSString *title = @"";
-            if ([self isContainersSection:indexPath.section]) {
-                if (indexPath.row == 0) title = @"Bundle";
-                else if (indexPath.row == 1) title = @"Data";
-            } else if ([self isAppGroupsSection:indexPath.section]) {
-                title = @"App Group";
-            }
-            return [UIMenu menuWithTitle:title children:actions];
+    if (IS_IPAD) {
+        SBIconController *iconController = [NSClassFromString(@"SBIconController") sharedInstance];
+        SBFloatingDockController *dockController = [iconController floatingDockController];
+        [dockController _dismissFloatingDockIfPresentedAnimated:YES completionHandler:^{
+            [self presentViewController:alertController animated:YES completion:nil];
         }];
-        return configuration;
-    }
-    return nil;
-}
-
-- (UITargetedPreview *)tableView:(UITableView *)tableView previewForHighlightingContextMenuWithConfiguration:(UIContextMenuConfiguration *)configuration API_AVAILABLE(ios(13.0)) {
-    NSIndexPath *indexPath = (NSIndexPath *)[configuration identifier];
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    UIPreviewParameters *parameters = [UIPreviewParameters new];
-    parameters.backgroundColor = [UIColor clearColor];
-    if ([self isAppGroupsSection:indexPath.section]) {
-        return [[UITargetedPreview alloc] initWithView:cell parameters:parameters];
     } else {
-        return [[UITargetedPreview alloc] initWithView:cell.detailTextLabel parameters:parameters];
+        [self presentViewController:alertController animated:YES completion:nil];
     }
 }
 
-- (nullable UITargetedPreview *)tableView:(UITableView *)tableView previewForDismissingContextMenuWithConfiguration:(UIContextMenuConfiguration *)configuration API_AVAILABLE(ios(13.0)) {
-    return [self tableView:tableView previewForHighlightingContextMenuWithConfiguration:configuration];
+- (void)presentFloatingDockIfNeeded {
+    if (IS_IPAD) {
+        SBIconController *iconController = [NSClassFromString(@"SBIconController") sharedInstance];
+        SBFloatingDockController *dockController = [iconController floatingDockController];
+        if (![dockController isFloatingDockPresented]) {
+            [dockController _presentFloatingDockIfDismissedAnimated:YES completionHandler:^{ }];
+        }
+    }
 }
 
-#pragma mark - Helper
-
-- (void)openURL:(NSURL *)url {
-    BOOL filzaInstalled = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"filza://"]];
-    BOOL ifileInstalled = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"ifile://"]];
-    if (filzaInstalled) {
-        NSURL *filzaURL = [NSURL URLWithString:[@"filza://view" stringByAppendingString:url.path]];
-        [[UIApplication sharedApplication] openURL:filzaURL options:@{} completionHandler:nil];
-    } else if (ifileInstalled) {
-        NSURL *ifileURL = [NSURL URLWithString:[@"ifile://file://" stringByAppendingString:url.path]];
-        [[UIApplication sharedApplication] openURL:ifileURL options:@{} completionHandler:nil];
+- (void)switchTableViews {
+    UITableView *activeTableView = self.tableView.hidden ? self.moreTableView : self.tableView;
+    UITableView *inactiveTableView = self.tableView.hidden ? self.tableView : self.moreTableView;
+    
+    BOOL isPresenting = [activeTableView isEqual:self.tableView];
+    
+    CGRect activeInitialFrame = activeTableView.frame;
+    CGRect activeEndFrame = CGRectMake(0 - activeTableView.frame.size.width, activeTableView.frame.origin.y, activeTableView.frame.size.width, activeTableView.frame.size.height);
+    
+    CGRect inactiveInitialFrame = CGRectMake(activeTableView.frame.size.width, activeTableView.frame.origin.y, activeTableView.frame.size.width, activeTableView.frame.size.height);
+    CGRect inactiveEndFrame = activeTableView.frame;
+    
+    if (isPresenting) {
+        [self.view addGestureRecognizer:self.screenEdgeGesture];
+    } else {
+        [self.view removeGestureRecognizer:self.screenEdgeGesture];
+        CGRect tmp = activeEndFrame;
+        activeEndFrame = inactiveInitialFrame;
+        inactiveInitialFrame = tmp;
     }
+    
+    activeTableView.frame = activeInitialFrame;
+    inactiveTableView.frame = inactiveInitialFrame;
+
+    activeTableView.hidden = NO;
+    inactiveTableView.hidden = NO;
+    
+    activeTableView.alpha = 1.0;
+    inactiveTableView.alpha = 0.0;
+    
+    [UIView animateWithDuration:0.25 animations:^{
+        activeTableView.frame = activeEndFrame;
+        inactiveTableView.frame = inactiveEndFrame;
+        
+        activeTableView.alpha = 0.0;
+        inactiveTableView.alpha = 1.0;
+    } completion:^(BOOL finished) {
+        activeTableView.hidden = YES;
+    }];
 }
 
 @end

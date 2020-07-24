@@ -1,5 +1,15 @@
 [
     {
+        "version":"1.2",
+        "date":"2020-07-25 00:25:35",
+        "changes":[
+            "Added 'More Info' section to display more information",
+            "Fixed popup not showing from force touch mennu on iOS 11-12",
+            "Fixed edit app icon text field not showing keyboard on iPad",
+            "Fixed popup not dismissing on iPad after unlocking device or going into app switcher"
+        ]
+    },
+    {
         "version":"1.1",
         "date":"2020-07-10 11:15:57",
         "changes":[
