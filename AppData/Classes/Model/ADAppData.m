@@ -68,21 +68,36 @@
         if (infoDictionary) {
             // URL Schemes
             NSArray *bundleURLTypes = [infoDictionary objectForKey:@"CFBundleURLTypes"];
-            self.urlSchemes = [bundleURLTypes.firstObject objectForKey:@"CFBundleURLSchemes"];
+            if ([bundleURLTypes isKindOfClass:[NSArray class]]) {
+                if (bundleURLTypes.firstObject && [bundleURLTypes.firstObject isKindOfClass:[NSDictionary class]]) {
+                    id urlSchemes = [bundleURLTypes.firstObject objectForKey:@"CFBundleURLSchemes"];
+                    if ([urlSchemes isKindOfClass:[NSArray class]]) {
+                        self.urlSchemes = urlSchemes;
+                    }
+                }
+            }
             
             // Queries Schemes
-            self.queriesSchemes = [infoDictionary objectForKey:@"LSApplicationQueriesSchemes"];
+            id queriesSchemes = [infoDictionary objectForKey:@"LSApplicationQueriesSchemes"];
+            if ([queriesSchemes isKindOfClass:[NSArray class]]) {
+                self.queriesSchemes = queriesSchemes;
+            }
             
             // Activity Types
-            self.activityTypes = [infoDictionary objectForKey:@"NSUserActivityTypes"];
+            id activityTypes = [infoDictionary objectForKey:@"NSUserActivityTypes"];
+            if ([activityTypes isKindOfClass:[NSArray class]]) {
+                self.activityTypes = activityTypes;
+            }
             
             // Background Modes
-            self.backgroundModes = [infoDictionary objectForKey:@"UIBackgroundModes"];
+            id backgroundModes = [infoDictionary objectForKey:@"UIBackgroundModes"];
+            if ([backgroundModes isKindOfClass:[NSArray class]]) {
+                self.backgroundModes = backgroundModes;
+            }
             
+            // Versions
             self.minimumOSVersion = [infoDictionary objectForKey:@"MinimumOSVersion"];
-            
             self.internalVersion = [infoDictionary objectForKey:@"CFBundleVersion"];
-            
             self.platformVersion = [infoDictionary objectForKey:@"DTPlatformVersion"];
         }
     });
