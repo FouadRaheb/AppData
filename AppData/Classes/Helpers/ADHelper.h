@@ -29,7 +29,7 @@
 + (NSString *)customAppNameForBundleIdentifier:(NSString *)identifier;
 + (void)setCustomAppName:(NSString *)name forBundleIdentifier:(NSString *)bundleIdentifier;
 
-+ (void)openDirectoryAtURL:(NSURL *)url;
++ (void)openDirectoryAtURL:(NSURL *)url fromController:(UIViewController *)controller;
 
 + (SBSApplicationShortcutItem *)applicationShortcutItem;
 

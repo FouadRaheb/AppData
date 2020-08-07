@@ -78,15 +78,18 @@
 
 #pragma mark - Helpers
 
-+ (void)openDirectoryAtURL:(NSURL *)url {
-    BOOL filzaInstalled = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"filza://"]];
-    BOOL ifileInstalled = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"ifile://"]];
-    if (filzaInstalled) {
-        NSURL *filzaURL = [NSURL URLWithString:[@"filza://view" stringByAppendingString:url.path]];
++ (void)openDirectoryAtURL:(NSURL *)url fromController:(UIViewController *)controller {
+    NSString *path = [url.path stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"filza://"]]) {
+        NSURL *filzaURL = [NSURL URLWithString:[@"filza://view" stringByAppendingString:path]];
         [[UIApplication sharedApplication] openURL:filzaURL options:@{} completionHandler:nil];
-    } else if (ifileInstalled) {
-        NSURL *ifileURL = [NSURL URLWithString:[@"ifile://file://" stringByAppendingString:url.path]];
+    } else if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"ifile://"]]) {
+        NSURL *ifileURL = [NSURL URLWithString:[@"ifile://file://" stringByAppendingString:path]];
         [[UIApplication sharedApplication] openURL:ifileURL options:@{} completionHandler:nil];
+    } else {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"AppData" message:@"Install Filza app to open the selected directory" preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:nil]];
+        [controller presentViewController:alertController animated:YES completion:nil];
     }
 }
 

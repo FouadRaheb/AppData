@@ -184,17 +184,17 @@
     if ([self isContainersSection:indexPath.section]) {
         if (indexPath.row == 0) {
             if (self.appData.bundleURL) {
-                [ADHelper openDirectoryAtURL:self.appData.bundleURL];
+                [ADHelper openDirectoryAtURL:self.appData.bundleURL fromController:self.dataViewController];
             }
         } else if (indexPath.row == 1) {
             if (self.appData.dataContainerURL) {
-                [ADHelper openDirectoryAtURL:self.appData.dataContainerURL];
+                [ADHelper openDirectoryAtURL:self.appData.dataContainerURL fromController:self.dataViewController];
             }
         }
     } else if ([self isAppGroupsSection:indexPath.section]) {
         ADAppDataGroup *group = [self.appData.appGroups objectAtIndex:indexPath.row];
         if (group.url) {
-            [ADHelper openDirectoryAtURL:group.url];
+            [ADHelper openDirectoryAtURL:group.url fromController:self.dataViewController];
         }
     }
 }
