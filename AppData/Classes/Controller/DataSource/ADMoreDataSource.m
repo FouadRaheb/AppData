@@ -65,13 +65,13 @@
         }
         if (indexPath.row == 0) {
             cell.textLabel.text = @"Internal Version";
-            cell.detailTextLabel.text = self.appData.internalVersion;
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"%@",self.appData.internalVersion];
         } else if (indexPath.row == 1) {
             cell.textLabel.text = @"Minimum iOS Version";
-            cell.detailTextLabel.text = self.appData.minimumOSVersion;
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"%@",self.appData.minimumOSVersion];
         } else if (indexPath.row == 2) {
             cell.textLabel.text = @"Platform Build Version";
-            cell.detailTextLabel.text = self.appData.platformVersion;
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"%@",self.appData.platformVersion];
         }
         return cell;
     } else {
@@ -83,15 +83,15 @@
         }
         cell.accessoryType = UITableViewCellAccessoryNone;
         if (indexPath.section == 1) {
-            cell.textLabel.text = [self.appData.urlSchemes objectAtIndex:indexPath.row];
+            cell.textLabel.text = [NSString stringWithFormat:@"%@",[self.appData.urlSchemes objectAtIndex:indexPath.row]];
         } else if (indexPath.section == 2) {
-            cell.textLabel.text = [self.appData.queriesSchemes objectAtIndex:indexPath.row];
+            cell.textLabel.text = [NSString stringWithFormat:@"%@",[self.appData.queriesSchemes objectAtIndex:indexPath.row]];
         } else if (indexPath.section == 3) {
-            cell.textLabel.text = [self.appData.activityTypes objectAtIndex:indexPath.row];
+            cell.textLabel.text = [NSString stringWithFormat:@"%@",[self.appData.activityTypes objectAtIndex:indexPath.row]];
         } else if (indexPath.section == 4) {
-            cell.textLabel.text = [self.appData.backgroundModes objectAtIndex:indexPath.row];
+            cell.textLabel.text = [NSString stringWithFormat:@"%@",[self.appData.backgroundModes objectAtIndex:indexPath.row]];
         } else if (indexPath.section == 5) {
-            cell.textLabel.text = [self.appData.entitlementsIdentifiers objectAtIndex:indexPath.row];
+            cell.textLabel.text = [NSString stringWithFormat:@"%@",[self.appData.entitlementsIdentifiers objectAtIndex:indexPath.row]];
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
         return cell;

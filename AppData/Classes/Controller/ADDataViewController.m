@@ -280,25 +280,26 @@
     [self.nameLabel.topAnchor constraintEqualToAnchor:containerView.topAnchor constant:15].active = YES;
     [self.nameLabel.leadingAnchor constraintEqualToAnchor:self.iconImageView.trailingAnchor constant:11].active = YES;
     [self.nameLabel.heightAnchor constraintEqualToConstant:22].active = YES;
+    [self.nameLabel.trailingAnchor constraintLessThanOrEqualToAnchor:self.appStoreButton.leadingAnchor constant:- (22 + 11)].active = YES;
+    
+    UIImage *nameEditImage = nil;
     if (@available(iOS 13.0, *)) {
         UIImageSymbolConfiguration *config = [UIImageSymbolConfiguration configurationWithWeight:UIImageSymbolWeightBold];
-        UIImage *image = [[UIImage systemImageNamed:@"square.and.pencil" withConfiguration:config] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        self.nameEditButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        [self.nameEditButton setImage:image forState:UIControlStateNormal];
-        [self.nameEditButton setTintColor:buttonsSymbolColor];
-        [self.nameEditButton addTarget:self action:@selector(didTapNameButton:) forControlEvents:UIControlEventTouchUpInside];
-        [self.nameEditButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-        [containerView addSubview:self.nameEditButton];
-        [self.nameEditButton setContentEdgeInsets:UIEdgeInsetsMake(4.75, 4.75, 4.75, 4.75)];
-        [self.nameEditButton.heightAnchor constraintEqualToConstant:22].active = YES;
-        [self.nameEditButton.widthAnchor constraintEqualToConstant:22].active = YES;
-        [self.nameEditButton.centerYAnchor constraintEqualToAnchor:self.nameLabel.centerYAnchor].active = YES;
-        [self.nameEditButton.leadingAnchor constraintEqualToAnchor:self.nameLabel.trailingAnchor constant:2].active = YES;
-        
-        [self.nameLabel.trailingAnchor constraintLessThanOrEqualToAnchor:self.appStoreButton.leadingAnchor constant:- (22 + 11)].active = YES;
+        nameEditImage = [[UIImage systemImageNamed:@"square.and.pencil" withConfiguration:config] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     } else {
-        [self.nameLabel.trailingAnchor constraintLessThanOrEqualToAnchor:self.appStoreButton.trailingAnchor constant:- 11].active = YES;
+        nameEditImage = [[ADHelper imageNamed:@"EditIconButton"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     }
+    self.nameEditButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.nameEditButton setImage:nameEditImage forState:UIControlStateNormal];
+    [self.nameEditButton setTintColor:buttonsSymbolColor];
+    [self.nameEditButton addTarget:self action:@selector(didTapNameButton:) forControlEvents:UIControlEventTouchUpInside];
+    [self.nameEditButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [containerView addSubview:self.nameEditButton];
+    [self.nameEditButton setContentEdgeInsets:UIEdgeInsetsMake(4.75, 4.75, 4.75, 4.75)];
+    [self.nameEditButton.heightAnchor constraintEqualToConstant:22].active = YES;
+    [self.nameEditButton.widthAnchor constraintEqualToConstant:22].active = YES;
+    [self.nameEditButton.centerYAnchor constraintEqualToAnchor:self.nameLabel.centerYAnchor].active = YES;
+    [self.nameEditButton.leadingAnchor constraintEqualToAnchor:self.nameLabel.trailingAnchor constant:2].active = YES;
     
     self.identifierLabel = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.identifierLabel addTarget:self action:@selector(didTapIdentifierButton:) forControlEvents:UIControlEventTouchUpInside];
@@ -311,25 +312,26 @@
     [self.identifierLabel.topAnchor constraintEqualToAnchor:self.nameLabel.bottomAnchor constant:2].active = YES;
     [self.identifierLabel.leadingAnchor constraintEqualToAnchor:self.iconImageView.trailingAnchor constant:11].active = YES;
     [self.identifierLabel.heightAnchor constraintEqualToConstant:20.16].active = YES;
+    [self.identifierLabel.trailingAnchor constraintLessThanOrEqualToAnchor:containerView.trailingAnchor constant:- (22 + 11)].active = YES;
+
+    UIImage *clipboardImage = nil;
     if (@available(iOS 13.0, *)) {
         UIImageSymbolConfiguration *config = [UIImageSymbolConfiguration configurationWithWeight:UIImageSymbolWeightBold];
-        UIImage *image = [[UIImage systemImageNamed:@"doc.on.clipboard" withConfiguration:config] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        self.identifierCopyButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        [self.identifierCopyButton setImage:image forState:UIControlStateNormal];
-        [self.identifierCopyButton setTintColor:buttonsSymbolColor];
-        [self.identifierCopyButton addTarget:self action:@selector(didTapIdentifierButton:) forControlEvents:UIControlEventTouchUpInside];
-        [self.identifierCopyButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-        [containerView addSubview:self.identifierCopyButton];
-        [self.identifierCopyButton setContentEdgeInsets:UIEdgeInsetsMake(5, 5, 5, 5)];
-        [self.identifierCopyButton.heightAnchor constraintEqualToConstant:22].active = YES;
-        [self.identifierCopyButton.widthAnchor constraintEqualToConstant:22].active = YES;
-        [self.identifierCopyButton.centerYAnchor constraintEqualToAnchor:self.identifierLabel.centerYAnchor].active = YES;
-        [self.identifierCopyButton.leadingAnchor constraintEqualToAnchor:self.identifierLabel.trailingAnchor constant:1].active = YES;
-        
-        [self.identifierLabel.trailingAnchor constraintLessThanOrEqualToAnchor:containerView.trailingAnchor constant:- (22 + 11)].active = YES;
+        clipboardImage = [[UIImage systemImageNamed:@"doc.on.clipboard" withConfiguration:config] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     } else {
-        [self.identifierLabel.trailingAnchor constraintLessThanOrEqualToAnchor:containerView.trailingAnchor constant:- 11].active = YES;
+        clipboardImage = [[ADHelper imageNamed:@"ClipboardButton"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     }
+    self.identifierCopyButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.identifierCopyButton setImage:clipboardImage forState:UIControlStateNormal];
+    [self.identifierCopyButton setTintColor:buttonsSymbolColor];
+    [self.identifierCopyButton addTarget:self action:@selector(didTapIdentifierButton:) forControlEvents:UIControlEventTouchUpInside];
+    [self.identifierCopyButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [containerView addSubview:self.identifierCopyButton];
+    [self.identifierCopyButton setContentEdgeInsets:UIEdgeInsetsMake(5, 5, 5, 5)];
+    [self.identifierCopyButton.heightAnchor constraintEqualToConstant:22].active = YES;
+    [self.identifierCopyButton.widthAnchor constraintEqualToConstant:22].active = YES;
+    [self.identifierCopyButton.centerYAnchor constraintEqualToAnchor:self.identifierLabel.centerYAnchor].active = YES;
+    [self.identifierCopyButton.leadingAnchor constraintEqualToAnchor:self.identifierLabel.trailingAnchor constant:1].active = YES;
     
     self.versionLabel = [[UILabel alloc] init];
     self.versionLabel.font = [UIFont systemFontOfSize:13];

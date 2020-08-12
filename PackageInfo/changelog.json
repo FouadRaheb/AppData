@@ -1,5 +1,13 @@
 [
     {
+        "version":"1.2.3",
+        "date":"2020-08-12 10:59:19",
+        "changes":[
+            "Show edit/copy icons on iOS 12 and older",
+            "Fixed a crash when some versions are numbers instead of strings"
+        ]
+    },
+    {
         "version":"1.2.2",
         "date":"2020-08-07 10:44:28",
         "changes":[
