@@ -14,6 +14,7 @@
 @end
 
 @interface ADAppData : NSObject
+@property (nonatomic, strong) LSApplicationProxy *appProxy;
 
 @property (nonatomic, strong) SBIconView *iconView;
 
@@ -55,6 +56,14 @@
 - (BOOL)hasAppStoreApp;
 - (void)openInAppStore;
 
+#pragma mark Reset Permissions
+
+- (void)resetAllAppPermissions;
+
+#pragma mark Reset App
+- (void)getAppUsageDirectorySizeWithCompletion:(void(^)(NSString *formattedSize))completion;
+- (void)resetDiskContentWithCompletion:(void(^)())completion;
+
 #pragma mark - Caches
 
 - (void)getCachesDirectorySizeWithCompletion:(void(^)(NSString *formattedSize))completion;
@@ -64,5 +73,9 @@
 
 - (void)setAppBadgeCount:(NSInteger)badgeCount;
 - (NSInteger)appBadgeCount;
+
+#pragma mark Offload App
+
+- (void)offloadAppWithCompletion:(void(^)())completion;
 
 @end

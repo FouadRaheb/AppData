@@ -7,6 +7,7 @@
 
 #ifndef Headers_h
 #define Headers_h
+#import <CoreLocation/CoreLocation.h>
 
 // UIKit
 
@@ -52,6 +53,9 @@
 @property (nonatomic,readonly) NSNumber * staticDiskUsage;
 @property (nonatomic,readonly) NSNumber * dynamicDiskUsage;
 @property (nonatomic,readonly) NSNumber * ODRDiskUsage;
+@property (getter=isAppStoreVendable,nonatomic,readonly) BOOL appStoreVendable;
+@property (getter=isDeletable,nonatomic,readonly) BOOL deletable;
+
 // iOS 13
 @property (nonatomic,readonly) NSSet *claimedDocumentContentTypes;
 @property (nonatomic,readonly) NSSet *claimedURLSchemes;
@@ -137,6 +141,20 @@
 
 @interface SBUIAppIconForceTouchController : NSObject
 - (void)dismissAnimated:(BOOL)arg1 withCompletionHandler:(/*^block*/id)arg2;
+@end
+
+//CoreLocation
+
+@interface CLLocationManager ()
++ (void)setAuthorizationStatusByType:(CLAuthorizationStatus)arg2 forBundleIdentifier:(NSString *)arg3;
+@end
+
+//Offloading
+
+@interface IXAppInstallCoordinator : NSObject
++(BOOL)demoteAppToPlaceholderWithBundleID:(id)arg1 forReason:(unsigned long long)arg2 waitForDeletion:(BOOL)arg3 error:(id*)arg4 ;
++(BOOL)demoteAppToPlaceholderWithBundleID:(id)arg1 forReason:(unsigned long long)arg2 error:(id*)arg3 ;
++(void)demoteAppToPlaceholderWithBundleID:(id)arg1 forReason:(unsigned long long)arg2 waitForDeletion:(BOOL)arg3 completion:(/*^block*/id)arg4 ;
 @end
 
 #endif /* Headers_h */

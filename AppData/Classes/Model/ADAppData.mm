@@ -1,19 +1,23 @@
-//
-//  ADAppData.m
-//  AppData
-//
-//  Created by Fouad Raheb on 6/28/20.
-//
+#line 1 "/Users/udevs/Documents/tweakMS/AppData/AppData/Classes/Model/ADAppData.xm"
+
+
+
+
+
+
 
 #import "ADAppData.h"
 #import "NRFileManager.h"
-#import "ADTCC.h"
-#import "ADTerminator.h"
-#import <dlfcn.h>
-#import <Foundation/Foundation.h>
 
+typedef const struct __SBSApplicationTerminationAssertion *SBSApplicationTerminationAssertionRef;
+
+extern "C" SBSApplicationTerminationAssertionRef SBSApplicationTerminationAssertionCreateWithError(void *unknown, NSString *bundleIdentifier, int reason, int *outError);
+extern "C" void SBSApplicationTerminationAssertionInvalidate(SBSApplicationTerminationAssertionRef assertion);
+extern "C" NSString *SBSApplicationTerminationAssertionErrorString(int error);
 
 @interface ADAppData ()
+@property (nonatomic, strong) LSApplicationProxy *appProxy;
+
 @property (nonatomic, strong) SBApplication *sbApplication;
 @end
 
@@ -35,11 +39,11 @@
 }
 
 - (void)loadData {
-    // App Info
+    
     self.version = self.appProxy.shortVersionString ? : self.appProxy.bundleVersion;
     self.bundleIdentifier = self.appProxy.bundleIdentifier;
     
-    // Data URLs
+    
     self.bundleURL = self.appProxy.bundleURL ? : self.appProxy.bundleContainerURL;
     self.dataContainerURL = self.appProxy.dataContainerURL;
     NSMutableArray *appGroups = [NSMutableArray new];
@@ -51,16 +55,16 @@
     }
     self.appGroups = appGroups;
     
-    // Disk Usage
+    
     self.diskUsage = [self.appProxy.staticDiskUsage integerValue];
     self.diskUsageString = [NSByteCountFormatter stringFromByteCount:[self.appProxy.staticDiskUsage longLongValue] countStyle:NSByteCountFormatterCountStyleFile];
         
-    // Info for more page
+    
     [self loadMoreInfo];
 }
 
 - (void)loadMoreInfo {
-    // Other Info
+    
     self.entitlements = self.appProxy.entitlements;
     self.entitlementsIdentifiers = self.entitlements.allKeys;
     
@@ -69,7 +73,7 @@
         NSDictionary *infoDictionary = [NSDictionary dictionaryWithContentsOfURL:infoPlistURL];
         
         if (infoDictionary) {
-            // URL Schemes
+            
             NSArray *bundleURLTypes = [infoDictionary objectForKey:@"CFBundleURLTypes"];
             if ([bundleURLTypes isKindOfClass:[NSArray class]]) {
                 if (bundleURLTypes.firstObject && [bundleURLTypes.firstObject isKindOfClass:[NSDictionary class]]) {
@@ -80,25 +84,25 @@
                 }
             }
             
-            // Queries Schemes
+            
             id queriesSchemes = [infoDictionary objectForKey:@"LSApplicationQueriesSchemes"];
             if ([queriesSchemes isKindOfClass:[NSArray class]]) {
                 self.queriesSchemes = queriesSchemes;
             }
             
-            // Activity Types
+            
             id activityTypes = [infoDictionary objectForKey:@"NSUserActivityTypes"];
             if ([activityTypes isKindOfClass:[NSArray class]]) {
                 self.activityTypes = activityTypes;
             }
             
-            // Background Modes
+            
             id backgroundModes = [infoDictionary objectForKey:@"UIBackgroundModes"];
             if ([backgroundModes isKindOfClass:[NSArray class]]) {
                 self.backgroundModes = backgroundModes;
             }
             
-            // Versions
+            
             self.minimumOSVersion = [infoDictionary objectForKey:@"MinimumOSVersion"];
             self.internalVersion = [infoDictionary objectForKey:@"CFBundleVersion"];
             self.platformVersion = [infoDictionary objectForKey:@"DTPlatformVersion"];
@@ -138,96 +142,23 @@
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:appStoreLink] options:@{} completionHandler:nil];
 }
 
-#pragma mark Reset Permissions
+#pragma mark - Reset
 
--(void)_resetAllAppPermissions{
-    CFBundleRef bundle = CFBundleCreate(kCFAllocatorDefault, (CFURLRef)self.appProxy.bundleURL);
-    if (bundle){
-        TCCAccessResetForBundle(kTCCServiceAll, bundle);
-        CFRelease(bundle);
-    }
-    
-    //Reset location permission
-    [CLLocationManager setAuthorizationStatusByType:kCLAuthorizationStatusNotDetermined forBundleIdentifier:self.bundleIdentifier];
-}
-
--(void)resetAllAppPermissions{
+- (void)resetDiskContent {
+    NSURL *dataContainer = self.appProxy.dataContainerURL;
     SBSApplicationTerminationAssertionRef assertion = SBSApplicationTerminationAssertionCreateWithError(NULL, self.bundleIdentifier, 1, NULL);
+    [self.class deleteContentsOfDirectoryAtURL:[dataContainer URLByAppendingPathComponent:@"tmp" isDirectory:YES]];
     
-    [self _resetAllAppPermissions];
+    NSURL *libraryURL = [dataContainer URLByAppendingPathComponent:@"Library" isDirectory:YES];
+    [self.class deleteContentsOfDirectoryAtURL:libraryURL];
+
+    [[NSFileManager defaultManager] createDirectoryAtURL:[libraryURL URLByAppendingPathComponent:@"Preferences" isDirectory:YES] withIntermediateDirectories:YES attributes:nil error:NULL];
     
+    [self.class deleteContentsOfDirectoryAtURL:[dataContainer URLByAppendingPathComponent:@"Documents" isDirectory:YES]];
+
     if (assertion) {
         SBSApplicationTerminationAssertionInvalidate(assertion);
     }
-}
-
-#pragma mark - Reset App
-
-- (NSURL *)appLibraryDirectoryURL {
-    return [self.dataContainerURL URLByAppendingPathComponent:@"/Library/"];
-}
-
-- (NSURL *)appDocumentsDirectoryURL {
-    return [self.dataContainerURL URLByAppendingPathComponent:@"/Documents/"];
-}
-
-- (NSArray *)appGroupDirectoryURLs {
-    NSMutableArray *appGroupDirectoryURLs = [NSMutableArray new];
-    for (ADAppDataGroup *group in self.appGroups){
-        [appGroupDirectoryURLs addObject:group.url];
-    }
-    return appGroupDirectoryURLs;
-}
-
-- (NSArray *)appUsageDirectoriesURLs {
-    NSMutableArray *appUsageDir = [NSMutableArray new];
-    
-    NSURL *appLibraryDirectoryURL = [self appLibraryDirectoryURL];
-    if (appLibraryDirectoryURL) [appUsageDir addObject:appLibraryDirectoryURL];
-    
-    NSURL *tmpDirectoryURL = [self tmpDirectoryURL];
-    if (tmpDirectoryURL) [appUsageDir addObject:tmpDirectoryURL];
-    
-    NSURL *appDocumentsDirectoryURL = [self appDocumentsDirectoryURL];
-    if (appDocumentsDirectoryURL) [appUsageDir addObject:appDocumentsDirectoryURL];
-    
-    return appUsageDir;
-}
-
-- (void)getAppUsageDirectorySizeWithCompletion:(void(^)(NSString *formattedSize))completion {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        unsigned long long int dynamicSize = [[LSApplicationProxy applicationProxyForIdentifier:self.bundleIdentifier].dynamicDiskUsage unsignedLongLongValue];
-        NSString *formattedSize = [NSByteCountFormatter stringFromByteCount:dynamicSize countStyle:NSByteCountFormatterCountStyleFile];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            completion(formattedSize);
-        });
-    });
-}
-
-- (void)resetDiskContentWithCompletion:(void(^)())completion {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-     
-        SBSApplicationTerminationAssertionRef assertion = SBSApplicationTerminationAssertionCreateWithError(NULL, self.bundleIdentifier, 1, NULL);
-        
-        NSArray <NSURL *> *appUsage = [self appUsageDirectoriesURLs];
-        for (NSURL *url in appUsage) {
-            [self.class deleteContentsOfDirectoryAtURL:url];
-        }
-        
-        //Recreate Preferences folder
-        if ([self appLibraryDirectoryURL]) [[NSFileManager defaultManager] createDirectoryAtURL:[[self appLibraryDirectoryURL] URLByAppendingPathComponent:@"Preferences" isDirectory:YES] withIntermediateDirectories:YES attributes:nil error:NULL];
-        
-        //Reset all permissions
-        if (self.appProxy.appStoreVendable) [self _resetAllAppPermissions];
-
-        if (assertion) {
-            SBSApplicationTerminationAssertionInvalidate(assertion);
-        }
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            completion();
-        });
-    });
 }
 
 #pragma mark - Caches
@@ -310,25 +241,6 @@
     } else {
         [self.sbApplication setBadgeNumberOrString:[NSNumber numberWithInteger:badgeCount]];
     }
-}
-
-#pragma mark Offload App
-
--(void)offloadAppWithCompletion:(void(^)())completion{
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if (@available(iOS 12.0, *)){
-            [NSClassFromString(@"IXAppInstallCoordinator") demoteAppToPlaceholderWithBundleID:self.bundleIdentifier forReason:1 waitForDeletion:YES completion:^{
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    completion();
-                });
-            }];
-        }else{
-            [NSClassFromString(@"IXAppInstallCoordinator") demoteAppToPlaceholderWithBundleID:self.bundleIdentifier forReason:1 error:nil];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completion();
-            });
-        }
-    });
 }
 
 #pragma mark - Helpers
