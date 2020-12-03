@@ -37,7 +37,7 @@
     } else if ([self isAppGroupsSection:section]) {
         return self.appData.appGroups.count;
     } else if ([self isManageSection:section]) {
-        return 3;
+        return 6;
     }
     return 0;
 }
@@ -95,6 +95,44 @@
             }
             cell.textLabel.text = @"Clear Caches";
             return cell;
+        }else if (indexPath.row == 3) { //Offload App
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"OffloadCellIdentifier"];
+            if (!cell) {
+                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"OffloadCellIdentifier"];
+                [self.class applySharedStylesToCell:cell];
+            }
+            cell.textLabel.text = @"Offload App";
+            
+            //Disable for non-vendable app
+            if (!self.appData.appProxy.appStoreVendable){
+                cell.selectionStyle  = UITableViewCellSelectionStyleNone;
+                cell.textLabel.enabled = NO;
+            }
+            return cell;
+        } else if (indexPath.row == 4) { //Reset App
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ResetCellIdentifier"];
+            if (!cell) {
+                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"ResetCellIdentifier"];
+                [self.class applySharedStylesToCell:cell];
+                UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+                [activityIndicatorView startAnimating];
+                cell.accessoryView = activityIndicatorView;
+                [self.appData getAppUsageDirectorySizeWithCompletion:^(NSString *formattedSize) {
+                    cell.detailTextLabel.text = formattedSize;
+                    [activityIndicatorView stopAnimating];
+                    [activityIndicatorView removeFromSuperview];
+                    cell.accessoryView = nil;
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                }];
+            }
+            cell.textLabel.text = @"Reset App";
+            
+            //Disable for non-vendable app
+            if (!self.appData.appProxy.appStoreVendable){
+                cell.selectionStyle  = UITableViewCellSelectionStyleNone;
+                cell.textLabel.enabled = NO;
+            }
+            return cell;
         } else {
             UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ManageCellIdentifier"];
             if (!cell) {
@@ -105,7 +143,14 @@
                 cell.textLabel.text = @"Clear Badge";
                 NSInteger badgeCount = [self.appData appBadgeCount];
                 cell.detailTextLabel.text = badgeCount == 0 ? @"" : [NSString stringWithFormat:@"%td",badgeCount];
-            } else if (indexPath.row == 2) {
+            } else if (indexPath.row == 2) { //Reset Permissions
+                //Disable for non-vendable app
+                cell.textLabel.text = @"Clear Permissions";
+                if (!self.appData.appProxy.appStoreVendable){
+                    cell.selectionStyle  = UITableViewCellSelectionStyleNone;
+                    cell.textLabel.enabled = NO;
+                }
+            } else if (indexPath.row == 5) {
                 cell.textLabel.text = @"More Info";
             }
             return cell;
@@ -174,7 +219,35 @@
         } else if (indexPath.row == 1) {
             [self.appData setAppBadgeCount:0];
             cell.detailTextLabel.text = @"";
-        } else if (indexPath.row == 2) {
+        } else if (indexPath.row == 2) { //Reset Permissions
+            //Disable for non-vendable app
+            if (self.appData.appProxy.appStoreVendable){
+                [self.appData resetAllAppPermissions];
+            }
+        } else if (indexPath.row == 3) { //Offload App
+            //Disable for non-vendable app
+            if (self.appData.appProxy.appStoreVendable){
+                UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+                [activityIndicatorView startAnimating];
+                cell.accessoryView = activityIndicatorView;
+                [self.appData offloadAppWithCompletion:^() {
+                    cell.accessoryView = nil;
+                }];
+            }
+        } else if (indexPath.row == 4) { //Reset App
+            //Disable for non-vendable app
+            if (self.appData.appProxy.appStoreVendable){
+                UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+                [activityIndicatorView startAnimating];
+                cell.accessoryView = activityIndicatorView;
+                [self.appData resetDiskContentWithCompletion:^() {
+                    [self.appData getAppUsageDirectorySizeWithCompletion:^(NSString *formattedSize) {
+                        cell.detailTextLabel.text = formattedSize;
+                        cell.accessoryView = nil;
+                    }];
+                }];
+            }
+        } else if (indexPath.row == 5) {
             [self.dataViewController switchTableViews];
         }
     }
