@@ -60,7 +60,8 @@
 			<string>- Copy the app bundle Identifier by tapping it
 - Edit app icon name by tapping it
 - Filza is required to open folders
-- Deleting Caches will delete the app&apos;s &quot;Caches&quot; and &quot;Tmp&quot; folders.</string>
+- Clearing Caches will delete the app&apos;s &quot;Caches&quot; and &quot;Tmp&quot; folders
+- Clearing app data will delete Library/Documents/Tmp folders and reset permissions</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -72,11 +73,9 @@
 		</dict>
 		<dict>
 			<key>cell</key>
-			<string>PSStaticTextCell</string>
+			<string>PSLinkCell</string>
 			<key>label</key>
 			<string>Fouad Raheb</string>
-			<key>detail</key>
-			<string>Twitter</string>
 		</dict>
 	</array>
 	<key>title</key>

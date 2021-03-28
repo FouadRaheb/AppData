@@ -6,6 +6,7 @@
 //
 
 #import "ADDataPresentationController.h"
+#import "ADDataViewController.h"
 
 @interface ADDataPresentationController ()
 @property (nonatomic, strong) UIView *dimmingView;
@@ -38,7 +39,11 @@
 }
 
 - (void)dismiss {
-    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    if ([self.presentedViewController respondsToSelector:@selector(dismiss)]) {
+        [(ADDataViewController *)self.presentedViewController dismiss];
+    } else {
+        [self.presentedViewController dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 #pragma mark - Override

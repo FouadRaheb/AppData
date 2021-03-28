@@ -15,9 +15,22 @@
 
 @interface ADAppData ()
 @property (nonatomic, strong) SBApplication *sbApplication;
+
+@property (nonatomic, strong) LSApplicationProxy *appProxy;
 @end
 
 @implementation ADAppData
+
+#pragma mark - Helpers
+
++ (SBApplication *)sbApplicationForBundleIdentifier:(NSString *)bundleIdentifier {
+    if ([[NSClassFromString(@"SBApplicationController") sharedInstance] respondsToSelector:@selector(applicationWithBundleIdentifier:)]) {
+        return [[NSClassFromString(@"SBApplicationController") sharedInstance] applicationWithBundleIdentifier:bundleIdentifier];
+    }
+    return nil;
+}
+
+#pragma mark - Initializers
 
 + (ADAppData *)appDataForBundleIdentifier:(NSString *)bundleIdentifier iconImage:(UIImage *)iconImage {
     ADAppData *data = [[ADAppData alloc] initWithBundleIdentifier:bundleIdentifier];
@@ -35,26 +48,59 @@
 }
 
 - (void)loadData {
-    // App Info
-    self.version = self.appProxy.shortVersionString ? : self.appProxy.bundleVersion;
-    self.bundleIdentifier = self.appProxy.bundleIdentifier;
-    
-    // Data URLs
-    self.bundleURL = self.appProxy.bundleURL ? : self.appProxy.bundleContainerURL;
-    self.dataContainerURL = self.appProxy.dataContainerURL;
-    NSMutableArray *appGroups = [NSMutableArray new];
-    NSArray *sortedKeys = [self.appProxy.groupContainerURLs.allKeys sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-    for (NSString *key in sortedKeys) {
-        NSURL *url = [self.appProxy.groupContainerURLs objectForKey:key];
-        ADAppDataGroup *group = [ADAppDataGroup groupWithIdentifier:key url:url];
-        [appGroups addObject:group];
+    // Version
+    self.version = @"N/A";
+    if ([self.appProxy respondsToSelector:@selector(shortVersionString)]) {
+        if (self.appProxy.shortVersionString) {
+            self.version = self.appProxy.shortVersionString;
+        } else if ([self.appProxy respondsToSelector:@selector(bundleVersion)]) {
+            self.version = self.appProxy.bundleVersion;
+        }
     }
-    self.appGroups = appGroups;
+    
+    // Bundle ID
+    if ([self.appProxy respondsToSelector:@selector(bundleIdentifier)] && self.appProxy.bundleIdentifier) {
+        self.bundleIdentifier = self.appProxy.bundleIdentifier;
+    } else {
+        self.bundleIdentifier = @"N/A";
+    }
+    
+    // Vendable
+    if ([self.appProxy respondsToSelector:@selector(isAppStoreVendable)]) {
+        self.appStoreVendable = self.appProxy.isAppStoreVendable;
+    }
+    
+    // Bundle URL
+    if ([self.appProxy respondsToSelector:@selector(bundleURL)]) {
+        if (self.appProxy.bundleURL) {
+            self.bundleURL = self.appProxy.bundleURL;
+        } else if ([self.appProxy respondsToSelector:@selector(bundleContainerURL)]) {
+            self.bundleURL = self.appProxy.bundleContainerURL;
+        }
+    }
+    
+    // Data URL
+    if ([self.appProxy respondsToSelector:@selector(dataContainerURL)]) {
+        self.dataContainerURL = self.appProxy.dataContainerURL;
+    }
+    
+    if ([self.appProxy respondsToSelector:@selector(groupContainerURLs)]) {
+        NSMutableArray *appGroups = [NSMutableArray new];
+        NSArray *sortedKeys = [self.appProxy.groupContainerURLs.allKeys sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+        for (NSString *key in sortedKeys) {
+            NSURL *url = [self.appProxy.groupContainerURLs objectForKey:key];
+            ADAppDataGroup *group = [ADAppDataGroup groupWithIdentifier:key url:url];
+            [appGroups addObject:group];
+        }
+        self.appGroups = appGroups;
+    }
     
     // Disk Usage
-    self.diskUsage = [self.appProxy.staticDiskUsage integerValue];
-    self.diskUsageString = [NSByteCountFormatter stringFromByteCount:[self.appProxy.staticDiskUsage longLongValue] countStyle:NSByteCountFormatterCountStyleFile];
-        
+    if ([self.appProxy respondsToSelector:@selector(staticDiskUsage)]) {
+        self.diskUsage = [self.appProxy.staticDiskUsage integerValue];
+        self.diskUsageString = [NSByteCountFormatter stringFromByteCount:[self.appProxy.staticDiskUsage longLongValue] countStyle:NSByteCountFormatterCountStyleFile];
+    }
+    
     // Info for more page
     [self loadMoreInfo];
 }
@@ -138,101 +184,10 @@
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:appStoreLink] options:@{} completionHandler:nil];
 }
 
-#pragma mark Reset Permissions
-
--(void)_resetAllAppPermissions{
-    CFBundleRef bundle = CFBundleCreate(kCFAllocatorDefault, (CFURLRef)self.appProxy.bundleURL);
-    if (bundle){
-        TCCAccessResetForBundle(kTCCServiceAll, bundle);
-        CFRelease(bundle);
-    }
-    
-    //Reset location permission
-    [CLLocationManager setAuthorizationStatusByType:kCLAuthorizationStatusNotDetermined forBundleIdentifier:self.bundleIdentifier];
-}
-
--(void)resetAllAppPermissions{
-    SBSApplicationTerminationAssertionRef assertion = SBSApplicationTerminationAssertionCreateWithError(NULL, self.bundleIdentifier, 1, NULL);
-    
-    [self _resetAllAppPermissions];
-    
-    if (assertion) {
-        SBSApplicationTerminationAssertionInvalidate(assertion);
-    }
-}
-
-#pragma mark - Reset App
-
-- (NSURL *)appLibraryDirectoryURL {
-    return [self.dataContainerURL URLByAppendingPathComponent:@"/Library/"];
-}
-
-- (NSURL *)appDocumentsDirectoryURL {
-    return [self.dataContainerURL URLByAppendingPathComponent:@"/Documents/"];
-}
-
-- (NSArray *)appGroupDirectoryURLs {
-    NSMutableArray *appGroupDirectoryURLs = [NSMutableArray new];
-    for (ADAppDataGroup *group in self.appGroups){
-        [appGroupDirectoryURLs addObject:group.url];
-    }
-    return appGroupDirectoryURLs;
-}
-
-- (NSArray *)appUsageDirectoriesURLs {
-    NSMutableArray *appUsageDir = [NSMutableArray new];
-    
-    NSURL *appLibraryDirectoryURL = [self appLibraryDirectoryURL];
-    if (appLibraryDirectoryURL) [appUsageDir addObject:appLibraryDirectoryURL];
-    
-    NSURL *tmpDirectoryURL = [self tmpDirectoryURL];
-    if (tmpDirectoryURL) [appUsageDir addObject:tmpDirectoryURL];
-    
-    NSURL *appDocumentsDirectoryURL = [self appDocumentsDirectoryURL];
-    if (appDocumentsDirectoryURL) [appUsageDir addObject:appDocumentsDirectoryURL];
-    
-    return appUsageDir;
-}
-
-- (void)getAppUsageDirectorySizeWithCompletion:(void(^)(NSString *formattedSize))completion {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        unsigned long long int dynamicSize = [[LSApplicationProxy applicationProxyForIdentifier:self.bundleIdentifier].dynamicDiskUsage unsignedLongLongValue];
-        NSString *formattedSize = [NSByteCountFormatter stringFromByteCount:dynamicSize countStyle:NSByteCountFormatterCountStyleFile];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            completion(formattedSize);
-        });
-    });
-}
-
-- (void)resetDiskContentWithCompletion:(void(^)())completion {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-     
-        SBSApplicationTerminationAssertionRef assertion = SBSApplicationTerminationAssertionCreateWithError(NULL, self.bundleIdentifier, 1, NULL);
-        
-        NSArray <NSURL *> *appUsage = [self appUsageDirectoriesURLs];
-        for (NSURL *url in appUsage) {
-            [self.class deleteContentsOfDirectoryAtURL:url];
-        }
-        
-        //Recreate Preferences folder
-        if ([self appLibraryDirectoryURL]) [[NSFileManager defaultManager] createDirectoryAtURL:[[self appLibraryDirectoryURL] URLByAppendingPathComponent:@"Preferences" isDirectory:YES] withIntermediateDirectories:YES attributes:nil error:NULL];
-        
-        //Reset all permissions
-        if (self.appProxy.appStoreVendable) [self _resetAllAppPermissions];
-
-        if (assertion) {
-            SBSApplicationTerminationAssertionInvalidate(assertion);
-        }
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            completion();
-        });
-    });
-}
-
 #pragma mark - Caches
 
 - (NSURL *)cacheDirectoryURL {
+    
     return [self.dataContainerURL URLByAppendingPathComponent:@"/Library/Caches/"];
 }
 
@@ -312,9 +267,129 @@
     }
 }
 
-#pragma mark Offload App
+#pragma mark - Permissions
 
--(void)offloadAppWithCompletion:(void(^)())completion{
+- (NSArray <NSDictionary *> *)getPermissions {
+    CFBundleRef bundle = CFBundleCreate(kCFAllocatorDefault, (CFURLRef)self.appProxy.bundleURL);
+    if (bundle) {
+        NSArray *information = TCCAccessCopyInformationForBundle(bundle);
+        CFRelease(bundle);
+        return information;
+    }
+    return nil;
+}
+
+- (void)resetAllAppPermissions {
+    SBSApplicationTerminationAssertionRef assertion = SBSApplicationTerminationAssertionCreateWithError(NULL, self.bundleIdentifier, 1, NULL);
+    
+    [self _resetAllAppPermissions];
+    
+    if (assertion) {
+        SBSApplicationTerminationAssertionInvalidate(assertion);
+    }
+}
+
+- (void)_resetAllAppPermissions {
+    CFBundleRef bundle = CFBundleCreate(kCFAllocatorDefault, (CFURLRef)self.appProxy.bundleURL);
+    if (bundle) {
+        TCCAccessResetForBundle(kTCCServiceAll, bundle);
+        CFRelease(bundle);
+    }
+    
+    // Reset location permission
+    [CLLocationManager setAuthorizationStatusByType:kCLAuthorizationStatusNotDetermined forBundleIdentifier:self.bundleIdentifier];
+}
+
+#pragma mark - Reset App
+
+- (NSURL *)appLibraryDirectoryURL {
+    return [self.dataContainerURL URLByAppendingPathComponent:@"/Library/"];
+}
+
+- (NSURL *)appDocumentsDirectoryURL {
+    return [self.dataContainerURL URLByAppendingPathComponent:@"/Documents/"];
+}
+
+- (NSArray *)appGroupDirectoryURLs {
+    NSMutableArray *appGroupDirectoryURLs = [NSMutableArray new];
+    for (ADAppDataGroup *group in self.appGroups){
+        [appGroupDirectoryURLs addObject:group.url];
+    }
+    return appGroupDirectoryURLs;
+}
+
+- (NSArray *)appUsageDirectoriesURLs {
+    NSMutableArray *appUsageDir = [NSMutableArray new];
+    
+    NSURL *appLibraryDirectoryURL = [self appLibraryDirectoryURL];
+    if (appLibraryDirectoryURL) [appUsageDir addObject:appLibraryDirectoryURL];
+    
+    NSURL *tmpDirectoryURL = [self tmpDirectoryURL];
+    if (tmpDirectoryURL) [appUsageDir addObject:tmpDirectoryURL];
+    
+    NSURL *appDocumentsDirectoryURL = [self appDocumentsDirectoryURL];
+    if (appDocumentsDirectoryURL) [appUsageDir addObject:appDocumentsDirectoryURL];
+    
+    return appUsageDir;
+}
+
+- (void)getAppUsageDirectorySizeWithCompletion:(void(^)(NSString *formattedSize))completion {
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        unsigned long long int dynamicSize = [[LSApplicationProxy applicationProxyForIdentifier:self.bundleIdentifier].dynamicDiskUsage unsignedLongLongValue];
+//        NSString *formattedSize = [NSByteCountFormatter stringFromByteCount:dynamicSize countStyle:NSByteCountFormatterCountStyleFile];
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            completion(formattedSize);
+//        });
+//    });
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        unsigned long long int totalSize = 0;
+        NSArray <NSURL *> *appUsageDirectoriesURLs = [self appUsageDirectoriesURLs];
+        for (NSURL *url in appUsageDirectoriesURLs) {
+            if (url && [[NSFileManager defaultManager] fileExistsAtPath:url.path]) {
+                unsigned long long int folderSize = 0;
+                [[NSFileManager defaultManager] nr_getAllocatedSize:&folderSize ofDirectoryAtURL:url error:nil];
+                totalSize += folderSize;
+            }
+        }
+        NSString *formattedSize = [NSByteCountFormatter stringFromByteCount:totalSize countStyle:NSByteCountFormatterCountStyleFile];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completion(formattedSize);
+        });
+    });
+}
+
+- (void)resetDiskContentWithCompletion:(void(^)())completion {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        SBSApplicationTerminationAssertionRef assertion = SBSApplicationTerminationAssertionCreateWithError(NULL, self.bundleIdentifier, 1, NULL);
+        
+        NSArray <NSURL *> *appUsage = [self appUsageDirectoriesURLs];
+        for (NSURL *url in appUsage) {
+            [self.class deleteContentsOfDirectoryAtURL:url];
+        }
+        
+        // Recreate Preferences folder
+        if ([self appLibraryDirectoryURL]) {
+            [[NSFileManager defaultManager] createDirectoryAtURL:[[self appLibraryDirectoryURL] URLByAppendingPathComponent:@"Preferences" isDirectory:YES] withIntermediateDirectories:YES attributes:nil error:NULL];
+        }
+        
+        // Reset all permissions
+        if (self.appStoreVendable) {
+            [self _resetAllAppPermissions];
+        }
+
+        if (assertion) {
+            SBSApplicationTerminationAssertionInvalidate(assertion);
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completion();
+        });
+    });
+}
+
+#pragma mark - Offload App
+
+- (void)offloadAppWithCompletion:(void(^)())completion{
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         if (@available(iOS 12.0, *)){
             [NSClassFromString(@"IXAppInstallCoordinator") demoteAppToPlaceholderWithBundleID:self.bundleIdentifier forReason:1 waitForDeletion:YES completion:^{
@@ -322,22 +397,13 @@
                     completion();
                 });
             }];
-        }else{
+        } else {
             [NSClassFromString(@"IXAppInstallCoordinator") demoteAppToPlaceholderWithBundleID:self.bundleIdentifier forReason:1 error:nil];
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion();
             });
         }
     });
-}
-
-#pragma mark - Helpers
-
-+ (SBApplication *)sbApplicationForBundleIdentifier:(NSString *)bundleIdentifier {
-    if ([[NSClassFromString(@"SBApplicationController") sharedInstance] respondsToSelector:@selector(applicationWithBundleIdentifier:)]) {
-        return [[NSClassFromString(@"SBApplicationController") sharedInstance] applicationWithBundleIdentifier:bundleIdentifier];
-    }
-    return nil;
 }
 
 @end

@@ -14,7 +14,6 @@
 @end
 
 @interface ADAppData : NSObject
-@property (nonatomic, strong) LSApplicationProxy *appProxy;
 
 @property (nonatomic, strong) SBIconView *iconView;
 
@@ -23,6 +22,8 @@
 - (NSString *)name;
 @property (nonatomic, strong) NSString *version;
 @property (nonatomic, strong) NSString *bundleIdentifier;
+
+@property (nonatomic, assign) BOOL appStoreVendable;
 
 @property (nonatomic, strong) NSURL *bundleURL;
 @property (nonatomic, strong) NSURL *dataContainerURL;
@@ -56,11 +57,12 @@
 - (BOOL)hasAppStoreApp;
 - (void)openInAppStore;
 
-#pragma mark Reset Permissions
+#pragma mark - Permissions
 
+- (NSArray <NSDictionary *> *)getPermissions;
 - (void)resetAllAppPermissions;
 
-#pragma mark Reset App
+#pragma mark - Reset App
 - (void)getAppUsageDirectorySizeWithCompletion:(void(^)(NSString *formattedSize))completion;
 - (void)resetDiskContentWithCompletion:(void(^)())completion;
 

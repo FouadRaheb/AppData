@@ -61,11 +61,11 @@
     return self;
 }
 
-// Used from Force Touch Menu
+#pragma mark - Used from Force Touch Menu
 
 + (void)presentControllerFromSBIconView:(SBIconView *)iconView fromContextMenu:(BOOL)contextMenu {
     if (!iconView) {
-        [self showAlertWitle:@"AppData" message:[NSString stringWithFormat:@"Could not fetch app data.\n\nError: Empty icon view."]];
+        [self showAlertWithTitle:@"AppData" message:[NSString stringWithFormat:@"Could not fetch app data.\n\nError: Empty icon view."]];
         return;
     }
     
@@ -86,13 +86,13 @@
     }
     
     if (!_iconImageView) {
-        [self showAlertWitle:@"AppData" message:[NSString stringWithFormat:@"Could not fetch app data.\n\nError: could not find icon image view."]];
+        [self showAlertWithTitle:@"AppData" message:[NSString stringWithFormat:@"Could not fetch app data.\n\nError: could not find icon image view."]];
         return;
     }
     [self presentControllerFromSBIconImageView:_iconImageView iconView:iconView fromContextMenu:contextMenu];
 }
 
-// Used from Swipe Up
+#pragma mark - Used from Swipe Up
 
 + (void)presentControllerFromSBIconImageView:(SBIconImageView *)iconImageView fromContextMenu:(BOOL)contextMenu {
     SBIconView *iconView = (SBIconView *)[iconImageView superview];
@@ -103,7 +103,7 @@
     [self presentControllerFromSBIconImageView:iconImageView iconView:iconView fromContextMenu:contextMenu];
 }
 
-// Internal
+#pragma mark - Internal
 
 + (void)presentControllerFromSBIconImageView:(SBIconImageView *)iconImageView iconView:(SBIconView *)iconView fromContextMenu:(BOOL)contextMenu {
     NSLog(@"iconImageView: %@",iconImageView);
@@ -139,22 +139,16 @@
                     [rootController presentViewController:dataViewController animated:YES completion:nil];
                 }
             } else {
+                dataViewController.dockDismissed = [self.class dismissFloatingDockIfNeededWithCompletion:nil];
                 [rootController presentViewController:dataViewController animated:YES completion:nil];
             }
         }
     } else {
-        [self showAlertFromViewController:rootController title:@"AppData" message:[NSString stringWithFormat:@"Could not fetch app data.\n\n%@ is not a valid icon class.",[iconView class]]];
+        [self showAlertFromViewController:rootController
+                                    title:@"AppData"
+                                  message:[NSString stringWithFormat:@"Could not fetch app data.\n\n%@ is not a valid icon class.",[iconView class]]
+                              cancelTitle:@"Okay"];
     }
-}
-
-+ (void)showAlertWitle:(NSString *)title message:(NSString *)message {
-    [self showAlertFromViewController:nil title:title message:message];
-}
-
-+ (void)showAlertFromViewController:(UIViewController *)viewController title:(NSString *)title message:(NSString *)message {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleCancel handler:nil]];
-    [viewController?:[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
 }
 
 - (void)viewDidLoad {
@@ -183,7 +177,15 @@
 }
 
 - (void)dismiss {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissAppDataControllerAnimated:YES completion:nil];
+}
+
+- (void)dismissAppDataControllerAnimated:(BOOL)animated completion:(void(^)())completion {
+    if (self.dockDismissed) {
+        self.dockDismissed = NO;
+        [self.class presentFloatingDockIfNeeded];
+    }
+    [self dismissViewControllerAnimated:animated completion:completion];
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
@@ -225,33 +227,33 @@
 }
 
 - (void)initializeViews {
-    UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark]; // UIBlurEffectStyleRegular - Auto
-    self.contentView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    self.contentView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleDark]];
     self.contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.contentView.translatesAutoresizingMaskIntoConstraints = NO;
     self.contentView.clipsToBounds = YES;
     self.contentView.layer.cornerRadius = 15;
     self.contentView.layer.maskedCorners = kCALayerMaxXMinYCorner | kCALayerMinXMinYCorner;
     [self.view addSubview:self.contentView];
-    [self pinView:self.contentView toAnchorsOfView:self.view];
+    [self.contentView.topAnchor constraintEqualToAnchor:self.view.topAnchor].active = YES;
+    [self.contentView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor].active = YES;
+    [self.contentView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor].active = YES;
+    [self.contentView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor].active = YES;
     
     UIView *containerView = [UIView new];
     containerView.backgroundColor = [UIColor clearColor];
     containerView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView.contentView addSubview:containerView];
-    [self pinView:containerView toAnchorsOfView:self.contentView.contentView];
+    [containerView.topAnchor constraintEqualToAnchor:self.contentView.topAnchor].active = YES;
+    [containerView.bottomAnchor constraintEqualToAnchor:self.contentView.bottomAnchor].active = YES;
+    [containerView.leadingAnchor constraintEqualToAnchor:self.contentView.leadingAnchor].active = YES;
+    [containerView.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor].active = YES;
 
     [self addSubviewsToContainer:containerView];
 }
 
 - (void)addSubviewsToContainer:(UIView *)containerView {
-    
-    UIColor *secondaryLabelsColor = [UIColor colorWithRed:0.922 green:0.922 blue:0.961 alpha:0.6];
-    UIColor *buttonsSymbolColor = secondaryLabelsColor; //[UIColor colorWithRed:127/255.f green:140/255.f blue:141/255.f alpha:0.6];
-    
     self.appStoreButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.appStoreButton setImage:[[ADHelper imageNamed:@"AppStoreButton"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
-    [self.appStoreButton setTintColor:buttonsSymbolColor];
     [self.appStoreButton addTarget:self action:@selector(didTapAppStoreButton:) forControlEvents:UIControlEventTouchUpInside];
     self.appStoreButton.translatesAutoresizingMaskIntoConstraints = NO;
     [containerView addSubview:self.appStoreButton];
@@ -268,12 +270,11 @@
     [self.iconImageView.topAnchor constraintEqualToAnchor:containerView.topAnchor constant:15].active = YES;
     [self.iconImageView.widthAnchor constraintEqualToConstant:58].active = YES;
     [self.iconImageView.heightAnchor constraintEqualToConstant:58].active = YES;
-    
     self.nameLabel = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.nameLabel addTarget:self action:@selector(didTapNameButton:) forControlEvents:UIControlEventTouchUpInside];
     self.nameLabel.titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     self.nameLabel.titleLabel.font = [UIFont systemFontOfSize:17];
-    [self.nameLabel setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    
     [self.nameLabel setTitle:@"-" forState:UIControlStateNormal];
     self.nameLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [containerView addSubview:self.nameLabel];
@@ -291,7 +292,6 @@
     }
     self.nameEditButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.nameEditButton setImage:nameEditImage forState:UIControlStateNormal];
-    [self.nameEditButton setTintColor:buttonsSymbolColor];
     [self.nameEditButton addTarget:self action:@selector(didTapNameButton:) forControlEvents:UIControlEventTouchUpInside];
     [self.nameEditButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [containerView addSubview:self.nameEditButton];
@@ -304,7 +304,6 @@
     self.identifierLabel = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.identifierLabel addTarget:self action:@selector(didTapIdentifierButton:) forControlEvents:UIControlEventTouchUpInside];
     self.identifierLabel.titleLabel.font = [UIFont systemFontOfSize:14];
-    [self.identifierLabel setTitleColor:secondaryLabelsColor forState:UIControlStateNormal];
     [self.identifierLabel setTitle:@"-" forState:UIControlStateNormal];
     self.identifierLabel.titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     self.identifierLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -323,7 +322,6 @@
     }
     self.identifierCopyButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.identifierCopyButton setImage:clipboardImage forState:UIControlStateNormal];
-    [self.identifierCopyButton setTintColor:buttonsSymbolColor];
     [self.identifierCopyButton addTarget:self action:@selector(didTapIdentifierButton:) forControlEvents:UIControlEventTouchUpInside];
     [self.identifierCopyButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [containerView addSubview:self.identifierCopyButton];
@@ -335,7 +333,6 @@
     
     self.versionLabel = [[UILabel alloc] init];
     self.versionLabel.font = [UIFont systemFontOfSize:13];
-    self.versionLabel.textColor = secondaryLabelsColor;
     self.versionLabel.text = @"-";
     self.versionLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [containerView addSubview:self.versionLabel];
@@ -358,6 +355,38 @@
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     [self layoutTableViews];
+    
+    // Apply blur effect to contentView
+    if (@available(iOS 13.0, *)) {
+        if (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleLight) {
+            self.contentView.effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleSystemThinMaterial];
+        } else {
+            self.contentView.effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+        }
+    } else {
+        self.contentView.effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+    }
+    
+    // Apply text colors
+    UIColor *primaryLabelColor = [UIColor whiteColor];
+    UIColor *secondaryLabelsColor = [UIColor colorWithRed:0.922 green:0.922 blue:0.961 alpha:0.6];
+    if (@available(iOS 13.0, *)) {
+        if (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleLight) {
+            primaryLabelColor = [UIColor blackColor];
+            secondaryLabelsColor = [UIColor colorWithRed:0.235294 green:0.235294 blue:0.262745 alpha:0.65];
+        }
+    }
+    [self.nameLabel setTitleColor:primaryLabelColor forState:UIControlStateNormal];
+    [self.identifierLabel setTitleColor:secondaryLabelsColor forState:UIControlStateNormal];
+    self.versionLabel.textColor = secondaryLabelsColor;
+    [self.identifierCopyButton setTintColor:secondaryLabelsColor];
+    [self.nameEditButton setTintColor:secondaryLabelsColor];
+    [self.appStoreButton setTintColor:secondaryLabelsColor];
+}
+
+- (void)traitCollectionDidChange:(UITraitCollection *)collection {
+    [self.tableView reloadData];
+    [self.moreTableView reloadData];
 }
 
 - (UITableView *)createTableViewWithDataSource:(id)dataSource {
@@ -377,12 +406,7 @@
     self.moreTableView.frame = frame;
 }
 
-- (void)pinView:(UIView *)view toAnchorsOfView:(UIView *)superview {
-    [view.topAnchor constraintEqualToAnchor:superview.topAnchor].active = YES;
-    [view.bottomAnchor constraintEqualToAnchor:superview.bottomAnchor].active = YES;
-    [view.leadingAnchor constraintEqualToAnchor:superview.leadingAnchor].active = YES;
-    [view.trailingAnchor constraintEqualToAnchor:superview.trailingAnchor].active = YES;
-}
+#pragma mark - Actions
 
 - (void)didTapNameButton:(UIButton *)button {
     [[UISelectionFeedbackGenerator new] selectionChanged];
@@ -409,7 +433,7 @@
 
 - (void)didTapAppStoreButton:(UIButton *)button {
     if (IS_IPAD) {
-        [self dismissViewControllerAnimated:YES completion:^{
+        [self dismissAppDataControllerAnimated:YES completion:^{
             [self.appData openInAppStore];
         }];
     } else {
@@ -420,42 +444,29 @@
 - (void)showCustomIconNameInterface {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Rename" message:@"Enter an app icon name" preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        [self presentFloatingDockIfNeeded];
+        if (self.dockDismissed && IS_IPAD) [self.class presentFloatingDockIfNeeded];
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"Change" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self.appData setCustomIconName:alertController.textFields.firstObject.text];
         [self.nameLabel setTitle:self.appData.name forState:UIControlStateNormal];
-        [self presentFloatingDockIfNeeded];
+        if (self.dockDismissed && IS_IPAD) [self.class presentFloatingDockIfNeeded];
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"Reset" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self.appData setCustomIconName:nil];
         [self.nameLabel setTitle:self.appData.name forState:UIControlStateNormal];
-        [self presentFloatingDockIfNeeded];
+        if (self.dockDismissed && IS_IPAD) [self.class presentFloatingDockIfNeeded];
     }]];
     [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
         textField.clearButtonMode = UITextFieldViewModeAlways;
         textField.placeholder = @"Icon Name";
         textField.text = self.nameLabel.titleLabel.text;
     }];
-    
     if (IS_IPAD) {
-        SBIconController *iconController = [NSClassFromString(@"SBIconController") sharedInstance];
-        SBFloatingDockController *dockController = [iconController floatingDockController];
-        [dockController _dismissFloatingDockIfPresentedAnimated:YES completionHandler:^{
+        self.dockDismissed = [self.class dismissFloatingDockIfNeededWithCompletion:^{
             [self presentViewController:alertController animated:YES completion:nil];
         }];
     } else {
         [self presentViewController:alertController animated:YES completion:nil];
-    }
-}
-
-- (void)presentFloatingDockIfNeeded {
-    if (IS_IPAD) {
-        SBIconController *iconController = [NSClassFromString(@"SBIconController") sharedInstance];
-        SBFloatingDockController *dockController = [iconController floatingDockController];
-        if (![dockController isFloatingDockPresented]) {
-            [dockController _presentFloatingDockIfDismissedAnimated:YES completionHandler:^{ }];
-        }
     }
 }
 
@@ -498,6 +509,51 @@
     } completion:^(BOOL finished) {
         activeTableView.hidden = YES;
     }];
+}
+
+#pragma mark - Dock Controller
+
++ (SBFloatingDockController *)floatingDockController {
+    if (NSClassFromString(@"SBIconController") && [NSClassFromString(@"SBIconController") respondsToSelector:@selector(sharedInstance)]) {
+        SBIconController *iconController = [NSClassFromString(@"SBIconController") sharedInstance];
+        if ([iconController respondsToSelector:@selector(floatingDockController)]) {
+            return [iconController floatingDockController];
+        }
+    }
+    return nil;
+}
+
++ (BOOL)dismissFloatingDockIfNeededWithCompletion:(void(^)())completion {
+    SBFloatingDockController *dockController = [self floatingDockController];
+    if ([dockController respondsToSelector:@selector(_dismissFloatingDockIfPresentedAnimated:completionHandler:)] && [dockController respondsToSelector:@selector(isFloatingDockPresented)]) {
+        if ([dockController isFloatingDockPresented]) {
+            [dockController _dismissFloatingDockIfPresentedAnimated:YES completionHandler:completion];
+            return YES;
+        }
+    }
+    return NO;
+}
+
++ (void)presentFloatingDockIfNeeded {
+    SBFloatingDockController *dockController = [self floatingDockController];
+    if ([dockController respondsToSelector:@selector(_dismissFloatingDockIfPresentedAnimated:completionHandler:)]
+        && [dockController respondsToSelector:@selector(isFloatingDockPresented)]) {
+        if (![dockController isFloatingDockPresented]) {
+            [dockController _presentFloatingDockIfDismissedAnimated:YES completionHandler:^{ }];
+        }
+    }
+}
+
+#pragma mark - Alert Helpers
+
++ (void)showAlertWithTitle:(NSString *)title message:(NSString *)message {
+    [self showAlertFromViewController:nil title:title message:message cancelTitle:@"Okay"];
+}
+
++ (void)showAlertFromViewController:(UIViewController *)viewController title:(NSString *)title message:(NSString *)message cancelTitle:(NSString *)cancelTitle {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:cancelTitle style:UIAlertActionStyleCancel handler:nil]];
+    [viewController?:[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
 }
 
 @end

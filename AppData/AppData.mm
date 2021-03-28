@@ -22,7 +22,7 @@
 #define _LOGOS_RETURN_RETAINED
 #endif
 
-@class SBIconImageView; @class SBUIAppIconForceTouchControllerDataProvider; @class SBUIAppIconForceTouchController; @class SBApplication; @class SBIconView; @class SBFolderIcon; 
+@class SBIconView; @class SBIconImageView; @class SBFolderIcon; @class SBApplication; @class SBUIAppIconForceTouchControllerDataProvider; @class SBUIAppIconForceTouchController; 
 
 static __inline__ __attribute__((always_inline)) __attribute__((unused)) Class _logos_static_class_lookup$SBFolderIcon(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SBFolderIcon"); } return _klass; }
 #line 3 "/Users/fouad/Projects/AppData/AppData/AppData.xm"
@@ -37,7 +37,8 @@ static char _logos_property_key$SHARED_HOOKS$SBIconImageView$adSwipeGestureRecog
 static SBIconImageView * _logos_method$SHARED_HOOKS$SBIconImageView$initWithFrame$(_LOGOS_SELF_TYPE_NORMAL SBIconImageView* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd, CGRect arg1) {
     HBLogDebug(@"-[<SBIconImageView: %p> initWithFrame:{{%g, %g}, {%g, %g}}]", self, arg1.origin.x, arg1.origin.y, arg1.size.width, arg1.size.height);
     SBIconImageView *r = _logos_orig$SHARED_HOOKS$SBIconImageView$initWithFrame$(self, _cmd, arg1);
-    if (![r isKindOfClass:NSClassFromString(@"SBFolderIconImageView")]) {
+    if (![r isKindOfClass:NSClassFromString(@"SBFolderIconImageView")]
+        && [r respondsToSelector:@selector(setAdSwipeGestureRecognizer:)]) {
         [[NSNotificationCenter defaultCenter] addObserver:r selector:@selector(appDataPreferencesChanged) name:kAppDataSwipeUpPreferencesChangedNotification object:nil];
         
         
@@ -170,7 +171,7 @@ static void _logos_method$IOS12_AND_OLDER_HOOKS$SBUIAppIconForceTouchController$
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_d0f2e29d(int __unused argc, char __unused **argv, char __unused **envp) {
+static __attribute__((constructor)) void _logosLocalCtor_27b85f3b(int __unused argc, char __unused **argv, char __unused **envp) {
     [[ADHelper sharedInstance] initialize];
     
     {Class _logos_class$SHARED_HOOKS$SBIconImageView = objc_getClass("SBIconImageView"); MSHookMessageEx(_logos_class$SHARED_HOOKS$SBIconImageView, @selector(initWithFrame:), (IMP)&_logos_method$SHARED_HOOKS$SBIconImageView$initWithFrame$, (IMP*)&_logos_orig$SHARED_HOOKS$SBIconImageView$initWithFrame$);{ char _typeEncoding[1024]; unsigned int i = 0; _typeEncoding[i] = 'v'; i += 1; _typeEncoding[i] = '@'; i += 1; _typeEncoding[i] = ':'; i += 1; _typeEncoding[i] = '\0'; class_addMethod(_logos_class$SHARED_HOOKS$SBIconImageView, @selector(appDataPreferencesChanged), (IMP)&_logos_method$SHARED_HOOKS$SBIconImageView$appDataPreferencesChanged, _typeEncoding); }{ char _typeEncoding[1024]; unsigned int i = 0; _typeEncoding[i] = 'v'; i += 1; _typeEncoding[i] = '@'; i += 1; _typeEncoding[i] = ':'; i += 1; memcpy(_typeEncoding + i, @encode(UIGestureRecognizer *), strlen(@encode(UIGestureRecognizer *))); i += strlen(@encode(UIGestureRecognizer *)); _typeEncoding[i] = '\0'; class_addMethod(_logos_class$SHARED_HOOKS$SBIconImageView, @selector(appDataDidSwipeUp:), (IMP)&_logos_method$SHARED_HOOKS$SBIconImageView$appDataDidSwipeUp$, _typeEncoding); }{ class_addMethod(_logos_class$SHARED_HOOKS$SBIconImageView, @selector(adSwipeGestureRecognizer), (IMP)&_logos_method$SHARED_HOOKS$SBIconImageView$adSwipeGestureRecognizer$, [[NSString stringWithFormat:@"%s@:", @encode(UISwipeGestureRecognizer *)] UTF8String]);class_addMethod(_logos_class$SHARED_HOOKS$SBIconImageView, @selector(setAdSwipeGestureRecognizer:), (IMP)&_logos_method$SHARED_HOOKS$SBIconImageView$setAdSwipeGestureRecognizer$, [[NSString stringWithFormat:@"v@:%s", @encode(UISwipeGestureRecognizer *)] UTF8String]);} Class _logos_class$SHARED_HOOKS$SBApplication = objc_getClass("SBApplication"); MSHookMessageEx(_logos_class$SHARED_HOOKS$SBApplication, @selector(displayName), (IMP)&_logos_method$SHARED_HOOKS$SBApplication$displayName, (IMP*)&_logos_orig$SHARED_HOOKS$SBApplication$displayName);}

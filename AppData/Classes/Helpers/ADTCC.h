@@ -12,4 +12,6 @@ FOUNDATION_EXTERN NSString *const kTCCServiceAll;
 
 FOUNDATION_EXTERN int TCCAccessResetForBundle(NSString *service, CFBundleRef bundle);
 
+FOUNDATION_EXTERN NSArray<NSDictionary *> *TCCAccessCopyInformationForBundle(CFBundleRef bundle);
+
 #endif /* TCC_h */

@@ -8,6 +8,7 @@
 #import "ADMainDataSource.h"
 #import "ADAppData.h"
 #import "ADDataViewController.h"
+#import "ADActionsBarView.h"
 
 @implementation ADMainDataSource
 
@@ -37,7 +38,8 @@
     } else if ([self isAppGroupsSection:section]) {
         return self.appData.appGroups.count;
     } else if ([self isManageSection:section]) {
-        return 6;
+        //return 6;
+        return 2;
     }
     return 0;
 }
@@ -57,11 +59,14 @@
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"InfoCellIdentifier"];
         if (!cell) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"InfoCellIdentifier"];
-            [self.class applySharedStylesToCell:cell];
+            cell.backgroundColor = [UIColor clearColor];
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            cell.textLabel.font = [UIFont systemFontOfSize:15];
             cell.detailTextLabel.font = [UIFont systemFontOfSize:13];
             cell.detailTextLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
-            cell.detailTextLabel.textColor = [UIColor colorWithRed:0.922 green:0.922 blue:0.961 alpha:0.6];
         }
+        [self.class applyStylesToCell:cell];
+        
         if ([self isContainersSection:indexPath.section]) {
             if (indexPath.row == 0) {
                 cell.textLabel.text = @"Bundle";
@@ -78,98 +83,196 @@
         return cell;
     } else if ([self isManageSection:indexPath.section]) {
         if (indexPath.row == 0) {
-            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CachesCellIdentifier"];
-            if (!cell) {
-                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"CachesCellIdentifier"];
-                [self.class applySharedStylesToCell:cell];
-                UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-                [activityIndicatorView startAnimating];
-                cell.accessoryView = activityIndicatorView;
-                [self.appData getCachesDirectorySizeWithCompletion:^(NSString *formattedSize) {
-                    cell.detailTextLabel.text = formattedSize;
-                    [activityIndicatorView stopAnimating];
-                    [activityIndicatorView removeFromSuperview];
-                    cell.accessoryView = nil;
-                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                }];
-            }
-            cell.textLabel.text = @"Clear Caches";
-            return cell;
-        }else if (indexPath.row == 3) { //Offload App
-            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"OffloadCellIdentifier"];
-            if (!cell) {
-                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"OffloadCellIdentifier"];
-                [self.class applySharedStylesToCell:cell];
-            }
-            cell.textLabel.text = @"Offload App";
-            
-            //Disable for non-vendable app
-            if (!self.appData.appProxy.appStoreVendable){
-                cell.selectionStyle  = UITableViewCellSelectionStyleNone;
-                cell.textLabel.enabled = NO;
-            }
-            return cell;
-        } else if (indexPath.row == 4) { //Reset App
-            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ResetCellIdentifier"];
-            if (!cell) {
-                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"ResetCellIdentifier"];
-                [self.class applySharedStylesToCell:cell];
-                UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-                [activityIndicatorView startAnimating];
-                cell.accessoryView = activityIndicatorView;
-                [self.appData getAppUsageDirectorySizeWithCompletion:^(NSString *formattedSize) {
-                    cell.detailTextLabel.text = formattedSize;
-                    [activityIndicatorView stopAnimating];
-                    [activityIndicatorView removeFromSuperview];
-                    cell.accessoryView = nil;
-                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                }];
-            }
-            cell.textLabel.text = @"Reset App";
-            
-            //Disable for non-vendable app
-            if (!self.appData.appProxy.appStoreVendable){
-                cell.selectionStyle  = UITableViewCellSelectionStyleNone;
-                cell.textLabel.enabled = NO;
-            }
-            return cell;
-        } else {
             UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ManageCellIdentifier"];
             if (!cell) {
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"ManageCellIdentifier"];
-                [self.class applySharedStylesToCell:cell];
-            }
-            if (indexPath.row == 1) {
-                cell.textLabel.text = @"Clear Badge";
-                NSInteger badgeCount = [self.appData appBadgeCount];
-                cell.detailTextLabel.text = badgeCount == 0 ? @"" : [NSString stringWithFormat:@"%td",badgeCount];
-            } else if (indexPath.row == 2) { //Reset Permissions
-                //Disable for non-vendable app
-                cell.textLabel.text = @"Clear Permissions";
-                if (!self.appData.appProxy.appStoreVendable){
-                    cell.selectionStyle  = UITableViewCellSelectionStyleNone;
-                    cell.textLabel.enabled = NO;
+                cell.backgroundColor = [UIColor clearColor];
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                cell.accessoryType = UITableViewCellAccessoryNone;
+                
+                ADActionsBarView *actionsBar = [[ADActionsBarView alloc] init];
+                actionsBar.translatesAutoresizingMaskIntoConstraints = NO;
+                [cell.contentView addSubview:actionsBar];
+                [actionsBar.topAnchor constraintEqualToAnchor:cell.contentView.topAnchor].active = YES;
+                [actionsBar.leadingAnchor constraintEqualToAnchor:cell.contentView.leadingAnchor].active = YES;
+                [actionsBar.trailingAnchor constraintEqualToAnchor:cell.contentView.trailingAnchor].active = YES;
+                [actionsBar.bottomAnchor constraintEqualToAnchor:cell.contentView.bottomAnchor].active = YES;
+
+                __weak ADActionsBarView *weakActionsBar = actionsBar;
+                
+                // Clear Badge
+                [actionsBar addItemWithTitle:@"Update\nBadge"
+                                      detail:[NSString stringWithFormat:@"%td",[self.appData appBadgeCount]]
+                                       image:[ADHelper imageNamed:@"ClearBadge"]
+                                     handler:^{
+                    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Badges"
+                                                                                             message:[NSString stringWithFormat:@"Update or clear the app badges count"]
+                                                                                      preferredStyle:UIAlertControllerStyleAlert];
+                    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+                        textField.text = [NSString stringWithFormat:@"%td",self.appData.appBadgeCount];
+                        textField.placeholder = @"Badge Count";
+                        textField.textAlignment = NSTextAlignmentCenter;
+                        textField.enabled = NO;
+                    }];
+                    [alertController addAction:[UIAlertAction actionWithTitle:@"Update" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                        UITextField *field = alertController.textFields.firstObject;
+                        NSInteger count = [field.text integerValue];
+                        [self.appData setAppBadgeCount:count];
+                        [weakActionsBar setDetail:@"Updated!" forItemAtIndex:0];
+                        DISPATCH_AFTER(0.5, { [weakActionsBar setDetail:[NSString stringWithFormat:@"%td",count] forItemAtIndex:0]; });
+                        if (self.dataViewController.dockDismissed && IS_IPAD) [ADDataViewController presentFloatingDockIfNeeded];
+                    }]];
+                    [alertController addAction:[UIAlertAction actionWithTitle:@"Clear" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                        [self.appData setAppBadgeCount:0];
+                        [weakActionsBar setDetail:@"Cleared!" forItemAtIndex:0];
+                        DISPATCH_AFTER(0.5, { [weakActionsBar setDetail:@"0" forItemAtIndex:0]; });
+                        if (self.dataViewController.dockDismissed && IS_IPAD) [ADDataViewController presentFloatingDockIfNeeded];
+                    }]];
+                    [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                        if (self.dataViewController.dockDismissed && IS_IPAD) [ADDataViewController presentFloatingDockIfNeeded];
+                    }]];
+                    
+                    if (IS_IPAD) {
+                        self.dataViewController.dockDismissed = [ADDataViewController dismissFloatingDockIfNeededWithCompletion:^{
+                            [self.dataViewController presentViewController:alertController animated:YES completion:^{
+                                alertController.textFields.firstObject.enabled = true;
+                            }];
+                        }];
+                    } else {
+                        [self.dataViewController presentViewController:alertController animated:YES completion:^{
+                            alertController.textFields.firstObject.enabled = true;
+                        }];
+                    }
+                }];
+                
+                // Clear Caches
+                [actionsBar addItemWithTitle:@"Clear\nCaches"
+                                detail:@"Loading..."
+                                 image:[ADHelper imageNamed:@"ClearCache"]
+                                     handler:^{
+                    NSInteger itemIndex = 1;
+                    [weakActionsBar showLoadingIndicatorForItemAtIndex:itemIndex];
+                    [weakActionsBar setDetail:@"Clearing..." forItemAtIndex:itemIndex];
+                    DISPATCH_AFTER(0.5, {
+                        [self.appData clearAppCachesWithCompletion:^{
+                            [weakActionsBar hideLoadingIndicatorForItemAtIndex:itemIndex];
+                            [weakActionsBar setDetail:@"Cleared!" forItemAtIndex:itemIndex];
+                            [[UINotificationFeedbackGenerator new] notificationOccurred:UINotificationFeedbackTypeSuccess];
+                            DISPATCH_AFTER(0.5, {
+                                [self.appData getCachesDirectorySizeWithCompletion:^(NSString *formattedSize) {
+                                    [weakActionsBar setDetail:formattedSize forItemAtIndex:itemIndex];
+                                }];
+                            });
+                        }];
+                    });
+                }];
+                
+                // Clear App Data
+                [actionsBar addItemWithTitle:@"Clear App Data"
+                                      detail:@"Loading..."
+                                       image:[ADHelper imageNamed:@"ClearData"]
+                                     handler:^{
+                    if (self.appData.appStoreVendable) {
+                        [self showDestructiveConfirmationAlertWithTitle:@"Clear App Data" message:@"Clearing App data will only delete the app's \"Library\" and \"Documents\" folders inside Data bundle and not the App Groups." confirmTitle:@"Clear" confirmHandler:^{
+                            NSInteger itemIndex = 2;
+                            [weakActionsBar showLoadingIndicatorForItemAtIndex:itemIndex];
+                            [weakActionsBar setDetail:@"Clearing..." forItemAtIndex:itemIndex];
+                            DISPATCH_AFTER(0.5, {
+                                [self.appData resetDiskContentWithCompletion:^{
+                                    [weakActionsBar hideLoadingIndicatorForItemAtIndex:itemIndex];
+                                    [weakActionsBar setDetail:@"Cleared!" forItemAtIndex:itemIndex];
+                                    [[UINotificationFeedbackGenerator new] notificationOccurred:UINotificationFeedbackTypeSuccess];
+                                    DISPATCH_AFTER(0.5, {
+                                        [self.appData getAppUsageDirectorySizeWithCompletion:^(NSString *formattedSize) {
+                                            [weakActionsBar setDetail:formattedSize forItemAtIndex:itemIndex];
+                                        }];
+                                    });
+                                }];
+                            });
+                        }];
+                    }
+                }];
+                
+                // Reset Permissions
+                [actionsBar addItemWithTitle:@"Reset Permissions"
+                                      detail:[NSString stringWithFormat:@"%td",[self.appData getPermissions].count]
+                                       image:[ADHelper imageNamed:@"ResetPermissions"]
+                                     handler:^{
+                    if (self.appData.appStoreVendable) {
+                        [self showDestructiveConfirmationAlertWithTitle:@"Reset Permissions" message:@"This will clear all the app permissions to access your Contacts, Photos, Camera, etc.\nNext time you use the app it will ask you again to grant permissions." confirmTitle:@"Reset" confirmHandler:^{
+                            NSInteger itemIndex = 3;
+                            [self.appData resetAllAppPermissions];
+                            [weakActionsBar setDetail:@"Reset!" forItemAtIndex:itemIndex];
+                            [[UINotificationFeedbackGenerator new] notificationOccurred:UINotificationFeedbackTypeSuccess];
+                            DISPATCH_AFTER(0.5, {
+                               [weakActionsBar setDetail:[NSString stringWithFormat:@"%td",[self.appData getPermissions].count] forItemAtIndex:itemIndex];
+                            });
+                        }];
+                    }
+                }];
+                
+                // Offload App
+                [actionsBar addItemWithTitle:@"Offload\nApp"
+                                      detail:nil
+                                       image:[ADHelper imageNamed:@"OffloadApp"]
+                                     handler:^{
+                    if (self.appData.appStoreVendable) {
+                        [self showDestructiveConfirmationAlertWithTitle:@"Offload App" message:@"This will free up storage used by the app, but keep its documents and data. Reinstalling the app will reinstate your data if the app is still available in the AppStore." confirmTitle:@"Offload" confirmHandler:^{
+                            NSInteger itemIndex = 4;
+                            [weakActionsBar showLoadingIndicatorForItemAtIndex:itemIndex];
+                            [self.appData offloadAppWithCompletion:^{
+                                [weakActionsBar hideLoadingIndicatorForItemAtIndex:itemIndex];
+                                [[UINotificationFeedbackGenerator new] notificationOccurred:UINotificationFeedbackTypeSuccess];
+                            }];
+                        }];
+                    }
+                }];
+                
+                if (!self.appData.appStoreVendable) {
+                    [actionsBar setItemEnabled:NO atIndex:2];
+                    [actionsBar setItemEnabled:NO atIndex:3];
+                    [actionsBar setItemEnabled:NO atIndex:4];
                 }
-            } else if (indexPath.row == 5) {
-                cell.textLabel.text = @"More Info";
+                
+                // Set Cache Size
+                [actionsBar showLoadingIndicatorForItemAtIndex:1];
+                [self.appData getCachesDirectorySizeWithCompletion:^(NSString *formattedSize) {
+                    [actionsBar setDetail:formattedSize forItemAtIndex:1];
+                    [actionsBar hideLoadingIndicatorForItemAtIndex:1];
+                }];
+                
+                // Set App Data Size
+                [actionsBar showLoadingIndicatorForItemAtIndex:2];
+                [self.appData getAppUsageDirectorySizeWithCompletion:^(NSString *formattedSize) {
+                    [actionsBar setDetail:formattedSize forItemAtIndex:2];
+                    [actionsBar hideLoadingIndicatorForItemAtIndex:2];
+                }];
             }
+            return cell;
+        } else if (indexPath.row == 1) {
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MoreInfoCellIdentifier"];
+            if (!cell) {
+                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"MoreInfoCellIdentifier"];
+                cell.backgroundColor = [UIColor clearColor];
+                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            }
+            [self.class applyStylesToCell:cell];
+            cell.textLabel.text = @"More Info";
             return cell;
         }
     }
     return nil;
 }
 
-+ (void)applySharedStylesToCell:(UITableViewCell *)cell {
-    cell.detailTextLabel.textColor = [UIColor colorWithRed:0.557 green:0.557 blue:0.576 alpha:1.0];
-    cell.textLabel.textColor = [UIColor whiteColor];
-    cell.textLabel.font = [UIFont systemFontOfSize:15];
-    
-    cell.backgroundColor = [UIColor clearColor];
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    
-    UIView *selectedBackgroundView = [[UIView alloc] init];
-    selectedBackgroundView.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.15];
-    cell.selectedBackgroundView = selectedBackgroundView;
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if ([self isManageSection:indexPath.section] && indexPath.row == 0) {
+        if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
+            [cell setSeparatorInset:UIEdgeInsetsZero];
+        }
+        if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
+            [cell setLayoutMargins:UIEdgeInsetsZero];
+        }
+    }
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -187,6 +290,9 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([self isManageSection:indexPath.section]) {
+        if (indexPath.row == 0) {
+            return 90;
+        }
         return 45;
     }
     return 50;
@@ -202,54 +308,12 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    if ([self isContainersSection:indexPath.section] || [self isAppGroupsSection:indexPath.section]) {
-        [self didSelectContainerOrAppGroupSectionAtIndexPath:indexPath];
-    } else if ([self isManageSection:indexPath.section]) {
-        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        if (indexPath.row == 0) {
-            UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-            [activityIndicatorView startAnimating];
-            cell.accessoryView = activityIndicatorView;
-            [self.appData clearAppCachesWithCompletion:^() {
-                [self.appData getCachesDirectorySizeWithCompletion:^(NSString *formattedSize) {
-                    cell.detailTextLabel.text = formattedSize;
-                    cell.accessoryView = nil;
-                }];
-            }];
-        } else if (indexPath.row == 1) {
-            [self.appData setAppBadgeCount:0];
-            cell.detailTextLabel.text = @"";
-        } else if (indexPath.row == 2) { //Reset Permissions
-            //Disable for non-vendable app
-            if (self.appData.appProxy.appStoreVendable){
-                [self.appData resetAllAppPermissions];
-            }
-        } else if (indexPath.row == 3) { //Offload App
-            //Disable for non-vendable app
-            if (self.appData.appProxy.appStoreVendable){
-                UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-                [activityIndicatorView startAnimating];
-                cell.accessoryView = activityIndicatorView;
-                [self.appData offloadAppWithCompletion:^() {
-                    cell.accessoryView = nil;
-                }];
-            }
-        } else if (indexPath.row == 4) { //Reset App
-            //Disable for non-vendable app
-            if (self.appData.appProxy.appStoreVendable){
-                UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-                [activityIndicatorView startAnimating];
-                cell.accessoryView = activityIndicatorView;
-                [self.appData resetDiskContentWithCompletion:^() {
-                    [self.appData getAppUsageDirectorySizeWithCompletion:^(NSString *formattedSize) {
-                        cell.detailTextLabel.text = formattedSize;
-                        cell.accessoryView = nil;
-                    }];
-                }];
-            }
-        } else if (indexPath.row == 5) {
+    if ([self isManageSection:indexPath.section]) {
+        if (indexPath.row == 1) {
             [self.dataViewController switchTableViews];
         }
+    } else if ([self isContainersSection:indexPath.section] || [self isAppGroupsSection:indexPath.section]) {
+        [self didSelectContainerOrAppGroupSectionAtIndexPath:indexPath];
     }
 }
 
@@ -340,6 +404,57 @@
 
 - (nullable UITargetedPreview *)tableView:(UITableView *)tableView previewForDismissingContextMenuWithConfiguration:(UIContextMenuConfiguration *)configuration API_AVAILABLE(ios(13.0)) {
     return [self tableView:tableView previewForHighlightingContextMenuWithConfiguration:configuration];
+}
+
+#pragma mark - Styles
+
++ (void)applyStylesToCell:(UITableViewCell *)cell {
+    if (@available(iOS 13.0, *)) {
+        if (cell.traitCollection.userInterfaceStyle == UIUserInterfaceStyleLight) {
+            [self applyLightStylesToCell:cell];
+        } else {
+            [self applyDarkStylesToCell:cell];
+        }
+    } else {
+        [self applyDarkStylesToCell:cell];
+    }
+}
+
++ (void)applyLightStylesToCell:(UITableViewCell *)cell {
+    cell.detailTextLabel.textColor = [UIColor colorWithRed:0.235294 green:0.235294 blue:0.262745 alpha:0.70];
+    cell.textLabel.textColor = [UIColor blackColor];
+    
+    if (cell.selectionStyle != UITableViewCellSelectionStyleNone) {
+        UIView *backgroundView = [[UIView alloc] init];
+        backgroundView.backgroundColor = [[UIColor grayColor] colorWithAlphaComponent:0.35];
+        cell.selectedBackgroundView = backgroundView;
+    }
+}
+
++ (void)applyDarkStylesToCell:(UITableViewCell *)cell {
+    cell.detailTextLabel.textColor = [UIColor colorWithRed:0.922 green:0.922 blue:0.961 alpha:0.6];
+    cell.textLabel.textColor = [UIColor whiteColor];
+
+    if (cell.selectionStyle != UITableViewCellSelectionStyleNone) {
+        UIView *backgroundView = [[UIView alloc] init];
+        backgroundView.backgroundColor = [[UIColor grayColor] colorWithAlphaComponent:0.15];
+        cell.selectedBackgroundView = backgroundView;
+    }
+}
+
+#pragma mark - Helpers
+
+- (void)showDestructiveConfirmationAlertWithTitle:(NSString *)title message:(NSString *)message confirmTitle:(NSString *)confirmTitle confirmHandler:(void(^)())confirmHandler {
+    return [self showConfirmationAlertWithTitle:title message:message confirmTitle:confirmTitle confirmStyle:UIAlertActionStyleDestructive confirmHandler:confirmHandler];
+}
+
+- (void)showConfirmationAlertWithTitle:(NSString *)title message:(NSString *)message confirmTitle:(NSString *)confirmTitle confirmStyle:(UIAlertActionStyle)style confirmHandler:(void(^)())confirmHandler {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:confirmTitle style:style handler:^(UIAlertAction * _Nonnull action) {
+        if (confirmHandler) confirmHandler();
+    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [self.dataViewController presentViewController:alertController animated:YES completion:nil];
 }
 
 @end

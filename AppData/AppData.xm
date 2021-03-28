@@ -11,7 +11,8 @@
 - (SBIconImageView *)initWithFrame:(CGRect)arg1 {
     %log;
     SBIconImageView *r = %orig;
-    if (![r isKindOfClass:NSClassFromString(@"SBFolderIconImageView")]) {
+    if (![r isKindOfClass:NSClassFromString(@"SBFolderIconImageView")]
+        && [r respondsToSelector:@selector(setAdSwipeGestureRecognizer:)]) {
         [[NSNotificationCenter defaultCenter] addObserver:r selector:@selector(appDataPreferencesChanged) name:kAppDataSwipeUpPreferencesChangedNotification object:nil];
         
         // Create Gesture Recognizer

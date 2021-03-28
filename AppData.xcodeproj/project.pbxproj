@@ -38,6 +38,13 @@
 		A4BB5DD024A9E184004A3132 /* ADDataPresentationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BB5DCE24A9E184004A3132 /* ADDataPresentationManager.m */; };
 		A4BB5DD324A9E1D1004A3132 /* ADDataViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = A4BB5DD124A9E1D1004A3132 /* ADDataViewController.h */; };
 		A4BB5DD424A9E1D1004A3132 /* ADDataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BB5DD224A9E1D1004A3132 /* ADDataViewController.m */; };
+		A4E969D62578EC8600D8043A /* ADTCC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E969D22578EC8600D8043A /* ADTCC.m */; };
+		A4E969D72578EC8600D8043A /* ADTCC.h in Headers */ = {isa = PBXBuildFile; fileRef = A4E969D32578EC8600D8043A /* ADTCC.h */; };
+		A4E969D82578EC8600D8043A /* ADTerminator.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E969D42578EC8600D8043A /* ADTerminator.m */; };
+		A4E969D92578EC8600D8043A /* ADTerminator.h in Headers */ = {isa = PBXBuildFile; fileRef = A4E969D52578EC8600D8043A /* ADTerminator.h */; };
+		A4E969DB2578F44900D8043A /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4E969DA2578F44900D8043A /* CoreLocation.framework */; };
+		A4E96A102579410200D8043A /* ADActionsBarView.h in Headers */ = {isa = PBXBuildFile; fileRef = A4E96A0E2579410200D8043A /* ADActionsBarView.h */; };
+		A4E96A112579410200D8043A /* ADActionsBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E96A0F2579410200D8043A /* ADActionsBarView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -84,6 +91,13 @@
 		A4BB5DCE24A9E184004A3132 /* ADDataPresentationManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ADDataPresentationManager.m; sourceTree = "<group>"; };
 		A4BB5DD124A9E1D1004A3132 /* ADDataViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ADDataViewController.h; sourceTree = "<group>"; };
 		A4BB5DD224A9E1D1004A3132 /* ADDataViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ADDataViewController.m; sourceTree = "<group>"; };
+		A4E969D22578EC8600D8043A /* ADTCC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADTCC.m; sourceTree = "<group>"; };
+		A4E969D32578EC8600D8043A /* ADTCC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADTCC.h; sourceTree = "<group>"; };
+		A4E969D42578EC8600D8043A /* ADTerminator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADTerminator.m; sourceTree = "<group>"; };
+		A4E969D52578EC8600D8043A /* ADTerminator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADTerminator.h; sourceTree = "<group>"; };
+		A4E969DA2578F44900D8043A /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		A4E96A0E2579410200D8043A /* ADActionsBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADActionsBarView.h; sourceTree = "<group>"; };
+		A4E96A0F2579410200D8043A /* ADActionsBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADActionsBarView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +105,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A4E969DB2578F44900D8043A /* CoreLocation.framework in Frameworks */,
 				A4277C6224AD01DB003AFD4D /* QuartzCore.framework in Frameworks */,
 				A4BB5D8924A86EEA004A3132 /* UIKit.framework in Frameworks */,
 				A4BB5D8B24A86EEA004A3132 /* Foundation.framework in Frameworks */,
@@ -108,6 +123,10 @@
 			children = (
 				A4277BCA24AA38DF003AFD4D /* ADHelper.h */,
 				A4277BCB24AA38DF003AFD4D /* ADHelper.m */,
+				A4E969D32578EC8600D8043A /* ADTCC.h */,
+				A4E969D22578EC8600D8043A /* ADTCC.m */,
+				A4E969D52578EC8600D8043A /* ADTerminator.h */,
+				A4E969D42578EC8600D8043A /* ADTerminator.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -220,6 +239,8 @@
 				A493593A24C478AB00753149 /* ADExpandableSectionHeaderView.m */,
 				A4935A2124CB1E5300753149 /* ADTitleSectionHeaderView.h */,
 				A4935A2224CB1E5400753149 /* ADTitleSectionHeaderView.m */,
+				A4E96A0E2579410200D8043A /* ADActionsBarView.h */,
+				A4E96A0F2579410200D8043A /* ADActionsBarView.m */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -244,6 +265,7 @@
 		A4BB5D8724A86EEA004A3132 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A4E969DA2578F44900D8043A /* CoreLocation.framework */,
 				A4277C6124AD01DB003AFD4D /* QuartzCore.framework */,
 				A4BB5DBD24A8CB16004A3132 /* CoreGraphics.framework */,
 				A4BB5DBB24A8C892004A3132 /* CoreServices.framework */,
@@ -339,6 +361,8 @@
 				A4935A2324CB1E5400753149 /* ADTitleSectionHeaderView.h in Headers */,
 				A493593B24C478AB00753149 /* ADExpandableSectionHeaderView.h in Headers */,
 				A4BB5DB924A8C41C004A3132 /* ADAppData.h in Headers */,
+				A4E969D92578EC8600D8043A /* ADTerminator.h in Headers */,
+				A4E969D72578EC8600D8043A /* ADTCC.h in Headers */,
 				A4277C2224ACB50C003AFD4D /* AppData-Prefix.pch in Headers */,
 				A4BB5DC724A9DBCD004A3132 /* ADDataPresentationAnimator.h in Headers */,
 				A4BB5DCB24A9E157004A3132 /* ADDataPresentationController.h in Headers */,
@@ -347,6 +371,7 @@
 				A4277C2324ACB50C003AFD4D /* Headers.h in Headers */,
 				A429A01F24BEDAD8005F586C /* ADMainDataSource.h in Headers */,
 				A4277BCC24AA38DF003AFD4D /* ADHelper.h in Headers */,
+				A4E96A102579410200D8043A /* ADActionsBarView.h in Headers */,
 				A4277C2924ACB55F003AFD4D /* NRFileManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -380,7 +405,7 @@
 		A4BB5D7B24A86EEA004A3132 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1150;
+				LastUpgradeCheck = 1170;
 				TargetAttributes = {
 					A4BB5D8424A86EEA004A3132 = {
 						CreatedOnToolsVersion = 11.5;
@@ -422,7 +447,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"[$CONFIGURATION] Updating to Repo\"\n\nif hash frweb 2>/dev/null; then\n    if [ \"$CONFIGURATION\" == \"ReleaseRepo\" ]; then\n        LatestPackage=`find \"${SRCROOT}/Packages\" -name \"*.deb\" -type f -print0 | xargs -0 stat -f \"%m %N\" | sort -n | tail -1 | cut -f2- -d\" \"`\n        frweb apt upload -i com.fouadraheb.appdata -p \"${LatestPackage}\" -c \"${SRCROOT}/PackageInfo/changelog.json\" -d \"${SRCROOT}/PackageInfo/description.html\"\n    elif [ \"$CONFIGURATION\" == \"ReleaseRepoInfo\" ]; then\n        frweb apt upload -i com.fouadraheb.appdata -c \"${SRCROOT}/PackageInfo/changelog.json\" -d \"${SRCROOT}/PackageInfo/description.html\"\n    fi\nelse\n    echo \"error: frweb tool not found\"\nfi\n";
+			shellScript = "if hash frweb 2>/dev/null; then\n    if [ \"$CONFIGURATION\" == \"ReleaseRepo\" ]; then\n        LatestPackage=`find \"${SRCROOT}/Packages\" -name \"*.deb\" -type f -print0 | xargs -0 stat -f \"%m %N\" | sort -n | tail -1 | cut -f2- -d\" \"`\n        frweb apt upload -i com.fouadraheb.appdata -p \"${LatestPackage}\" -c \"${SRCROOT}/PackageInfo/changelog.json\" -d \"${SRCROOT}/PackageInfo/description.html\"\n    elif [ \"$CONFIGURATION\" == \"ReleaseRepoInfo\" ]; then\n        frweb apt upload -i com.fouadraheb.appdata -c \"${SRCROOT}/PackageInfo/changelog.json\" -d \"${SRCROOT}/PackageInfo/description.html\"\n    fi\nelse\n    echo \"error: frweb tool not found\"\nfi\n";
 		};
 		A4BB5D7F24A86EEA004A3132 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -466,11 +491,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				A493593C24C478AB00753149 /* ADExpandableSectionHeaderView.m in Sources */,
+				A4E969D82578EC8600D8043A /* ADTerminator.m in Sources */,
+				A4E96A112579410200D8043A /* ADActionsBarView.m in Sources */,
 				A4BB5D9624A86EEA004A3132 /* AppData.mm in Sources */,
 				A4BB5DD424A9E1D1004A3132 /* ADDataViewController.m in Sources */,
 				A4277C2A24ACB55F003AFD4D /* NRFileManager.m in Sources */,
 				A429A02024BEDAD8005F586C /* ADMainDataSource.m in Sources */,
 				A4935A2424CB1E5400753149 /* ADTitleSectionHeaderView.m in Sources */,
+				A4E969D62578EC8600D8043A /* ADTCC.m in Sources */,
 				A429A01C24BEDA55005F586C /* ADMoreDataSource.m in Sources */,
 				A4BB5DCC24A9E157004A3132 /* ADDataPresentationController.m in Sources */,
 				A4277BCD24AA38DF003AFD4D /* ADHelper.m in Sources */,

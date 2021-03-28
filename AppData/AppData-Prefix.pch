@@ -13,12 +13,13 @@
 #import "ADHelper.h"
 
 #ifdef DEBUG
-    #define NSLog(...) NSLog(@"[AppData]: %@", [NSString stringWithFormat:__VA_ARGS__])
+    #define NSLog(...)          NSLog(@"[AppData]: %@", [NSString stringWithFormat:__VA_ARGS__])
 #else
     #define NSLog(...)
 #endif
 
-#define ASYNC(...)      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{ __VA_ARGS__; })
-#define ASYNC_MAIN(...) dispatch_async(dispatch_get_main_queue(), ^{ __VA_ARGS__ })
+#define ASYNC(...)              dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{ __VA_ARGS__; })
+#define ASYNC_MAIN(...)         dispatch_async(dispatch_get_main_queue(), ^{ __VA_ARGS__ })
+#define DISPATCH_AFTER(t,...)   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, t * NSEC_PER_SEC), dispatch_get_main_queue(), ^{ __VA_ARGS__ })
 
-#define IS_IPAD         UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
+#define IS_IPAD                 UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad

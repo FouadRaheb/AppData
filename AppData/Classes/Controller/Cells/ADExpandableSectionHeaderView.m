@@ -43,9 +43,7 @@
     
     self.chevronDown = [[ADHelper imageNamed:@"ChevronDown"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.chevronUp = [[ADHelper imageNamed:@"ChevronUp"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    
     self.chevronImageView = [[UIImageView alloc] initWithImage:self.chevronDown];
-    self.chevronImageView.tintColor = [UIColor colorWithRed:0.557 green:0.557 blue:0.577 alpha:1.0];
     [self addSubview:self.chevronImageView];
     self.chevronImageView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.chevronImageView.widthAnchor constraintEqualToConstant:19].active = YES;
@@ -55,7 +53,6 @@
     
     self.titleLabel = [[UILabel alloc] init];
     self.titleLabel.font = [UIFont systemFontOfSize:13];
-    self.titleLabel.textColor = self.chevronImageView.tintColor;
     [self addSubview:self.titleLabel];
     self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.titleLabel.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:15].active = YES;
@@ -72,6 +69,20 @@
 - (void)setIsExpanded:(BOOL)isExpanded {
     _isExpanded = isExpanded;
     self.chevronImageView.image = isExpanded ? self.chevronUp : self.chevronDown;
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    if (@available(iOS 13.0, *)) {
+        if (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleLight) {
+            self.titleLabel.textColor = [UIColor colorWithRed:0.427 green:0.427 blue:0.427 alpha:1.0];
+        } else {
+            self.titleLabel.textColor = [UIColor colorWithRed:0.557 green:0.557 blue:0.577 alpha:1.0];
+        }
+    } else {
+        self.titleLabel.textColor = [UIColor colorWithRed:0.557 green:0.557 blue:0.577 alpha:1.0];
+    }
+    self.chevronImageView.tintColor = self.titleLabel.textColor;
 }
 
 @end

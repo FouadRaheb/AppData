@@ -38,7 +38,6 @@
     UIImage *portraitImage = [[UIImage alloc] initWithCGImage:landscapeImage.CGImage scale:1.0 orientation: UIImageOrientationRight];
     UIImage *image = [[self makeThumbnailOfSize:CGSizeMake(10, 18) ofImage:portraitImage] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.backImageView = [[UIImageView alloc] initWithImage:image];
-    self.backImageView.tintColor = [UIColor colorWithRed:0.557 green:0.557 blue:0.577 alpha:1.0];
     [self addSubview:self.backImageView];
     self.backImageView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.backImageView.leadingAnchor constraintEqualToAnchor:self.contentView.leadingAnchor constant:15].active = YES;
@@ -48,7 +47,6 @@
     
     self.titleLabel = [[UILabel alloc] init];
     self.titleLabel.font = [UIFont systemFontOfSize:13];
-    self.titleLabel.textColor = [UIColor colorWithRed:0.557 green:0.557 blue:0.557 alpha:1.0];
     self.titleLabel.text = @"MORE INFO";
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
     [self addSubview:self.titleLabel];
@@ -69,6 +67,21 @@
 
 - (void)didTapHeaderView:(UITapGestureRecognizer *)gesture {
     [self.delegate titleSectionHeaderViewDidTapBackButton];
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    if (@available(iOS 13.0, *)) {
+        if (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleLight) {
+            self.titleLabel.textColor = [UIColor colorWithRed:0.427 green:0.427 blue:0.427 alpha:1.0];
+        } else {
+            self.titleLabel.textColor = [UIColor colorWithRed:0.557 green:0.557 blue:0.557 alpha:1.0];
+        }
+    } else {
+        self.titleLabel.textColor = [UIColor colorWithRed:0.557 green:0.557 blue:0.557 alpha:1.0];
+    }
+    self.backImageView.tintColor = self.titleLabel.textColor;
 }
 
 @end

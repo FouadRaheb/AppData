@@ -60,9 +60,13 @@
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TextCellIdentifier"];
         if (!cell) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"TextCellIdentifier"];
-            [ADMainDataSource applySharedStylesToCell:cell];
+            cell.backgroundColor = [UIColor clearColor];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
             cell.accessoryType = UITableViewCellAccessoryNone;
+            cell.textLabel.font = [UIFont systemFontOfSize:15];
+            cell.detailTextLabel.font = [UIFont systemFontOfSize:13];
         }
+        [ADMainDataSource applyStylesToCell:cell];
         if (indexPath.row == 0) {
             cell.textLabel.text = @"Internal Version";
             cell.detailTextLabel.text = [NSString stringWithFormat:@"%@",self.appData.internalVersion];
@@ -78,10 +82,12 @@
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ExpandableTextCellIdentifier"];
         if (!cell) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"ExpandableTextCellIdentifier"];
+            cell.backgroundColor = [UIColor clearColor];
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            [ADMainDataSource applySharedStylesToCell:cell];
+            cell.accessoryType = UITableViewCellAccessoryNone;
+            cell.textLabel.font = [UIFont systemFontOfSize:15];
         }
-        cell.accessoryType = UITableViewCellAccessoryNone;
+        [ADMainDataSource applyStylesToCell:cell];
         if (indexPath.section == 1) {
             cell.textLabel.text = [NSString stringWithFormat:@"%@",[self.appData.urlSchemes objectAtIndex:indexPath.row]];
         } else if (indexPath.section == 2) {
@@ -92,7 +98,6 @@
             cell.textLabel.text = [NSString stringWithFormat:@"%@",[self.appData.backgroundModes objectAtIndex:indexPath.row]];
         } else if (indexPath.section == 5) {
             cell.textLabel.text = [NSString stringWithFormat:@"%@",[self.appData.entitlementsIdentifiers objectAtIndex:indexPath.row]];
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
         return cell;
     }
