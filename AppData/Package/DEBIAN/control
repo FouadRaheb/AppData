@@ -1,6 +1,6 @@
 Package: com.fouadraheb.appdata
 Name: AppData
-Version: 1.3.3
+Version: 1.3.4
 Description: View & Manage Applications Data from your Home Screen
 Section: Tweaks
 Depends: firmware (>= 11.0), mobilesubstrate (>= 0.9.5000), preferenceloader

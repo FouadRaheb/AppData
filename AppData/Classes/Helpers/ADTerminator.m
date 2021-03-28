@@ -13,21 +13,31 @@ static SBSApplicationTerminationAssertionRef (*SBSApplicationTerminationAssertio
 
 static void (*SBSApplicationTerminationAssertionInvalidate_Ptr)(SBSApplicationTerminationAssertionRef assertion);
 
-
-__attribute__((constructor))
-static void initializeFunctions() {
-    void *handler = dlopen("/System/Library/PrivateFrameworks/SpringBoard.framework/SpringBoard", RTLD_LAZY);
-    if (handler){
-        SBSApplicationTerminationAssertionCreateWithError_Ptr = dlsym(handler, "SBSApplicationTerminationAssertionCreateWithError");
-        SBSApplicationTerminationAssertionInvalidate_Ptr = dlsym(handler, "SBSApplicationTerminationAssertionInvalidate");
-        dlclose(handler);
-    }
-}
-
 SBSApplicationTerminationAssertionRef SBSApplicationTerminationAssertionCreateWithError(void *unknown, NSString *bundleIdentifier, int reason, int *outError) {
-    return SBSApplicationTerminationAssertionCreateWithError_Ptr(unknown, bundleIdentifier, reason, outError);
+    if (SBSApplicationTerminationAssertionCreateWithError_Ptr) {
+        return SBSApplicationTerminationAssertionCreateWithError_Ptr(unknown, bundleIdentifier, reason, outError);
+    }
+    return NULL;
 }
 
 void SBSApplicationTerminationAssertionInvalidate(SBSApplicationTerminationAssertionRef assertion) {
-    return SBSApplicationTerminationAssertionInvalidate_Ptr(assertion);
+    if (SBSApplicationTerminationAssertionInvalidate_Ptr) {
+        return SBSApplicationTerminationAssertionInvalidate_Ptr(assertion);
+    }
+}
+
+__attribute__((constructor))
+static void initializeFunctions() {
+    void *handle = NULL;
+    if (@available(iOS 13, *)) {
+        handle = dlopen("/System/Library/PrivateFrameworks/SpringBoard.framework/SpringBoard", RTLD_LAZY);
+    } else {
+        handle = dlopen("/System/Library/PrivateFrameworks/SpringBoardServices.framework/SpringBoardServices", RTLD_LAZY);
+    }
+    
+    if (handle) {
+        SBSApplicationTerminationAssertionCreateWithError_Ptr = dlsym(handle, "SBSApplicationTerminationAssertionCreateWithError");
+        SBSApplicationTerminationAssertionInvalidate_Ptr = dlsym(handle, "SBSApplicationTerminationAssertionInvalidate");
+        dlclose(handle);
+    }
 }

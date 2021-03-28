@@ -16,22 +16,25 @@ static CFArrayRef (*TCCAccessCopyInformationForBundle_Ptr)(CFBundleRef);
 
 
 int TCCAccessResetForBundle(NSString *service, CFBundleRef bundle) {
-    return TCCAccessResetForBundle_Ptr(service, bundle);
+    return TCCAccessResetForBundle_Ptr ? TCCAccessResetForBundle_Ptr(service, bundle) : 0;
 }
 
 NSArray<NSDictionary *> *TCCAccessCopyInformationForBundle(CFBundleRef bundle) {
-    CFArrayRef array = TCCAccessCopyInformationForBundle_Ptr(bundle);
-    NSArray *objcArray = (__bridge_transfer NSArray *)array;
-    return [objcArray copy];
+    if (TCCAccessCopyInformationForBundle_Ptr) {
+        CFArrayRef array = TCCAccessCopyInformationForBundle_Ptr(bundle);
+        NSArray *objcArray = (__bridge_transfer NSArray *)array;
+        return [objcArray copy];
+    }
+    return NULL;
 }
 
 
 __attribute__((constructor))
 static void initializeFunctions() {
-    void *handler = dlopen("/System/Library/PrivateFrameworks/TCC.framework/TCC", RTLD_LAZY);
-    if (handler) {
-        TCCAccessResetForBundle_Ptr = dlsym(handler, "TCCAccessResetForBundle");
-        TCCAccessCopyInformationForBundle_Ptr = dlsym(handler, "TCCAccessCopyInformationForBundle");
-        dlclose(handler);
+    void *handle = dlopen("/System/Library/PrivateFrameworks/TCC.framework/TCC", RTLD_LAZY);
+    if (handle) {
+        TCCAccessResetForBundle_Ptr = dlsym(handle, "TCCAccessResetForBundle");
+        TCCAccessCopyInformationForBundle_Ptr = dlsym(handle, "TCCAccessCopyInformationForBundle");
+        dlclose(handle);
     }
 }
