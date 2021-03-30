@@ -11,6 +11,7 @@
 #import "Headers.h"
 
 #import "ADHelper.h"
+#import "ADSettings.h"
 
 #ifdef DEBUG
     #define NSLog(...)          NSLog(@"[AppData]: %@", [NSString stringWithFormat:__VA_ARGS__])

@@ -9,6 +9,7 @@
 #import "ADAppData.h"
 #import "ADDataViewController.h"
 #import "ADActionsBarView.h"
+#import "ADTitleSectionHeaderView.h"
 
 @implementation ADMainDataSource
 
@@ -60,12 +61,12 @@
         if (!cell) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"InfoCellIdentifier"];
             cell.backgroundColor = [UIColor clearColor];
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             cell.textLabel.font = [UIFont systemFontOfSize:15];
             cell.detailTextLabel.font = [UIFont systemFontOfSize:13];
             cell.detailTextLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
         }
-        [self.class applyStylesToCell:cell];
+        cell.accessoryView = [ADAppearance.sharedInstance tableCellChevronImageView];
+        [ADAppearance applyStylesToCell:cell];
         
         if ([self isContainersSection:indexPath.section]) {
             if (indexPath.row == 0) {
@@ -153,18 +154,18 @@
                     NSInteger itemIndex = 1;
                     [weakActionsBar showLoadingIndicatorForItemAtIndex:itemIndex];
                     [weakActionsBar setDetail:@"Clearing..." forItemAtIndex:itemIndex];
-                    DISPATCH_AFTER(0.5, {
-                        [self.appData clearAppCachesWithCompletion:^{
-                            [weakActionsBar hideLoadingIndicatorForItemAtIndex:itemIndex];
-                            [weakActionsBar setDetail:@"Cleared!" forItemAtIndex:itemIndex];
-                            [[UINotificationFeedbackGenerator new] notificationOccurred:UINotificationFeedbackTypeSuccess];
-                            DISPATCH_AFTER(0.5, {
-                                [self.appData getCachesDirectorySizeWithCompletion:^(NSString *formattedSize) {
-                                    [weakActionsBar setDetail:formattedSize forItemAtIndex:itemIndex];
-                                }];
-                            });
-                        }];
-                    });
+//                    DISPATCH_AFTER(0.5, {
+//                        [self.appData clearAppCachesWithCompletion:^{
+//                            [weakActionsBar hideLoadingIndicatorForItemAtIndex:itemIndex];
+//                            [weakActionsBar setDetail:@"Cleared!" forItemAtIndex:itemIndex];
+//                            [[UINotificationFeedbackGenerator new] notificationOccurred:UINotificationFeedbackTypeSuccess];
+//                            DISPATCH_AFTER(0.5, {
+//                                [self.appData getCachesDirectorySizeWithCompletion:^(NSString *formattedSize) {
+//                                    [weakActionsBar setDetail:formattedSize forItemAtIndex:itemIndex];
+//                                }];
+//                            });
+//                        }];
+//                    });
                 }];
                 
                 // Clear App Data
@@ -254,10 +255,10 @@
             if (!cell) {
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"MoreInfoCellIdentifier"];
                 cell.backgroundColor = [UIColor clearColor];
-                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             }
-            [self.class applyStylesToCell:cell];
+            cell.accessoryView = [ADAppearance.sharedInstance tableCellChevronImageView];
             cell.textLabel.text = @"More Info";
+            [ADAppearance applyStylesToCell:cell];
             return cell;
         }
     }
@@ -275,7 +276,17 @@
     }
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    NSString *title = [self titleForHeaderInSection:section];
+    if (title) {
+        ADTitleSectionHeaderView *header = [tableView dequeueReusableHeaderFooterViewWithIdentifier:ADTitleSectionHeaderView.reuseIdentifier];
+        [header configureHeaderWithTitle:[title uppercaseString]];
+        return header;
+    }
+    return nil;
+}
+
+- (NSString *)titleForHeaderInSection:(NSInteger)section {
     if ([self isContainersSection:section]) {
         return self.appData.isApplication ? @"Containers" : nil;
     } else if ([self isAppGroupsSection:section]) {
@@ -404,42 +415,6 @@
 
 - (nullable UITargetedPreview *)tableView:(UITableView *)tableView previewForDismissingContextMenuWithConfiguration:(UIContextMenuConfiguration *)configuration API_AVAILABLE(ios(13.0)) {
     return [self tableView:tableView previewForHighlightingContextMenuWithConfiguration:configuration];
-}
-
-#pragma mark - Styles
-
-+ (void)applyStylesToCell:(UITableViewCell *)cell {
-    if (@available(iOS 13.0, *)) {
-        if (cell.traitCollection.userInterfaceStyle == UIUserInterfaceStyleLight) {
-            [self applyLightStylesToCell:cell];
-        } else {
-            [self applyDarkStylesToCell:cell];
-        }
-    } else {
-        [self applyDarkStylesToCell:cell];
-    }
-}
-
-+ (void)applyLightStylesToCell:(UITableViewCell *)cell {
-    cell.detailTextLabel.textColor = [UIColor colorWithRed:0.235294 green:0.235294 blue:0.262745 alpha:0.70];
-    cell.textLabel.textColor = [UIColor blackColor];
-    
-    if (cell.selectionStyle != UITableViewCellSelectionStyleNone) {
-        UIView *backgroundView = [[UIView alloc] init];
-        backgroundView.backgroundColor = [[UIColor grayColor] colorWithAlphaComponent:0.35];
-        cell.selectedBackgroundView = backgroundView;
-    }
-}
-
-+ (void)applyDarkStylesToCell:(UITableViewCell *)cell {
-    cell.detailTextLabel.textColor = [UIColor colorWithRed:0.922 green:0.922 blue:0.961 alpha:0.6];
-    cell.textLabel.textColor = [UIColor whiteColor];
-
-    if (cell.selectionStyle != UITableViewCellSelectionStyleNone) {
-        UIView *backgroundView = [[UIView alloc] init];
-        backgroundView.backgroundColor = [[UIColor grayColor] colorWithAlphaComponent:0.15];
-        cell.selectedBackgroundView = backgroundView;
-    }
 }
 
 #pragma mark - Helpers

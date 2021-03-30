@@ -163,11 +163,11 @@
 #pragma mark - Icon Name
 
 - (NSString *)customIconName {
-    return [ADHelper customAppNameForBundleIdentifier:self.bundleIdentifier];
+    return [ADSettings customAppNameForBundleIdentifier:self.bundleIdentifier];
 }
 
 - (void)setCustomIconName:(NSString *)name {
-    [ADHelper setCustomAppName:name forBundleIdentifier:self.bundleIdentifier];
+    [ADSettings setCustomAppName:name forBundleIdentifier:self.bundleIdentifier];
     if (self.iconView && [self.iconView respondsToSelector:@selector(_updateLabel)]) {
         [self.iconView _updateLabel];
     }

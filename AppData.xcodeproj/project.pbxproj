@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -38,6 +38,19 @@
 		A4BB5DD024A9E184004A3132 /* ADDataPresentationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BB5DCE24A9E184004A3132 /* ADDataPresentationManager.m */; };
 		A4BB5DD324A9E1D1004A3132 /* ADDataViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = A4BB5DD124A9E1D1004A3132 /* ADDataViewController.h */; };
 		A4BB5DD424A9E1D1004A3132 /* ADDataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BB5DD224A9E1D1004A3132 /* ADDataViewController.m */; };
+		A4C5FD54261233B1005FD2D8 /* ADPreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C5FD53261233B0005FD2D8 /* ADPreferencesController.m */; };
+		A4C5FD5726123481005FD2D8 /* ADSettings.h in Headers */ = {isa = PBXBuildFile; fileRef = A4C5FD5526123481005FD2D8 /* ADSettings.h */; };
+		A4C5FD5826123481005FD2D8 /* ADSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C5FD5626123481005FD2D8 /* ADSettings.m */; };
+		A4C5FD5926123483005FD2D8 /* ADSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C5FD5626123481005FD2D8 /* ADSettings.m */; };
+		A4C5FD702612376F005FD2D8 /* ADSelectListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C5FD632612376E005FD2D8 /* ADSelectListTableViewController.m */; };
+		A4C5FD722612376F005FD2D8 /* ADHeaderTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C5FD692612376F005FD2D8 /* ADHeaderTableViewCell.m */; };
+		A4C5FD742612376F005FD2D8 /* ADPrefsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C5FD6B2612376F005FD2D8 /* ADPrefsHelper.m */; };
+		A4C5FD7D26123D40005FD2D8 /* ADSwitchTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C5FD7B26123D40005FD2D8 /* ADSwitchTableViewCell.m */; };
+		A4C5FD7F26124090005FD2D8 /* Preferences.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4C5FD7E26124090005FD2D8 /* Preferences.framework */; platformFilter = ios; };
+		A4C5FD8A26125556005FD2D8 /* ADAppearance.h in Headers */ = {isa = PBXBuildFile; fileRef = A4C5FD8826125556005FD2D8 /* ADAppearance.h */; };
+		A4C5FD8B26125556005FD2D8 /* ADAppearance.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C5FD8926125556005FD2D8 /* ADAppearance.m */; };
+		A4C5FD8E26131EC4005FD2D8 /* AppData@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4C5FD8C26131EC4005FD2D8 /* AppData@2x.png */; };
+		A4C5FD8F26131EC4005FD2D8 /* AppData@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4C5FD8D26131EC4005FD2D8 /* AppData@3x.png */; };
 		A4E969D62578EC8600D8043A /* ADTCC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E969D22578EC8600D8043A /* ADTCC.m */; };
 		A4E969D72578EC8600D8043A /* ADTCC.h in Headers */ = {isa = PBXBuildFile; fileRef = A4E969D32578EC8600D8043A /* ADTCC.h */; };
 		A4E969D82578EC8600D8043A /* ADTerminator.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E969D42578EC8600D8043A /* ADTerminator.m */; };
@@ -47,15 +60,19 @@
 		A4E96A112579410200D8043A /* ADActionsBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E96A0F2579410200D8043A /* ADActionsBarView.m */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		A4C5FD862612419B005FD2D8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A4BB5D7B24A86EEA004A3132 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A4C5FD46261231D4005FD2D8;
+			remoteInfo = AppDataPrefs;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		A4277BCA24AA38DF003AFD4D /* ADHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ADHelper.h; sourceTree = "<group>"; };
 		A4277BCB24AA38DF003AFD4D /* ADHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ADHelper.m; sourceTree = "<group>"; };
-		A4277C1224AC79B8003AFD4D /* Resources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Resources.bundle; sourceTree = "<group>"; };
-		A4277C1524AC79B8003AFD4D /* AppData.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = AppData.dylib; sourceTree = "<group>"; };
-		A4277C1624AC79B8003AFD4D /* AppData.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = AppData.plist; sourceTree = "<group>"; };
-		A4277C1924AC79B8003AFD4D /* AppData@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppData@3x.png"; sourceTree = "<group>"; };
-		A4277C1A24AC79B8003AFD4D /* AppData@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppData@2x.png"; sourceTree = "<group>"; };
-		A4277C1B24AC79B8003AFD4D /* AppData.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = AppData.plist; sourceTree = "<group>"; };
 		A4277C2024ACB50C003AFD4D /* AppData-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AppData-Prefix.pch"; sourceTree = "<group>"; };
 		A4277C2124ACB50C003AFD4D /* Headers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Headers.h; sourceTree = "<group>"; };
 		A4277C2424ACB51B003AFD4D /* PackageInfo */ = {isa = PBXFileReference; lastKnownFileType = text; path = PackageInfo; sourceTree = SOURCE_ROOT; };
@@ -75,7 +92,6 @@
 		A4BB5D8824A86EEA004A3132 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A4BB5D8A24A86EEA004A3132 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A4BB5D8C24A86EEA004A3132 /* CydiaSubstrate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CydiaSubstrate.framework; path = Library/Frameworks/CydiaSubstrate.framework; sourceTree = DEVELOPER_DIR; };
-		A4BB5D9124A86EEA004A3132 /* control */ = {isa = PBXFileReference; lastKnownFileType = text; path = control; sourceTree = "<group>"; };
 		A4BB5D9424A86EEA004A3132 /* AppData.xm */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; path = AppData.xm; sourceTree = "<group>"; };
 		A4BB5D9524A86EEA004A3132 /* AppData.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppData.mm; sourceTree = "<group>"; };
 		A4BB5DB124A8C12C004A3132 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
@@ -91,6 +107,26 @@
 		A4BB5DCE24A9E184004A3132 /* ADDataPresentationManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ADDataPresentationManager.m; sourceTree = "<group>"; };
 		A4BB5DD124A9E1D1004A3132 /* ADDataViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ADDataViewController.h; sourceTree = "<group>"; };
 		A4BB5DD224A9E1D1004A3132 /* ADDataViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ADDataViewController.m; sourceTree = "<group>"; };
+		A4C5FD47261231D4005FD2D8 /* AppDataPrefs.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppDataPrefs.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		A4C5FD49261231D4005FD2D8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A4C5FD52261233B0005FD2D8 /* ADPreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADPreferencesController.h; sourceTree = "<group>"; };
+		A4C5FD53261233B0005FD2D8 /* ADPreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADPreferencesController.m; sourceTree = "<group>"; };
+		A4C5FD5526123481005FD2D8 /* ADSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADSettings.h; sourceTree = "<group>"; };
+		A4C5FD5626123481005FD2D8 /* ADSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADSettings.m; sourceTree = "<group>"; };
+		A4C5FD5E2612376E005FD2D8 /* ADSelectListTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADSelectListTableViewController.h; sourceTree = "<group>"; };
+		A4C5FD632612376E005FD2D8 /* ADSelectListTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADSelectListTableViewController.m; sourceTree = "<group>"; };
+		A4C5FD662612376F005FD2D8 /* ADHeaderTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADHeaderTableViewCell.h; sourceTree = "<group>"; };
+		A4C5FD692612376F005FD2D8 /* ADHeaderTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADHeaderTableViewCell.m; sourceTree = "<group>"; };
+		A4C5FD6B2612376F005FD2D8 /* ADPrefsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADPrefsHelper.m; sourceTree = "<group>"; };
+		A4C5FD6C2612376F005FD2D8 /* ADPrefsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADPrefsHelper.h; sourceTree = "<group>"; };
+		A4C5FD7926123916005FD2D8 /* Package */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Package; sourceTree = "<group>"; };
+		A4C5FD7B26123D40005FD2D8 /* ADSwitchTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADSwitchTableViewCell.m; sourceTree = "<group>"; };
+		A4C5FD7C26123D40005FD2D8 /* ADSwitchTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADSwitchTableViewCell.h; sourceTree = "<group>"; };
+		A4C5FD7E26124090005FD2D8 /* Preferences.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Preferences.framework; path = ../theos/vendor/lib/Preferences.framework; sourceTree = "<group>"; };
+		A4C5FD8826125556005FD2D8 /* ADAppearance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ADAppearance.h; sourceTree = "<group>"; };
+		A4C5FD8926125556005FD2D8 /* ADAppearance.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ADAppearance.m; sourceTree = "<group>"; };
+		A4C5FD8C26131EC4005FD2D8 /* AppData@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppData@2x.png"; sourceTree = "<group>"; };
+		A4C5FD8D26131EC4005FD2D8 /* AppData@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppData@3x.png"; sourceTree = "<group>"; };
 		A4E969D22578EC8600D8043A /* ADTCC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADTCC.m; sourceTree = "<group>"; };
 		A4E969D32578EC8600D8043A /* ADTCC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ADTCC.h; sourceTree = "<group>"; };
 		A4E969D42578EC8600D8043A /* ADTerminator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ADTerminator.m; sourceTree = "<group>"; };
@@ -115,87 +151,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A4C5FD44261231D4005FD2D8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A4C5FD7F26124090005FD2D8 /* Preferences.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		A4277BC924AA38C6003AFD4D /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				A4C5FD5526123481005FD2D8 /* ADSettings.h */,
+				A4C5FD5626123481005FD2D8 /* ADSettings.m */,
 				A4277BCA24AA38DF003AFD4D /* ADHelper.h */,
 				A4277BCB24AA38DF003AFD4D /* ADHelper.m */,
-				A4E969D32578EC8600D8043A /* ADTCC.h */,
-				A4E969D22578EC8600D8043A /* ADTCC.m */,
-				A4E969D52578EC8600D8043A /* ADTerminator.h */,
-				A4E969D42578EC8600D8043A /* ADTerminator.m */,
+				A4C5FD8826125556005FD2D8 /* ADAppearance.h */,
+				A4C5FD8926125556005FD2D8 /* ADAppearance.m */,
 			);
 			path = Helpers;
-			sourceTree = "<group>";
-		};
-		A4277C0F24AC79B8003AFD4D /* Library */ = {
-			isa = PBXGroup;
-			children = (
-				A4277C1024AC79B8003AFD4D /* Application Support */,
-				A4277C1324AC79B8003AFD4D /* MobileSubstrate */,
-				A4277C1724AC79B8003AFD4D /* PreferenceLoader */,
-			);
-			path = Library;
-			sourceTree = "<group>";
-		};
-		A4277C1024AC79B8003AFD4D /* Application Support */ = {
-			isa = PBXGroup;
-			children = (
-				A4277C1124AC79B8003AFD4D /* AppData */,
-			);
-			path = "Application Support";
-			sourceTree = "<group>";
-		};
-		A4277C1124AC79B8003AFD4D /* AppData */ = {
-			isa = PBXGroup;
-			children = (
-				A4277C1224AC79B8003AFD4D /* Resources.bundle */,
-			);
-			path = AppData;
-			sourceTree = "<group>";
-		};
-		A4277C1324AC79B8003AFD4D /* MobileSubstrate */ = {
-			isa = PBXGroup;
-			children = (
-				A4277C1424AC79B8003AFD4D /* DynamicLibraries */,
-			);
-			path = MobileSubstrate;
-			sourceTree = "<group>";
-		};
-		A4277C1424AC79B8003AFD4D /* DynamicLibraries */ = {
-			isa = PBXGroup;
-			children = (
-				A4277C1524AC79B8003AFD4D /* AppData.dylib */,
-				A4277C1624AC79B8003AFD4D /* AppData.plist */,
-			);
-			path = DynamicLibraries;
-			sourceTree = "<group>";
-		};
-		A4277C1724AC79B8003AFD4D /* PreferenceLoader */ = {
-			isa = PBXGroup;
-			children = (
-				A4277C1824AC79B8003AFD4D /* Preferences */,
-			);
-			path = PreferenceLoader;
-			sourceTree = "<group>";
-		};
-		A4277C1824AC79B8003AFD4D /* Preferences */ = {
-			isa = PBXGroup;
-			children = (
-				A4277C1924AC79B8003AFD4D /* AppData@3x.png */,
-				A4277C1A24AC79B8003AFD4D /* AppData@2x.png */,
-				A4277C1B24AC79B8003AFD4D /* AppData.plist */,
-			);
-			path = Preferences;
 			sourceTree = "<group>";
 		};
 		A4277C1C24ACB4E2003AFD4D /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				A4BB5D8F24A86EEA004A3132 /* Package */,
+				A4C5FD7926123916005FD2D8 /* Package */,
 				A4277C2424ACB51B003AFD4D /* PackageInfo */,
 				A4277C2024ACB50C003AFD4D /* AppData-Prefix.pch */,
 				A4277C2124ACB50C003AFD4D /* Headers.h */,
@@ -249,6 +232,7 @@
 			isa = PBXGroup;
 			children = (
 				A4BB5D8E24A86EEA004A3132 /* AppData */,
+				A4C5FD48261231D4005FD2D8 /* AppDataPrefs */,
 				A4BB5D8724A86EEA004A3132 /* Frameworks */,
 				A4BB5D8624A86EEA004A3132 /* Products */,
 			);
@@ -258,6 +242,7 @@
 			isa = PBXGroup;
 			children = (
 				A4BB5D8524A86EEA004A3132 /* AppData.dylib */,
+				A4C5FD47261231D4005FD2D8 /* AppDataPrefs.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -265,6 +250,7 @@
 		A4BB5D8724A86EEA004A3132 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A4C5FD7E26124090005FD2D8 /* Preferences.framework */,
 				A4E969DA2578F44900D8043A /* CoreLocation.framework */,
 				A4277C6124AD01DB003AFD4D /* QuartzCore.framework */,
 				A4BB5DBD24A8CB16004A3132 /* CoreGraphics.framework */,
@@ -289,27 +275,11 @@
 			path = AppData;
 			sourceTree = "<group>";
 		};
-		A4BB5D8F24A86EEA004A3132 /* Package */ = {
-			isa = PBXGroup;
-			children = (
-				A4277C0F24AC79B8003AFD4D /* Library */,
-				A4BB5D9024A86EEA004A3132 /* DEBIAN */,
-			);
-			path = Package;
-			sourceTree = "<group>";
-		};
-		A4BB5D9024A86EEA004A3132 /* DEBIAN */ = {
-			isa = PBXGroup;
-			children = (
-				A4BB5D9124A86EEA004A3132 /* control */,
-			);
-			path = DEBIAN;
-			sourceTree = "<group>";
-		};
 		A4BB5DA024A8734E004A3132 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
 				A4277BC924AA38C6003AFD4D /* Helpers */,
+				A4C5FD5A261236A3005FD2D8 /* Tools */,
 				A4BB5DD624A9FE65004A3132 /* Presentation */,
 				A4BB5DD524A9FE58004A3132 /* Model */,
 				A4BB5DC424A9DBB2004A3132 /* Controller */,
@@ -350,6 +320,69 @@
 			path = Presentation;
 			sourceTree = "<group>";
 		};
+		A4C5FD48261231D4005FD2D8 /* AppDataPrefs */ = {
+			isa = PBXGroup;
+			children = (
+				A4C5FD52261233B0005FD2D8 /* ADPreferencesController.h */,
+				A4C5FD53261233B0005FD2D8 /* ADPreferencesController.m */,
+				A4C5FD502612339A005FD2D8 /* Classes */,
+				A4C5FD512612339A005FD2D8 /* Resources */,
+				A4C5FD49261231D4005FD2D8 /* Info.plist */,
+			);
+			path = AppDataPrefs;
+			sourceTree = "<group>";
+		};
+		A4C5FD502612339A005FD2D8 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				A4C5FD642612376E005FD2D8 /* Cells */,
+				A4C5FD5B2612376E005FD2D8 /* Controllers */,
+				A4C5FD6C2612376F005FD2D8 /* ADPrefsHelper.h */,
+				A4C5FD6B2612376F005FD2D8 /* ADPrefsHelper.m */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		A4C5FD512612339A005FD2D8 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A4C5FD8C26131EC4005FD2D8 /* AppData@2x.png */,
+				A4C5FD8D26131EC4005FD2D8 /* AppData@3x.png */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		A4C5FD5A261236A3005FD2D8 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				A4E969D32578EC8600D8043A /* ADTCC.h */,
+				A4E969D22578EC8600D8043A /* ADTCC.m */,
+				A4E969D52578EC8600D8043A /* ADTerminator.h */,
+				A4E969D42578EC8600D8043A /* ADTerminator.m */,
+			);
+			path = Tools;
+			sourceTree = "<group>";
+		};
+		A4C5FD5B2612376E005FD2D8 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				A4C5FD5E2612376E005FD2D8 /* ADSelectListTableViewController.h */,
+				A4C5FD632612376E005FD2D8 /* ADSelectListTableViewController.m */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		A4C5FD642612376E005FD2D8 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				A4C5FD7C26123D40005FD2D8 /* ADSwitchTableViewCell.h */,
+				A4C5FD7B26123D40005FD2D8 /* ADSwitchTableViewCell.m */,
+				A4C5FD662612376F005FD2D8 /* ADHeaderTableViewCell.h */,
+				A4C5FD692612376F005FD2D8 /* ADHeaderTableViewCell.m */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -364,6 +397,7 @@
 				A4E969D92578EC8600D8043A /* ADTerminator.h in Headers */,
 				A4E969D72578EC8600D8043A /* ADTCC.h in Headers */,
 				A4277C2224ACB50C003AFD4D /* AppData-Prefix.pch in Headers */,
+				A4C5FD8A26125556005FD2D8 /* ADAppearance.h in Headers */,
 				A4BB5DC724A9DBCD004A3132 /* ADDataPresentationAnimator.h in Headers */,
 				A4BB5DCB24A9E157004A3132 /* ADDataPresentationController.h in Headers */,
 				A4BB5DD324A9E1D1004A3132 /* ADDataViewController.h in Headers */,
@@ -372,6 +406,7 @@
 				A429A01F24BEDAD8005F586C /* ADMainDataSource.h in Headers */,
 				A4277BCC24AA38DF003AFD4D /* ADHelper.h in Headers */,
 				A4E96A102579410200D8043A /* ADActionsBarView.h in Headers */,
+				A4C5FD5726123481005FD2D8 /* ADSettings.h in Headers */,
 				A4277C2924ACB55F003AFD4D /* NRFileManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -387,17 +422,36 @@
 				A4BB5D8024A86EEA004A3132 /* Sources */,
 				A4BB5D8124A86EEA004A3132 /* Frameworks */,
 				A4BB5D8224A86EEA004A3132 /* Headers */,
+				A4C5FD4F261231F8005FD2D8 /* Copy Preferences Bundle */,
 				A4BB5D8324A86EEA004A3132 /* ShellScript */,
 				A4277BD324ABCD78003AFD4D /* Update to Repo */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				A4C5FD872612419B005FD2D8 /* PBXTargetDependency */,
 			);
 			name = AppData;
 			productName = AppData;
 			productReference = A4BB5D8524A86EEA004A3132 /* AppData.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
+		};
+		A4C5FD46261231D4005FD2D8 /* AppDataPrefs */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A4C5FD4E261231D4005FD2D8 /* Build configuration list for PBXNativeTarget "AppDataPrefs" */;
+			buildPhases = (
+				A4C5FD43261231D4005FD2D8 /* Sources */,
+				A4C5FD44261231D4005FD2D8 /* Frameworks */,
+				A4C5FD45261231D4005FD2D8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AppDataPrefs;
+			productName = AppDataPrefs;
+			productReference = A4C5FD47261231D4005FD2D8 /* AppDataPrefs.bundle */;
+			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
 
@@ -409,6 +463,9 @@
 				TargetAttributes = {
 					A4BB5D8424A86EEA004A3132 = {
 						CreatedOnToolsVersion = 11.5;
+					};
+					A4C5FD46261231D4005FD2D8 = {
+						CreatedOnToolsVersion = 11.7;
 					};
 				};
 			};
@@ -426,9 +483,22 @@
 			projectRoot = "";
 			targets = (
 				A4BB5D8424A86EEA004A3132 /* AppData */,
+				A4C5FD46261231D4005FD2D8 /* AppDataPrefs */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A4C5FD45261231D4005FD2D8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A4C5FD8E26131EC4005FD2D8 /* AppData@2x.png in Resources */,
+				A4C5FD8F26131EC4005FD2D8 /* AppData@3x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		A4277BD324ABCD78003AFD4D /* Update to Repo */ = {
@@ -483,6 +553,24 @@
 			shellPath = /bin/sh;
 			shellScript = "# Load MonkeyDevDeviceIP and MonkeyDevDevicePort\nsource ~/.bash_profile;\n\n/opt/MonkeyDev/bin/md --xcbp\n";
 		};
+		A4C5FD4F261231F8005FD2D8 /* Copy Preferences Bundle */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Preferences Bundle";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "BUNDLE_NAME=\"AppDataPrefs\"\nBUNDLE_PATH=\"$SRCROOT/LatestBuild/$BUNDLE_NAME.bundle\"\nPACKAGE_BUNDLE_DIR=\"$SRCROOT/$PROJECT_NAME/Package/Library/PreferenceBundles\"\n\nif [ -d \"$BUNDLE_PATH\" ]; then\n    rsync -avhqz --delete \"$BUNDLE_PATH\" \"$PACKAGE_BUNDLE_DIR\"\n    \n    EXECUTABLE_PATH=\"$PACKAGE_BUNDLE_DIR/$BUNDLE_NAME.bundle/$BUNDLE_NAME\"\n    if [ -f \"$EXECUTABLE_PATH\" ]; then\n        echo \"Signing Excutable: $EXECUTABLE_PATH\"\n        ldid -S \"$EXECUTABLE_PATH\"\n    else\n        echo \"warning: Not Signing - Executable not found at path: $BUNDLE_PATH\"\n    fi    \nelse\n    echo \"warning: Bundle does not exist at path $BUNDLE_PATH\"\nfi\n\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -503,12 +591,35 @@
 				A4BB5DCC24A9E157004A3132 /* ADDataPresentationController.m in Sources */,
 				A4277BCD24AA38DF003AFD4D /* ADHelper.m in Sources */,
 				A4BB5DD024A9E184004A3132 /* ADDataPresentationManager.m in Sources */,
+				A4C5FD5826123481005FD2D8 /* ADSettings.m in Sources */,
+				A4C5FD8B26125556005FD2D8 /* ADAppearance.m in Sources */,
 				A4BB5DBA24A8C41C004A3132 /* ADAppData.m in Sources */,
 				A4BB5DC824A9DBCD004A3132 /* ADDataPresentationAnimator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A4C5FD43261231D4005FD2D8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A4C5FD54261233B1005FD2D8 /* ADPreferencesController.m in Sources */,
+				A4C5FD702612376F005FD2D8 /* ADSelectListTableViewController.m in Sources */,
+				A4C5FD742612376F005FD2D8 /* ADPrefsHelper.m in Sources */,
+				A4C5FD7D26123D40005FD2D8 /* ADSwitchTableViewCell.m in Sources */,
+				A4C5FD722612376F005FD2D8 /* ADHeaderTableViewCell.m in Sources */,
+				A4C5FD5926123483005FD2D8 /* ADSettings.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A4C5FD872612419B005FD2D8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A4C5FD46261231D4005FD2D8 /* AppDataPrefs */;
+			targetProxy = A4C5FD862612419B005FD2D8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		A4277BD424ABD03F003AFD4D /* ReleaseRepo */ = {
@@ -739,6 +850,269 @@
 			};
 			name = Debug;
 		};
+		A4C5FD4A261231D4005FD2D8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					arm64e,
+					arm64,
+				);
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = NO;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = GYQ6RCPJ93;
+				ENABLE_BITCODE = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = AppDataPrefs/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fouadraheb.AppDataPrefs;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTS_MACCATALYST = NO;
+				VALID_ARCHS = "arm64e arm64";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+		A4C5FD4B261231D4005FD2D8 /* ReleaseRepoInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					arm64e,
+					arm64,
+				);
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = NO;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = GYQ6RCPJ93;
+				ENABLE_BITCODE = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = AppDataPrefs/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fouadraheb.AppDataPrefs;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTS_MACCATALYST = NO;
+				VALID_ARCHS = "arm64e arm64";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = ReleaseRepoInfo;
+		};
+		A4C5FD4C261231D4005FD2D8 /* ReleaseRepo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					arm64e,
+					arm64,
+				);
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = NO;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = GYQ6RCPJ93;
+				ENABLE_BITCODE = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = AppDataPrefs/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fouadraheb.AppDataPrefs;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTS_MACCATALYST = NO;
+				VALID_ARCHS = "arm64e arm64";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = ReleaseRepo;
+		};
+		A4C5FD4D261231D4005FD2D8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					arm64e,
+					arm64,
+				);
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = GYQ6RCPJ93;
+				ENABLE_BITCODE = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = AppDataPrefs/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fouadraheb.AppDataPrefs;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTS_MACCATALYST = NO;
+				VALID_ARCHS = "arm64e arm64";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -760,6 +1134,17 @@
 				A4277C6424AD0972003AFD4D /* ReleaseRepoInfo */,
 				A4277BD524ABD03F003AFD4D /* ReleaseRepo */,
 				A4BB5D9F24A86EEA004A3132 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A4C5FD4E261231D4005FD2D8 /* Build configuration list for PBXNativeTarget "AppDataPrefs" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A4C5FD4A261231D4005FD2D8 /* Release */,
+				A4C5FD4B261231D4005FD2D8 /* ReleaseRepoInfo */,
+				A4C5FD4C261231D4005FD2D8 /* ReleaseRepo */,
+				A4C5FD4D261231D4005FD2D8 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

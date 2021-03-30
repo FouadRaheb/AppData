@@ -22,7 +22,7 @@
 #define _LOGOS_RETURN_RETAINED
 #endif
 
-@class SBIconView; @class SBIconImageView; @class SBFolderIcon; @class SBApplication; @class SBUIAppIconForceTouchControllerDataProvider; @class SBUIAppIconForceTouchController; 
+@class SBUIAppIconForceTouchControllerDataProvider; @class SBSApplicationShortcutItem; @class SBIconImageView; @class SBApplication; @class SBFolderIcon; @class SBIconView; @class SBUIAppIconForceTouchController; 
 
 static __inline__ __attribute__((always_inline)) __attribute__((unused)) Class _logos_static_class_lookup$SBFolderIcon(void) { static Class _klass; if(!_klass) { _klass = objc_getClass("SBFolderIcon"); } return _klass; }
 #line 3 "/Users/fouad/Projects/AppData/AppData/AppData.xm"
@@ -54,7 +54,7 @@ static SBIconImageView * _logos_method$SHARED_HOOKS$SBIconImageView$initWithFram
 
 
 static void _logos_method$SHARED_HOOKS$SBIconImageView$appDataPreferencesChanged(_LOGOS_SELF_TYPE_NORMAL SBIconImageView* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd) {
-    if ([ADHelper swipeUpEnabled]) {
+    if ([ADSettings swipeUpEnabled]) {
         if (![self.gestureRecognizers containsObject:self.adSwipeGestureRecognizer]) {
             [self addGestureRecognizer:self.adSwipeGestureRecognizer];
         }
@@ -80,7 +80,7 @@ static void _logos_method$SHARED_HOOKS$SBIconImageView$appDataDidSwipeUp$(_LOGOS
 
 static NSString * _logos_method$SHARED_HOOKS$SBApplication$displayName(_LOGOS_SELF_TYPE_NORMAL SBApplication* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd) {
     if ([self respondsToSelector:@selector(bundleIdentifier)]) {
-        NSString *customAppName = [ADHelper customAppNameForBundleIdentifier:self.bundleIdentifier];
+        NSString *customAppName = [ADSettings customAppNameForBundleIdentifier:self.bundleIdentifier];
         return customAppName ? : _logos_orig$SHARED_HOOKS$SBApplication$displayName(self, _cmd);
     }
     return _logos_orig$SHARED_HOOKS$SBApplication$displayName(self, _cmd);
@@ -92,12 +92,12 @@ static NSString * _logos_method$SHARED_HOOKS$SBApplication$displayName(_LOGOS_SE
 
 #pragma mark - ForceTouch Menu
 
-static void (*_logos_orig$IOS13_AND_NEWER_HOOKS$SBIconView$setApplicationShortcutItems$)(_LOGOS_SELF_TYPE_NORMAL SBIconView* _LOGOS_SELF_CONST, SEL, NSArray *); static void _logos_method$IOS13_AND_NEWER_HOOKS$SBIconView$setApplicationShortcutItems$(_LOGOS_SELF_TYPE_NORMAL SBIconView* _LOGOS_SELF_CONST, SEL, NSArray *); static void (*_logos_meta_orig$IOS13_AND_NEWER_HOOKS$SBIconView$activateShortcut$withBundleIdentifier$forIconView$)(_LOGOS_SELF_TYPE_NORMAL Class _LOGOS_SELF_CONST, SEL, SBSApplicationShortcutItem *, NSString *, SBIconView *); static void _logos_meta_method$IOS13_AND_NEWER_HOOKS$SBIconView$activateShortcut$withBundleIdentifier$forIconView$(_LOGOS_SELF_TYPE_NORMAL Class _LOGOS_SELF_CONST, SEL, SBSApplicationShortcutItem *, NSString *, SBIconView *); static BOOL _logos_method$IOS13_AND_NEWER_HOOKS$SBIconView$ad_isFolderIcon(_LOGOS_SELF_TYPE_NORMAL SBIconView* _LOGOS_SELF_CONST, SEL); 
+static void (*_logos_orig$IOS13_AND_NEWER_HOOKS$SBIconView$setApplicationShortcutItems$)(_LOGOS_SELF_TYPE_NORMAL SBIconView* _LOGOS_SELF_CONST, SEL, NSArray *); static void _logos_method$IOS13_AND_NEWER_HOOKS$SBIconView$setApplicationShortcutItems$(_LOGOS_SELF_TYPE_NORMAL SBIconView* _LOGOS_SELF_CONST, SEL, NSArray *); static void (*_logos_meta_orig$IOS13_AND_NEWER_HOOKS$SBIconView$activateShortcut$withBundleIdentifier$forIconView$)(_LOGOS_SELF_TYPE_NORMAL Class _LOGOS_SELF_CONST, SEL, SBSApplicationShortcutItem *, NSString *, SBIconView *); static void _logos_meta_method$IOS13_AND_NEWER_HOOKS$SBIconView$activateShortcut$withBundleIdentifier$forIconView$(_LOGOS_SELF_TYPE_NORMAL Class _LOGOS_SELF_CONST, SEL, SBSApplicationShortcutItem *, NSString *, SBIconView *); static BOOL _logos_method$IOS13_AND_NEWER_HOOKS$SBIconView$ad_isFolderIcon(_LOGOS_SELF_TYPE_NORMAL SBIconView* _LOGOS_SELF_CONST, SEL); static BOOL (*_logos_orig$IOS13_AND_NEWER_HOOKS$SBSApplicationShortcutItem$sbh_isSystemShortcut)(_LOGOS_SELF_TYPE_NORMAL SBSApplicationShortcutItem* _LOGOS_SELF_CONST, SEL); static BOOL _logos_method$IOS13_AND_NEWER_HOOKS$SBSApplicationShortcutItem$sbh_isSystemShortcut(_LOGOS_SELF_TYPE_NORMAL SBSApplicationShortcutItem* _LOGOS_SELF_CONST, SEL); static NSUInteger (*_logos_orig$IOS13_AND_NEWER_HOOKS$SBSApplicationShortcutItem$sbh_shortcutSection)(_LOGOS_SELF_TYPE_NORMAL SBSApplicationShortcutItem* _LOGOS_SELF_CONST, SEL); static NSUInteger _logos_method$IOS13_AND_NEWER_HOOKS$SBSApplicationShortcutItem$sbh_shortcutSection(_LOGOS_SELF_TYPE_NORMAL SBSApplicationShortcutItem* _LOGOS_SELF_CONST, SEL); 
 
 
 
 static void _logos_method$IOS13_AND_NEWER_HOOKS$SBIconView$setApplicationShortcutItems$(_LOGOS_SELF_TYPE_NORMAL SBIconView* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd, NSArray * items) {
-    if ([ADHelper forceTouchMenuEnabled] && ![self ad_isFolderIcon]) {
+    if ([ADSettings forceTouchMenuEnabled] && ![self ad_isFolderIcon]) {
         NSMutableArray *newItems = [NSMutableArray arrayWithArray:items?:@[]];
         SBSApplicationShortcutItem *shortcutItem = [ADHelper applicationShortcutItem];
         if (shortcutItem) {
@@ -131,12 +131,36 @@ static BOOL _logos_method$IOS13_AND_NEWER_HOOKS$SBIconView$ad_isFolderIcon(_LOGO
 
 
 
+static BOOL _logos_method$IOS13_AND_NEWER_HOOKS$SBSApplicationShortcutItem$sbh_isSystemShortcut(_LOGOS_SELF_TYPE_NORMAL SBSApplicationShortcutItem* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd) {
+    if ([self respondsToSelector:@selector(type)]
+        && [self.type respondsToSelector:@selector(isEqualToString:)]
+        && [self.type isEqualToString:kSBApplicationShortcutItemType]) {
+        return YES;
+    }
+    return _logos_orig$IOS13_AND_NEWER_HOOKS$SBSApplicationShortcutItem$sbh_isSystemShortcut(self, _cmd);
+}
+
+
+static NSUInteger _logos_method$IOS13_AND_NEWER_HOOKS$SBSApplicationShortcutItem$sbh_shortcutSection(_LOGOS_SELF_TYPE_NORMAL SBSApplicationShortcutItem* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd) {
+    if ([self respondsToSelector:@selector(type)]
+        && [self.type respondsToSelector:@selector(isEqualToString:)]
+        && [self.type isEqualToString:kSBApplicationShortcutItemType]) {
+        return 2;
+    }
+    return _logos_orig$IOS13_AND_NEWER_HOOKS$SBSApplicationShortcutItem$sbh_shortcutSection(self, _cmd);
+}
+
+
+
+
+
+
 static id (*_logos_orig$IOS12_AND_OLDER_HOOKS$SBUIAppIconForceTouchControllerDataProvider$applicationShortcutItems)(_LOGOS_SELF_TYPE_NORMAL SBUIAppIconForceTouchControllerDataProvider* _LOGOS_SELF_CONST, SEL); static id _logos_method$IOS12_AND_OLDER_HOOKS$SBUIAppIconForceTouchControllerDataProvider$applicationShortcutItems(_LOGOS_SELF_TYPE_NORMAL SBUIAppIconForceTouchControllerDataProvider* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$IOS12_AND_OLDER_HOOKS$SBUIAppIconForceTouchController$appIconForceTouchShortcutViewController$activateApplicationShortcutItem$)(_LOGOS_SELF_TYPE_NORMAL SBUIAppIconForceTouchController* _LOGOS_SELF_CONST, SEL, id, SBSApplicationShortcutItem *); static void _logos_method$IOS12_AND_OLDER_HOOKS$SBUIAppIconForceTouchController$appIconForceTouchShortcutViewController$activateApplicationShortcutItem$(_LOGOS_SELF_TYPE_NORMAL SBUIAppIconForceTouchController* _LOGOS_SELF_CONST, SEL, id, SBSApplicationShortcutItem *); 
 
 
 
 static id _logos_method$IOS12_AND_OLDER_HOOKS$SBUIAppIconForceTouchControllerDataProvider$applicationShortcutItems(_LOGOS_SELF_TYPE_NORMAL SBUIAppIconForceTouchControllerDataProvider* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd) {
-    if ([ADHelper forceTouchMenuEnabled]) {
+    if ([ADSettings forceTouchMenuEnabled]) {
         NSMutableArray *newItems = [NSMutableArray arrayWithArray:_logos_orig$IOS12_AND_OLDER_HOOKS$SBUIAppIconForceTouchControllerDataProvider$applicationShortcutItems(self, _cmd)?:@[]];
         SBSApplicationShortcutItem *shortcutItem = [ADHelper applicationShortcutItem];
         if (shortcutItem) {
@@ -171,13 +195,11 @@ static void _logos_method$IOS12_AND_OLDER_HOOKS$SBUIAppIconForceTouchController$
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_27b85f3b(int __unused argc, char __unused **argv, char __unused **envp) {
-    [[ADHelper sharedInstance] initialize];
-    
+static __attribute__((constructor)) void _logosLocalCtor_b2edea14(int __unused argc, char __unused **argv, char __unused **envp) {
     {Class _logos_class$SHARED_HOOKS$SBIconImageView = objc_getClass("SBIconImageView"); MSHookMessageEx(_logos_class$SHARED_HOOKS$SBIconImageView, @selector(initWithFrame:), (IMP)&_logos_method$SHARED_HOOKS$SBIconImageView$initWithFrame$, (IMP*)&_logos_orig$SHARED_HOOKS$SBIconImageView$initWithFrame$);{ char _typeEncoding[1024]; unsigned int i = 0; _typeEncoding[i] = 'v'; i += 1; _typeEncoding[i] = '@'; i += 1; _typeEncoding[i] = ':'; i += 1; _typeEncoding[i] = '\0'; class_addMethod(_logos_class$SHARED_HOOKS$SBIconImageView, @selector(appDataPreferencesChanged), (IMP)&_logos_method$SHARED_HOOKS$SBIconImageView$appDataPreferencesChanged, _typeEncoding); }{ char _typeEncoding[1024]; unsigned int i = 0; _typeEncoding[i] = 'v'; i += 1; _typeEncoding[i] = '@'; i += 1; _typeEncoding[i] = ':'; i += 1; memcpy(_typeEncoding + i, @encode(UIGestureRecognizer *), strlen(@encode(UIGestureRecognizer *))); i += strlen(@encode(UIGestureRecognizer *)); _typeEncoding[i] = '\0'; class_addMethod(_logos_class$SHARED_HOOKS$SBIconImageView, @selector(appDataDidSwipeUp:), (IMP)&_logos_method$SHARED_HOOKS$SBIconImageView$appDataDidSwipeUp$, _typeEncoding); }{ class_addMethod(_logos_class$SHARED_HOOKS$SBIconImageView, @selector(adSwipeGestureRecognizer), (IMP)&_logos_method$SHARED_HOOKS$SBIconImageView$adSwipeGestureRecognizer$, [[NSString stringWithFormat:@"%s@:", @encode(UISwipeGestureRecognizer *)] UTF8String]);class_addMethod(_logos_class$SHARED_HOOKS$SBIconImageView, @selector(setAdSwipeGestureRecognizer:), (IMP)&_logos_method$SHARED_HOOKS$SBIconImageView$setAdSwipeGestureRecognizer$, [[NSString stringWithFormat:@"v@:%s", @encode(UISwipeGestureRecognizer *)] UTF8String]);} Class _logos_class$SHARED_HOOKS$SBApplication = objc_getClass("SBApplication"); MSHookMessageEx(_logos_class$SHARED_HOOKS$SBApplication, @selector(displayName), (IMP)&_logos_method$SHARED_HOOKS$SBApplication$displayName, (IMP*)&_logos_orig$SHARED_HOOKS$SBApplication$displayName);}
     
     if (@available(iOS 13, *)) {
-        {Class _logos_class$IOS13_AND_NEWER_HOOKS$SBIconView = objc_getClass("SBIconView"); Class _logos_metaclass$IOS13_AND_NEWER_HOOKS$SBIconView = object_getClass(_logos_class$IOS13_AND_NEWER_HOOKS$SBIconView); MSHookMessageEx(_logos_class$IOS13_AND_NEWER_HOOKS$SBIconView, @selector(setApplicationShortcutItems:), (IMP)&_logos_method$IOS13_AND_NEWER_HOOKS$SBIconView$setApplicationShortcutItems$, (IMP*)&_logos_orig$IOS13_AND_NEWER_HOOKS$SBIconView$setApplicationShortcutItems$);MSHookMessageEx(_logos_metaclass$IOS13_AND_NEWER_HOOKS$SBIconView, @selector(activateShortcut:withBundleIdentifier:forIconView:), (IMP)&_logos_meta_method$IOS13_AND_NEWER_HOOKS$SBIconView$activateShortcut$withBundleIdentifier$forIconView$, (IMP*)&_logos_meta_orig$IOS13_AND_NEWER_HOOKS$SBIconView$activateShortcut$withBundleIdentifier$forIconView$);{ char _typeEncoding[1024]; unsigned int i = 0; memcpy(_typeEncoding + i, @encode(BOOL), strlen(@encode(BOOL))); i += strlen(@encode(BOOL)); _typeEncoding[i] = '@'; i += 1; _typeEncoding[i] = ':'; i += 1; _typeEncoding[i] = '\0'; class_addMethod(_logos_class$IOS13_AND_NEWER_HOOKS$SBIconView, @selector(ad_isFolderIcon), (IMP)&_logos_method$IOS13_AND_NEWER_HOOKS$SBIconView$ad_isFolderIcon, _typeEncoding); }}
+        {Class _logos_class$IOS13_AND_NEWER_HOOKS$SBIconView = objc_getClass("SBIconView"); Class _logos_metaclass$IOS13_AND_NEWER_HOOKS$SBIconView = object_getClass(_logos_class$IOS13_AND_NEWER_HOOKS$SBIconView); MSHookMessageEx(_logos_class$IOS13_AND_NEWER_HOOKS$SBIconView, @selector(setApplicationShortcutItems:), (IMP)&_logos_method$IOS13_AND_NEWER_HOOKS$SBIconView$setApplicationShortcutItems$, (IMP*)&_logos_orig$IOS13_AND_NEWER_HOOKS$SBIconView$setApplicationShortcutItems$);MSHookMessageEx(_logos_metaclass$IOS13_AND_NEWER_HOOKS$SBIconView, @selector(activateShortcut:withBundleIdentifier:forIconView:), (IMP)&_logos_meta_method$IOS13_AND_NEWER_HOOKS$SBIconView$activateShortcut$withBundleIdentifier$forIconView$, (IMP*)&_logos_meta_orig$IOS13_AND_NEWER_HOOKS$SBIconView$activateShortcut$withBundleIdentifier$forIconView$);{ char _typeEncoding[1024]; unsigned int i = 0; memcpy(_typeEncoding + i, @encode(BOOL), strlen(@encode(BOOL))); i += strlen(@encode(BOOL)); _typeEncoding[i] = '@'; i += 1; _typeEncoding[i] = ':'; i += 1; _typeEncoding[i] = '\0'; class_addMethod(_logos_class$IOS13_AND_NEWER_HOOKS$SBIconView, @selector(ad_isFolderIcon), (IMP)&_logos_method$IOS13_AND_NEWER_HOOKS$SBIconView$ad_isFolderIcon, _typeEncoding); }Class _logos_class$IOS13_AND_NEWER_HOOKS$SBSApplicationShortcutItem = objc_getClass("SBSApplicationShortcutItem"); MSHookMessageEx(_logos_class$IOS13_AND_NEWER_HOOKS$SBSApplicationShortcutItem, @selector(sbh_isSystemShortcut), (IMP)&_logos_method$IOS13_AND_NEWER_HOOKS$SBSApplicationShortcutItem$sbh_isSystemShortcut, (IMP*)&_logos_orig$IOS13_AND_NEWER_HOOKS$SBSApplicationShortcutItem$sbh_isSystemShortcut);MSHookMessageEx(_logos_class$IOS13_AND_NEWER_HOOKS$SBSApplicationShortcutItem, @selector(sbh_shortcutSection), (IMP)&_logos_method$IOS13_AND_NEWER_HOOKS$SBSApplicationShortcutItem$sbh_shortcutSection, (IMP*)&_logos_orig$IOS13_AND_NEWER_HOOKS$SBSApplicationShortcutItem$sbh_shortcutSection);}
     } else {
         {Class _logos_class$IOS12_AND_OLDER_HOOKS$SBUIAppIconForceTouchControllerDataProvider = objc_getClass("SBUIAppIconForceTouchControllerDataProvider"); MSHookMessageEx(_logos_class$IOS12_AND_OLDER_HOOKS$SBUIAppIconForceTouchControllerDataProvider, @selector(applicationShortcutItems), (IMP)&_logos_method$IOS12_AND_OLDER_HOOKS$SBUIAppIconForceTouchControllerDataProvider$applicationShortcutItems, (IMP*)&_logos_orig$IOS12_AND_OLDER_HOOKS$SBUIAppIconForceTouchControllerDataProvider$applicationShortcutItems);Class _logos_class$IOS12_AND_OLDER_HOOKS$SBUIAppIconForceTouchController = objc_getClass("SBUIAppIconForceTouchController"); MSHookMessageEx(_logos_class$IOS12_AND_OLDER_HOOKS$SBUIAppIconForceTouchController, @selector(appIconForceTouchShortcutViewController:activateApplicationShortcutItem:), (IMP)&_logos_method$IOS12_AND_OLDER_HOOKS$SBUIAppIconForceTouchController$appIconForceTouchShortcutViewController$activateApplicationShortcutItem$, (IMP*)&_logos_orig$IOS12_AND_OLDER_HOOKS$SBUIAppIconForceTouchController$appIconForceTouchShortcutViewController$activateApplicationShortcutItem$);}
     }

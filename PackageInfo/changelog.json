@@ -1,5 +1,14 @@
 [
     {
+        "version":"1.3.5",
+        "date":"2021-03-30 14:44:50",
+        "changes":[
+            "Added option to select default appearance color (Dark by default)",
+            "Moved AppData force touch menu item to system section",
+            "Fixed reset permissions crash on iOS 12"
+        ]
+    },
+    {
         "version":"1.3.4",
         "date":"2021-03-29 01:48:30",
         "changes":[

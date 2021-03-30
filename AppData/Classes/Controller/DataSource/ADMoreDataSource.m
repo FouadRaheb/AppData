@@ -66,7 +66,7 @@
             cell.textLabel.font = [UIFont systemFontOfSize:15];
             cell.detailTextLabel.font = [UIFont systemFontOfSize:13];
         }
-        [ADMainDataSource applyStylesToCell:cell];
+        [ADAppearance applyStylesToCell:cell];
         if (indexPath.row == 0) {
             cell.textLabel.text = @"Internal Version";
             cell.detailTextLabel.text = [NSString stringWithFormat:@"%@",self.appData.internalVersion];
@@ -87,7 +87,7 @@
             cell.accessoryType = UITableViewCellAccessoryNone;
             cell.textLabel.font = [UIFont systemFontOfSize:15];
         }
-        [ADMainDataSource applyStylesToCell:cell];
+        [ADAppearance applyStylesToCell:cell];
         if (indexPath.section == 1) {
             cell.textLabel.text = [NSString stringWithFormat:@"%@",[self.appData.urlSchemes objectAtIndex:indexPath.row]];
         } else if (indexPath.section == 2) {
@@ -140,6 +140,7 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (section == 0) {
         ADTitleSectionHeaderView *header = [tableView dequeueReusableHeaderFooterViewWithIdentifier:ADTitleSectionHeaderView.reuseIdentifier];
+        [header configureBackHeaderWithTitle:@"MORE INFO"];
         header.delegate = self;
         return header;
     } else {

@@ -73,15 +73,8 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    if (@available(iOS 13.0, *)) {
-        if (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleLight) {
-            self.titleLabel.textColor = [UIColor colorWithRed:0.427 green:0.427 blue:0.427 alpha:1.0];
-        } else {
-            self.titleLabel.textColor = [UIColor colorWithRed:0.557 green:0.557 blue:0.577 alpha:1.0];
-        }
-    } else {
-        self.titleLabel.textColor = [UIColor colorWithRed:0.557 green:0.557 blue:0.577 alpha:1.0];
-    }
+    
+    self.titleLabel.textColor = [ADAppearance.sharedInstance tableHeaderTextColor];
     self.chevronImageView.tintColor = self.titleLabel.textColor;
 }
 

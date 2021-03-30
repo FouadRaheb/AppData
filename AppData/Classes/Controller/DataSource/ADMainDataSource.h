@@ -17,6 +17,4 @@
 
 - (instancetype)initWithAppData:(ADAppData *)data dataViewController:(ADDataViewController *)dataViewController;
 
-+ (void)applyStylesToCell:(UITableViewCell *)cell;
-
 @end

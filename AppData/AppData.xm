@@ -28,7 +28,7 @@
 
 %new
 - (void)appDataPreferencesChanged {
-    if ([ADHelper swipeUpEnabled]) {
+    if ([ADSettings swipeUpEnabled]) {
         if (![self.gestureRecognizers containsObject:self.adSwipeGestureRecognizer]) {
             [self addGestureRecognizer:self.adSwipeGestureRecognizer];
         }
@@ -54,7 +54,7 @@
 
 - (NSString *)displayName {
     if ([self respondsToSelector:@selector(bundleIdentifier)]) {
-        NSString *customAppName = [ADHelper customAppNameForBundleIdentifier:self.bundleIdentifier];
+        NSString *customAppName = [ADSettings customAppNameForBundleIdentifier:self.bundleIdentifier];
         return customAppName ? : %orig;
     }
     return %orig;
@@ -71,7 +71,7 @@
 %hook SBIconView
 
 - (void)setApplicationShortcutItems:(NSArray *)items {
-    if ([ADHelper forceTouchMenuEnabled] && ![self ad_isFolderIcon]) {
+    if ([ADSettings forceTouchMenuEnabled] && ![self ad_isFolderIcon]) {
         NSMutableArray *newItems = [NSMutableArray arrayWithArray:items?:@[]];
         SBSApplicationShortcutItem *shortcutItem = [ADHelper applicationShortcutItem];
         if (shortcutItem) {
@@ -102,6 +102,30 @@
 
 %end
 
+%hook SBSApplicationShortcutItem
+
+// iOS 13
+- (BOOL)sbh_isSystemShortcut {
+    if ([self respondsToSelector:@selector(type)]
+        && [self.type respondsToSelector:@selector(isEqualToString:)]
+        && [self.type isEqualToString:kSBApplicationShortcutItemType]) {
+        return YES;
+    }
+    return %orig;
+}
+
+// iOS 14
+- (NSUInteger)sbh_shortcutSection {
+    if ([self respondsToSelector:@selector(type)]
+        && [self.type respondsToSelector:@selector(isEqualToString:)]
+        && [self.type isEqualToString:kSBApplicationShortcutItemType]) {
+        return 2;
+    }
+    return %orig;
+}
+
+%end
+
 %end
 
 
@@ -110,7 +134,7 @@
 %hook SBUIAppIconForceTouchControllerDataProvider
 
 - (id)applicationShortcutItems {
-    if ([ADHelper forceTouchMenuEnabled]) {
+    if ([ADSettings forceTouchMenuEnabled]) {
         NSMutableArray *newItems = [NSMutableArray arrayWithArray:%orig?:@[]];
         SBSApplicationShortcutItem *shortcutItem = [ADHelper applicationShortcutItem];
         if (shortcutItem) {
@@ -146,8 +170,6 @@
 
 
 %ctor {
-    [[ADHelper sharedInstance] initialize];
-    
     %init(SHARED_HOOKS);
     
     if (@available(iOS 13, *)) {

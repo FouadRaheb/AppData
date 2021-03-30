@@ -62,7 +62,7 @@
     [activityContainerView.widthAnchor constraintEqualToAnchor:view.actionImageView.widthAnchor].active = YES;
     [activityContainerView.heightAnchor constraintEqualToAnchor:view.actionImageView.heightAnchor].active = YES;
     
-    view.activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    view.activityIndicatorView = [ADAppearance.sharedInstance activityIndicatorView];
     view.activityIndicatorView.userInteractionEnabled = NO;
     view.activityIndicatorView.translatesAutoresizingMaskIntoConstraints = NO;
     [view.activityIndicatorView hidesWhenStopped];
@@ -173,22 +173,10 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
-    if (@available(iOS 13.0, *)) {
-        if (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleLight) {
-            self.nameLabel.textColor = [UIColor blackColor];
-            self.actionImageView.tintColor = [UIColor colorWithRed:0.235294 green:0.235294 blue:0.262745 alpha:0.70];
-            self.detailLabel.textColor = [UIColor colorWithRed:0.235294 green:0.235294 blue:0.262745 alpha:0.5];
-        } else {
-            self.nameLabel.textColor = [UIColor whiteColor];
-            self.actionImageView.tintColor = [UIColor colorWithRed:0.557 green:0.557 blue:0.577 alpha:1.0];
-            self.detailLabel.textColor = [UIColor lightGrayColor];
-        }
-    } else {
-        self.nameLabel.textColor = [UIColor whiteColor];
-        self.actionImageView.tintColor = [UIColor colorWithRed:0.557 green:0.557 blue:0.577 alpha:1.0];
-        self.detailLabel.textColor = [UIColor lightGrayColor];
-    }
+   
+    self.nameLabel.textColor = [ADAppearance.sharedInstance primaryTextColor];
+    self.detailLabel.textColor = [ADAppearance.sharedInstance secondaryTextColor];
+    self.actionImageView.tintColor = [ADAppearance.sharedInstance actionsBarIconTintColor];
 }
 
 @end

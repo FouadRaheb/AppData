@@ -9,71 +9,25 @@
 
 @interface ADHelper ()
 @property (nonatomic, strong) NSBundle *resoucesBundle;
-@property (nonatomic, strong) NSUserDefaults *userDefaults;
 @end
 
 @implementation ADHelper
 
 + (instancetype)sharedInstance {
     static dispatch_once_t p = 0;
-    __strong static id _sharedObject = nil;
+    __strong static ADHelper *_sharedInstance = nil;
     dispatch_once(&p, ^{
-        _sharedObject = [[self alloc] init];
+        _sharedInstance = [[self alloc] init];
+        // Create resources bundle
+        _sharedInstance.resoucesBundle = [NSBundle bundleWithPath:@"/Library/Application Support/AppData/Resources.bundle"];
     });
-    return _sharedObject;
-}
-
-- (void)initialize {
-    // Create resources bundle
-    self.resoucesBundle = [NSBundle bundleWithPath:@"/Library/Application Support/AppData/Resources.bundle"];
-    
-    // Load tweak preferences
-    self.userDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"com.fouadraheb.appdata"];
-    [self.userDefaults registerDefaults:@{
-        kSwipeUpEnabled : @(YES),
-        kForceTouchMenuEnabled : @(NO)
-    }];
-
-    [self.userDefaults addObserver:self forKeyPath:kSwipeUpEnabled options:NSKeyValueObservingOptionNew context:NULL];
+    return _sharedInstance;
 }
 
 #pragma mark - Resources
 
 + (UIImage *)imageNamed:(NSString *)imageName {
     return [UIImage imageNamed:imageName inBundle:ADHelper.sharedInstance.resoucesBundle];
-}
-
-#pragma mark - Preferences
-
-- (void)observeValueForKeyPath:(NSString *) keyPath ofObject:(id) object change:(NSDictionary *) change context:(void *) context {
-    if ([keyPath isEqualToString:kSwipeUpEnabled]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:kAppDataSwipeUpPreferencesChangedNotification object:nil];
-    }
-}
-
-+ (BOOL)swipeUpEnabled {
-    return [[ADHelper.sharedInstance.userDefaults objectForKey:kSwipeUpEnabled] boolValue];
-}
-
-+ (BOOL)forceTouchMenuEnabled {
-    return [[ADHelper.sharedInstance.userDefaults objectForKey:kForceTouchMenuEnabled] boolValue];
-}
-
-+ (NSString *)customAppNameForBundleIdentifier:(NSString *)identifier {
-    return [[ADHelper.sharedInstance.userDefaults dictionaryForKey:kCustomAppNames] objectForKey:identifier];
-}
-
-+ (void)setCustomAppName:(NSString *)name forBundleIdentifier:(NSString *)bundleIdentifier {
-    if (!bundleIdentifier) return;
-    
-    NSDictionary *dictionary = [ADHelper.sharedInstance.userDefaults dictionaryForKey:kCustomAppNames];
-    NSMutableDictionary *mutableDictionary = dictionary ? [dictionary mutableCopy] : [NSMutableDictionary new];
-    if (name) {
-        [mutableDictionary setObject:name forKey:bundleIdentifier];
-    } else {
-        [mutableDictionary removeObjectForKey:bundleIdentifier];
-    }
-    [ADHelper.sharedInstance.userDefaults setObject:mutableDictionary forKey:kCustomAppNames];
 }
 
 #pragma mark - Helpers

@@ -8,7 +8,11 @@
 #import "ADTitleSectionHeaderView.h"
 
 @interface ADTitleSectionHeaderView ()
+@property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIImageView *backImageView;
+
+@property (nonatomic, strong) NSLayoutConstraint *titleLabelHeightConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *titleLabelTopConstraint;
 @end
 
 @implementation ADTitleSectionHeaderView
@@ -46,15 +50,17 @@
     [self.backImageView.centerYAnchor constraintEqualToAnchor:self.centerYAnchor].active = YES;
     
     self.titleLabel = [[UILabel alloc] init];
-    self.titleLabel.font = [UIFont systemFontOfSize:13];
-    self.titleLabel.text = @"MORE INFO";
+    self.titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
+
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
     [self addSubview:self.titleLabel];
     self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.titleLabel.topAnchor constraintEqualToAnchor:self.contentView.topAnchor].active = YES;
-    [self.titleLabel.bottomAnchor constraintEqualToAnchor:self.contentView.bottomAnchor].active = YES;
-    [self.titleLabel.leadingAnchor constraintEqualToAnchor:self.contentView.leadingAnchor].active = YES;
-    [self.titleLabel.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor].active = YES;
+    self.titleLabelTopConstraint = [self.titleLabel.topAnchor constraintEqualToAnchor:self.contentView.topAnchor constant:1.33];
+    self.titleLabelTopConstraint.active = YES;
+    self.titleLabelHeightConstraint = [self.titleLabel.heightAnchor constraintEqualToConstant:18];
+    self.titleLabelHeightConstraint.active = YES;
+    [self.titleLabel.leadingAnchor constraintEqualToAnchor:self.contentView.leadingAnchor constant:16].active = YES;
+    [self.titleLabel.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor constant:-16].active = YES;
 }
 
 - (UIImage *)makeThumbnailOfSize:(CGSize)size ofImage:(UIImage *)image {
@@ -66,21 +72,31 @@
 }
 
 - (void)didTapHeaderView:(UITapGestureRecognizer *)gesture {
-    [self.delegate titleSectionHeaderViewDidTapBackButton];
+    if (self.delegate) {
+        [self.delegate titleSectionHeaderViewDidTapBackButton];
+    }
+}
+
+- (void)configureHeaderWithTitle:(NSString *)title {
+    self.backImageView.hidden = YES;
+    self.titleLabel.text = title;
+    self.titleLabel.textAlignment = NSTextAlignmentNatural;
+    self.titleLabelTopConstraint.constant = 1.33;
+    self.titleLabelHeightConstraint.constant = 18;
+}
+
+- (void)configureBackHeaderWithTitle:(NSString *)title {
+    self.backImageView.hidden = NO;
+    self.titleLabel.text = title;
+    self.titleLabel.textAlignment = NSTextAlignmentCenter;
+    self.titleLabelTopConstraint.constant = 0;
+    self.titleLabelHeightConstraint.constant = 35;
 }
 
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    if (@available(iOS 13.0, *)) {
-        if (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleLight) {
-            self.titleLabel.textColor = [UIColor colorWithRed:0.427 green:0.427 blue:0.427 alpha:1.0];
-        } else {
-            self.titleLabel.textColor = [UIColor colorWithRed:0.557 green:0.557 blue:0.557 alpha:1.0];
-        }
-    } else {
-        self.titleLabel.textColor = [UIColor colorWithRed:0.557 green:0.557 blue:0.557 alpha:1.0];
-    }
+    self.titleLabel.textColor = [ADAppearance.sharedInstance tableHeaderTextColor];
     self.backImageView.tintColor = self.titleLabel.textColor;
 }
 

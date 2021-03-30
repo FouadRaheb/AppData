@@ -16,10 +16,11 @@
 
 @interface ADTitleSectionHeaderView : UITableViewHeaderFooterView
 
-@property (nonatomic, strong) UILabel *titleLabel;
-
 @property (nonatomic) __weak id <ADTitleSectionHeaderViewDelegate> delegate;
 
 + (NSString *)reuseIdentifier;
+
+- (void)configureBackHeaderWithTitle:(NSString *)title;
+- (void)configureHeaderWithTitle:(NSString *)title;
 
 @end

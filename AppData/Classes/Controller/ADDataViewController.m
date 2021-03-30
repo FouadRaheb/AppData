@@ -343,6 +343,7 @@
     
     // Create Table View
     self.tableView = [self createTableViewWithDataSource:self.mainDataSource];
+    [self.tableView registerClass:ADTitleSectionHeaderView.class forHeaderFooterViewReuseIdentifier:ADTitleSectionHeaderView.reuseIdentifier];
     [containerView addSubview:self.tableView];
     
     self.moreTableView = [self createTableViewWithDataSource:self.moreDataSource];
@@ -357,31 +358,23 @@
     [self layoutTableViews];
     
     // Apply blur effect to contentView
-    if (@available(iOS 13.0, *)) {
-        if (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleLight) {
-            self.contentView.effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleSystemThinMaterial];
-        } else {
-            self.contentView.effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-        }
-    } else {
-        self.contentView.effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-    }
-    
+    self.contentView.effect = [UIBlurEffect effectWithStyle:[ADAppearance.sharedInstance blurEffectStyle]];
+
     // Apply text colors
-    UIColor *primaryLabelColor = [UIColor whiteColor];
-    UIColor *secondaryLabelsColor = [UIColor colorWithRed:0.922 green:0.922 blue:0.961 alpha:0.6];
-    if (@available(iOS 13.0, *)) {
-        if (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleLight) {
-            primaryLabelColor = [UIColor blackColor];
-            secondaryLabelsColor = [UIColor colorWithRed:0.235294 green:0.235294 blue:0.262745 alpha:0.65];
-        }
-    }
+    UIColor *primaryLabelColor = [ADAppearance.sharedInstance primaryTextColor];
+    UIColor *secondaryLabelsColor = [ADAppearance.sharedInstance secondaryTextColor];
+    // secondaryLabelsColor = [UIColor colorWithRed:0.922 green:0.922 blue:0.961 alpha:0.6];
+    // secondaryLabelsColor = [UIColor colorWithRed:0.235294 green:0.235294 blue:0.262745 alpha:0.65]; Light
+
     [self.nameLabel setTitleColor:primaryLabelColor forState:UIControlStateNormal];
     [self.identifierLabel setTitleColor:secondaryLabelsColor forState:UIControlStateNormal];
     self.versionLabel.textColor = secondaryLabelsColor;
     [self.identifierCopyButton setTintColor:secondaryLabelsColor];
     [self.nameEditButton setTintColor:secondaryLabelsColor];
     [self.appStoreButton setTintColor:secondaryLabelsColor];
+    
+    self.tableView.separatorColor = [ADAppearance.sharedInstance tableSeparatorColor];
+    self.moreTableView.separatorColor = [ADAppearance.sharedInstance tableSeparatorColor];
 }
 
 - (void)traitCollectionDidChange:(UITraitCollection *)collection {
@@ -391,7 +384,6 @@
 
 - (UITableView *)createTableViewWithDataSource:(id)dataSource {
     UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
-    tableView.separatorColor = [UIColor colorWithRed:0.329 green:0.329 blue:0.345 alpha:0.6];
     tableView.showsVerticalScrollIndicator = NO;
     tableView.backgroundColor = [UIColor clearColor];
     tableView.delegate = dataSource;
