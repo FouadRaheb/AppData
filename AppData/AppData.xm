@@ -71,7 +71,7 @@
 %hook SBIconView
 
 - (void)setApplicationShortcutItems:(NSArray *)items {
-    if ([ADSettings forceTouchMenuEnabled] && ![self ad_isFolderIcon]) {
+    if ([ADSettings forceTouchMenuEnabled] && [self ad_isSupportedIcon]) {
         NSMutableArray *newItems = [NSMutableArray arrayWithArray:items?:@[]];
         SBSApplicationShortcutItem *shortcutItem = [ADHelper applicationShortcutItem];
         if (shortcutItem) {
@@ -84,6 +84,7 @@
 }
 
 + (void)activateShortcut:(SBSApplicationShortcutItem *)item withBundleIdentifier:(NSString *)bundleID forIconView:(SBIconView *)iconView {
+    NSLog(@"[AppData]: iconView: %@",iconView);
     if ([item.type isEqualToString:kSBApplicationShortcutItemType]) {
         [ADDataViewController presentControllerFromSBIconView:iconView fromContextMenu:YES];
     } else {
@@ -92,12 +93,12 @@
 }
 
 %new
-- (BOOL)ad_isFolderIcon {
-    // check if it's folder icon view
+- (BOOL)ad_isSupportedIcon {
     if ([self respondsToSelector:@selector(icon)]) {
-        return [self.icon isKindOfClass:%c(SBFolderIcon)];
+        return ![self.icon isKindOfClass:%c(SBFolderIcon)]
+            && ![self.icon isKindOfClass:%c(SBWidgetIcon)];
     }
-    return NO;
+    return YES;
 }
 
 %end

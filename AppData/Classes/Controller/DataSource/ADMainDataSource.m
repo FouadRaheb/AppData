@@ -154,18 +154,18 @@
                     NSInteger itemIndex = 1;
                     [weakActionsBar showLoadingIndicatorForItemAtIndex:itemIndex];
                     [weakActionsBar setDetail:@"Clearing..." forItemAtIndex:itemIndex];
-//                    DISPATCH_AFTER(0.5, {
-//                        [self.appData clearAppCachesWithCompletion:^{
-//                            [weakActionsBar hideLoadingIndicatorForItemAtIndex:itemIndex];
-//                            [weakActionsBar setDetail:@"Cleared!" forItemAtIndex:itemIndex];
-//                            [[UINotificationFeedbackGenerator new] notificationOccurred:UINotificationFeedbackTypeSuccess];
-//                            DISPATCH_AFTER(0.5, {
-//                                [self.appData getCachesDirectorySizeWithCompletion:^(NSString *formattedSize) {
-//                                    [weakActionsBar setDetail:formattedSize forItemAtIndex:itemIndex];
-//                                }];
-//                            });
-//                        }];
-//                    });
+                    DISPATCH_AFTER(0.5, {
+                        [self.appData clearAppCachesWithCompletion:^{
+                            [weakActionsBar hideLoadingIndicatorForItemAtIndex:itemIndex];
+                            [weakActionsBar setDetail:@"Cleared!" forItemAtIndex:itemIndex];
+                            [[UINotificationFeedbackGenerator new] notificationOccurred:UINotificationFeedbackTypeSuccess];
+                            DISPATCH_AFTER(0.5, {
+                                [self.appData getCachesDirectorySizeWithCompletion:^(NSString *formattedSize) {
+                                    [weakActionsBar setDetail:formattedSize forItemAtIndex:itemIndex];
+                                }];
+                            });
+                        }];
+                    });
                 }];
                 
                 // Clear App Data

@@ -96,7 +96,7 @@
 @property (nonatomic, retain) SBFolderIcon * folderIcon;
 - (id)_iconImageView;
 - (void)_updateLabel;
-- (BOOL)ad_isFolderIcon;
+- (BOOL)ad_isSupportedIcon;
 @end
 
 @interface SBSApplicationShortcutIcon : NSObject
