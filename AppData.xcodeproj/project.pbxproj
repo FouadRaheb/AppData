@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A408FE86261A2A23002E8946 /* Preferences.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A408FE85261A2A23002E8946 /* Preferences.framework */; };
 		A4277BCC24AA38DF003AFD4D /* ADHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = A4277BCA24AA38DF003AFD4D /* ADHelper.h */; };
 		A4277BCD24AA38DF003AFD4D /* ADHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A4277BCB24AA38DF003AFD4D /* ADHelper.m */; };
 		A4277C2224ACB50C003AFD4D /* AppData-Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = A4277C2024ACB50C003AFD4D /* AppData-Prefix.pch */; };
@@ -46,7 +47,6 @@
 		A4C5FD722612376F005FD2D8 /* ADHeaderTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C5FD692612376F005FD2D8 /* ADHeaderTableViewCell.m */; };
 		A4C5FD742612376F005FD2D8 /* ADPrefsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C5FD6B2612376F005FD2D8 /* ADPrefsHelper.m */; };
 		A4C5FD7D26123D40005FD2D8 /* ADSwitchTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C5FD7B26123D40005FD2D8 /* ADSwitchTableViewCell.m */; };
-		A4C5FD7F26124090005FD2D8 /* Preferences.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4C5FD7E26124090005FD2D8 /* Preferences.framework */; platformFilter = ios; };
 		A4C5FD8A26125556005FD2D8 /* ADAppearance.h in Headers */ = {isa = PBXBuildFile; fileRef = A4C5FD8826125556005FD2D8 /* ADAppearance.h */; };
 		A4C5FD8B26125556005FD2D8 /* ADAppearance.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C5FD8926125556005FD2D8 /* ADAppearance.m */; };
 		A4C5FD8E26131EC4005FD2D8 /* AppData@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4C5FD8C26131EC4005FD2D8 /* AppData@2x.png */; };
@@ -71,6 +71,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A408FE85261A2A23002E8946 /* Preferences.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Preferences.framework; path = Frameworks/Preferences.framework; sourceTree = "<group>"; };
 		A4277BCA24AA38DF003AFD4D /* ADHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ADHelper.h; sourceTree = "<group>"; };
 		A4277BCB24AA38DF003AFD4D /* ADHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ADHelper.m; sourceTree = "<group>"; };
 		A4277C2024ACB50C003AFD4D /* AppData-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AppData-Prefix.pch"; sourceTree = "<group>"; };
@@ -155,7 +156,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A4C5FD7F26124090005FD2D8 /* Preferences.framework in Frameworks */,
+				A408FE86261A2A23002E8946 /* Preferences.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -251,6 +252,7 @@
 			isa = PBXGroup;
 			children = (
 				A4C5FD7E26124090005FD2D8 /* Preferences.framework */,
+				A408FE85261A2A23002E8946 /* Preferences.framework */,
 				A4E969DA2578F44900D8043A /* CoreLocation.framework */,
 				A4277C6124AD01DB003AFD4D /* QuartzCore.framework */,
 				A4BB5DBD24A8CB16004A3132 /* CoreGraphics.framework */,
@@ -893,6 +895,10 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -959,6 +965,10 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -1025,6 +1035,10 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -1090,6 +1104,10 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
