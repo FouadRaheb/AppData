@@ -188,8 +188,20 @@
     [self dismissViewControllerAnimated:animated completion:completion];
 }
 
+- (BOOL)shouldAutorotate {
+    if (IS_IPAD) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-    return UIInterfaceOrientationMaskPortrait;
+    if (IS_IPAD) {
+        return UIInterfaceOrientationMaskAll;
+    } else {
+        return UIInterfaceOrientationMaskPortrait;
+    }
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
