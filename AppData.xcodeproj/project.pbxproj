@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AD2600010000000000000001 /* ADContextMenuCompatibility.m in Sources */ = {isa = PBXBuildFile; fileRef = AD2600010000000000000002 /* ADContextMenuCompatibility.m */; };
 		A408FE86261A2A23002E8946 /* Preferences.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A408FE85261A2A23002E8946 /* Preferences.framework */; };
 		A4277BCC24AA38DF003AFD4D /* ADHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = A4277BCA24AA38DF003AFD4D /* ADHelper.h */; };
 		A4277BCD24AA38DF003AFD4D /* ADHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A4277BCB24AA38DF003AFD4D /* ADHelper.m */; };
@@ -71,6 +72,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AD2600010000000000000002 /* ADContextMenuCompatibility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ADContextMenuCompatibility.m; sourceTree = "<group>"; };
 		A408FE85261A2A23002E8946 /* Preferences.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Preferences.framework; path = Frameworks/Preferences.framework; sourceTree = "<group>"; };
 		A4277BCA24AA38DF003AFD4D /* ADHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ADHelper.h; sourceTree = "<group>"; };
 		A4277BCB24AA38DF003AFD4D /* ADHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ADHelper.m; sourceTree = "<group>"; };
@@ -170,6 +172,7 @@
 				A4C5FD5626123481005FD2D8 /* ADSettings.m */,
 				A4277BCA24AA38DF003AFD4D /* ADHelper.h */,
 				A4277BCB24AA38DF003AFD4D /* ADHelper.m */,
+				AD2600010000000000000002 /* ADContextMenuCompatibility.m */,
 				A4C5FD8826125556005FD2D8 /* ADAppearance.h */,
 				A4C5FD8926125556005FD2D8 /* ADAppearance.m */,
 			);
@@ -592,6 +595,7 @@
 				A429A01C24BEDA55005F586C /* ADMoreDataSource.m in Sources */,
 				A4BB5DCC24A9E157004A3132 /* ADDataPresentationController.m in Sources */,
 				A4277BCD24AA38DF003AFD4D /* ADHelper.m in Sources */,
+				AD2600010000000000000001 /* ADContextMenuCompatibility.m in Sources */,
 				A4BB5DD024A9E184004A3132 /* ADDataPresentationManager.m in Sources */,
 				A4C5FD5826123481005FD2D8 /* ADSettings.m in Sources */,
 				A4C5FD8B26125556005FD2D8 /* ADAppearance.m in Sources */,
@@ -1171,3 +1175,4 @@
 	};
 	rootObject = A4BB5D7B24A86EEA004A3132 /* Project object */;
 }
+
