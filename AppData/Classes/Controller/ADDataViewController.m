@@ -95,11 +95,12 @@
 #pragma mark - Used from Swipe Up
 
 + (void)presentControllerFromSBIconImageView:(SBIconImageView *)iconImageView fromContextMenu:(BOOL)contextMenu {
-    SBIconView *iconView = (SBIconView *)[iconImageView superview];
-    if (![iconView respondsToSelector:@selector(icon)]) {
-        NSLog(@"iconView: %@",iconView);
-        iconView = (SBIconView *)[iconView superview];
+    // iOS 26 can insert wrapper views between the image and the icon view.
+    UIView *ancestor = iconImageView.superview;
+    while (ancestor && ![ancestor respondsToSelector:@selector(icon)]) {
+        ancestor = ancestor.superview;
     }
+    SBIconView *iconView = (SBIconView *)ancestor;
     [self presentControllerFromSBIconImageView:iconImageView iconView:iconView fromContextMenu:contextMenu];
 }
 
@@ -549,3 +550,4 @@
 }
 
 @end
+
